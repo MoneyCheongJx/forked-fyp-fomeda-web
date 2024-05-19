@@ -1,0 +1,14 @@
+.primary-button {
+  background-color: transparent;
+  color: black;
+  border: none;
+  -webkit-box-shadow: none;
+  margin: 0.2vw;
+}
+
+.primary-button:hover {
+  background-color: red;
+  color: rgb(0, 0, 0);
+  border: none;
+  margin: 0.2vw;
+}
