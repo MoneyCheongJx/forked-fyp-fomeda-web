@@ -6,6 +6,10 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --ant-primary-color: #002c8c;
+  --ant-primary-color-hover: #0958d9;
+  --ant-primary-color-active: #002c8c;
+  --ant-primary-color-outline: #001d66;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,4 +34,40 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.ant-btn-primary,
+.ant-btn-primary:focus{
+  background-color: var(--ant-primary-color);
+  border-color: var(--ant-primary-color);
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--ant-primary-color-hover);
+  border-color: var(--ant-primary-color-hover);
+}
+
+.ant-btn-primary:active {
+  background-color: var(--ant-primary-color-active);
+  border-color: var(--ant-primary-color-active);
+}
+
+.ant-btn-primary.ant-btn-background-ghost {
+  color: var(--ant-primary-color);
+  border-color: var(--ant-primary-color);
+}
+
+.ant-btn-primary.ant-btn-background-ghost:hover,
+.ant-btn-primary.ant-btn-background-ghost:focus {
+  color: var(--ant-primary-color-hover);
+  border-color: var(--ant-primary-color-hover);
+}
+
+.ant-btn-primary.ant-btn-background-ghost:active {
+  color: var(--ant-primary-color-active);
+  border-color: var(--ant-primary-color-active);
+}
+
+.ant-badge-status-processing {
+  background-color: var(--ant-primary-color);
 }
