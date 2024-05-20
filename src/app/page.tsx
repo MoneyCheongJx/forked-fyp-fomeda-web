@@ -1,10 +1,14 @@
-import NavigationBar from "@/components/navigationBar/NavigationBar";
+import React from 'react';
+import NavigationBar from '@/components/navigationBar/NavigationBar';
+import {Layout} from "antd";
 
-export default function Home() {
-  return (
-    <>
-      <NavigationBar></NavigationBar>
-    
-    </>
-  );
-}
+const PageLayout = ({ children }) => {
+    return (
+        <Layout>
+            <NavigationBar />
+            <main>{children}</main>
+        </Layout>
+    );
+};
+
+export default PageLayout;

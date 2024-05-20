@@ -7,16 +7,31 @@ import {Header} from "antd/es/layout/layout";
 import {
     HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS, HEADER_USER_DROPDOWN_CONSTANTS
 } from "@/utils/header.constants";
+import Link from "next/link";
 
-const MANAGEMENT_DROPDOWN_LIST: MenuProps["items"] = HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS;
-const PROFILE_DROPDOWN_LIST: MenuProps["items"] = HEADER_USER_DROPDOWN_CONSTANTS;
+const MANAGEMENT_DROPDOWN_LIST: MenuProps["items"] = HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS.map((item) => ({
+    key: item.key,
+    label: (
+        <Link href={item.link}>
+            <div>{item.label}</div>
+        </Link>
+    ),
+}));
+
+const PROFILE_DROPDOWN_LIST: MenuProps["items"] = HEADER_USER_DROPDOWN_CONSTANTS.map((item) => ({
+    key: item.key,
+    label: (
+        <Link href={item.link}>
+            <div>{item.label}</div>
+        </Link>
+    ),
+}));
 
 const NavigationBar = () => {
 
     return (
         <Header
             style={{
-                position: 'fixed',
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -36,14 +51,14 @@ const NavigationBar = () => {
                 <Button type="text" className="nav-button">Product</Button>
                 <Divider className="divider" type="vertical"/>
                 <Dropdown menu={{items: MANAGEMENT_DROPDOWN_LIST}}>
-                    <Button type="text" icon={<DownOutlined/>} iconPosition="end">
+                    <Button type="text" className="nav-button" icon={<DownOutlined/>} iconPosition="end">
                         Management
                     </Button>
                 </Dropdown>
                 <Row>
                     <Avatar icon={<UserOutlined/>} className="nav-avatar"/>
                     <Dropdown menu={{items: PROFILE_DROPDOWN_LIST}}>
-                        <Button type="text" icon={<DownOutlined/>} iconPosition="end">
+                        <Button type="text" className="nav-button" icon={<DownOutlined/>} iconPosition="end">
                             John Doe
                         </Button>
                     </Dropdown>
