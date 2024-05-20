@@ -2,7 +2,7 @@ import React from 'react';
 import NavigationBar from '@/components/navigationBar/NavigationBar';
 import {Layout} from "antd";
 
-const PageLayout = ({ children }) => {
+const PageLayout = ({ children }: any) => {
     return (
         <Layout>
             <NavigationBar />

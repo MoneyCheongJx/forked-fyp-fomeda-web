@@ -30,15 +30,7 @@ const PROFILE_DROPDOWN_LIST: MenuProps["items"] = HEADER_USER_DROPDOWN_CONSTANTS
 const NavigationBar = () => {
 
     return (
-        <Header
-            style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-                backgroundColor: "white",
-            }}
-        >
+        <Header className="header-box">
             <Image
                 preview={false}
                 width={50}
