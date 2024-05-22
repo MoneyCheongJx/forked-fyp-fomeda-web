@@ -1,10 +1,9 @@
-'use client'
+"use client";
 
 import React from "react";
-import {Image, Space, Row, Col} from "antd";
-import {Card} from "antd";
-import {Button, Checkbox, Form, Input} from 'antd';
-import {Typography} from "antd";
+import {useRouter} from "next/navigation";
+import {Image, Card, Row, Col, Button, Form, Input, Typography} from "antd";
+
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
 
@@ -23,7 +22,12 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
 };
 
-export default function Login() {
+export default function LoginPage() {
+    const [user, setUser] = React.useState({
+        username: "",
+        password: "",
+    })
+
     return (
         <PageLayout>
             <Row align="middle" justify="space-evenly" style={{height: '100vh', width: '100vw'}}>
@@ -39,29 +43,39 @@ export default function Login() {
                         <Form
                             name="basic"
                             layout="vertical"
-                            initialValues={{remember: true}}
+                            autoComplete="off"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
-                            autoComplete="off"
                             style={{width: "400px"}}
                         >
                             <Title level={2}>Login</Title>
                             <Form.Item<FieldType>
                                 label="Username"
                                 name="username"
-                                rules={[{required: true, message: 'Please input your username!'}]}
+                                rules={[
+                                    {required: true, message: 'Please input your username'},
+                                    // {min: 6, max: 30, message: 'The username must be between 6 and 30 characters'},
+                                    // {whitespace: true, message: 'The username cannot be whitespaces only'},
+                                    // {pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'}
+                                ]}
+                                hasFeedback
                             >
                                 <Input placeholder="Username"/>
                             </Form.Item>
                             <Form.Item<FieldType>
                                 label="Password"
                                 name="password"
-                                rules={[{required: true, message: 'Please input your password!'}]}
+                                rules={[
+                                    {required: true, message: 'Please input your password'},
+                                    // {min: 12, max: 20, message: 'The username must be between 12 and 20 characters'},
+                                    // {whitespace: true, message: 'The password cannot be whitespaces only'},
+                                    // {pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/, message: 'The username contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'}
+                                ]}
                             >
                                 <Input.Password placeholder="Password"/>
                             </Form.Item>
                             <Form.Item style={{paddingTop: '5px'}}>
-                                <Button style={{width: '100%'}} type="primary" htmlType="submit">
+                                <Button block type="primary" htmlType="submit">
                                     Sign in
                                 </Button>
                                 <div style={{padding: '5px', textAlign: 'right'}}>
