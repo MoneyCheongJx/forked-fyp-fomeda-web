@@ -1,6 +1,6 @@
 export const HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS = [
     {key: "product_management", label: "Product Management", link: "product"},
-    {key: "product_category_management", label: "Product Category Management", link: "category-management"},
+    {key: "product_category_management", label: "Product Category Management", link: "/management/product-category"},
     {key: "product_verification", label: "Product Verification", link: ""},
     {key: "report_management", label: "Report Management", link: ""},
     {key: "supplier_management", label: "Supplier Management", link: "/managements/suppliers"},
