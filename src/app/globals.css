@@ -80,6 +80,15 @@ h1 {
 .ant-badge-status-processing {
   background-color: var(--ant-primary-color);
 }
+.ant-btn-default:hover{
+  border-color: var(--ant-primary-color-hover) !important;
+  color: var(--ant-primary-color-hover) !important;
+}
+.ant-btn-default:focus{
+  border-color: var(--ant-primary-color-active) !important;
+  color: var(--ant-primary-color-active) !important;
+}
+
 
 /* Tab style */
 .ant-tabs-tab {}
@@ -99,4 +108,29 @@ h1 {
 }
 .ant-input-outlined:focus-within {
   border-color: var(--ant-primary-color-outline) ;
+}
+
+/* Table style */
+.ant-pagination-item-active {
+  border-color: var(--ant-primary-color-active) !important;
+}
+.ant-pagination-item-active a {
+  color: var(--ant-primary-color-active) !important;
+}
+.anticon-double-right{
+  color: var(--ant-primary-color) !important;
+}
+.ant-select-selector:hover{
+  border-color: var(--ant-primary-color-hover) !important;
+}
+.ant-select-selector:focus-within{
+  border-color: var(--ant-primary-color-active) !important;
+}
+.ant-table-row-expand-icon:hover{
+  color: var(--ant-primary-color-hover) !important;
+  border-color: var(--ant-primary-color-hover) !important;
+}
+.ant-table-row-expand-icon:focus-within {
+  color: var(--ant-primary-color-active) !important;
+  border-color: var(--ant-primary-color-active) !important;
 }

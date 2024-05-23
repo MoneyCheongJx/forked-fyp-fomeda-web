@@ -6,7 +6,7 @@ import {MenuProps} from "antd/lib";
 import {Header} from "antd/es/layout/layout";
 import {
     HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS, HEADER_USER_DROPDOWN_CONSTANTS
-} from "@/utils/header.constants";
+} from "@/constants/header.constants";
 import Link from "next/link";
 
 const MANAGEMENT_DROPDOWN_LIST: MenuProps["items"] = HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS.map((item) => ({
