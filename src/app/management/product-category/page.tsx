@@ -29,7 +29,7 @@ const onChange = (key: string) => {
 const ProductPage = () => {
     return (
         <PageLayout>
-            <Breadcrumb items={[{title: 'Product Category', href: '/category-management'}]} />
+            <Breadcrumb items={[{title: 'Product Category', href: '/management/product-category'}]} />
             <h1>Product Category</h1>
             <Tabs defaultActiveKey="category" items={CATEGORY_TAB_CONSTANT} onChange={onChange} size="small"></Tabs>
         </PageLayout>
