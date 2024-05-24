@@ -1,5 +1,7 @@
-import {Button, Col, Dropdown, Input, Row, Table, Tag} from "antd";
-import React from "react";
+"use client"
+
+import {Button, Col, Dropdown, Input, Modal, Radio, Row, Table, Tag} from "antd";
+import React, {useState} from "react";
 import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
 import Link from "next/link";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
@@ -54,6 +56,14 @@ const renderActions = () => (
 );
 
 const CategoryTab = () => {
+
+    const [openAddModel, setOpenAddModel] = useState(false);
+    const [isCategory, setIsCategory] = useState(true);
+
+    const handleRadioChange = (e: any) => {
+        setIsCategory(e.target.value);
+    };
+
     const CATEGORY_TABLE_HEADER = CATEGORY_TABLE_HEADER_CONSTANTS.map((column) => {
         if (column.key === 'is_active') {
             return {
@@ -76,7 +86,42 @@ const CategoryTab = () => {
                 <Col span={8}>
                     <Input placeholder="category" prefix={<SearchOutlined/>} size="large"></Input>
                 </Col>
-                <Button type="primary" icon={<PlusOutlined/>} iconPosition="start">Add Category</Button>
+                <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
+                        onClick={() => setOpenAddModel(true)}>Add Category</Button>
+                <Modal
+                    title={<h3>Add Category</h3>}
+                    centered
+                    open={openAddModel}
+                    onOk={() => setOpenAddModel(false)}
+                    okText="Add Category"
+                    onCancel={() => setOpenAddModel(false)}
+                >
+                    <Row className="mb-2">
+                        <h5 className="w-1/3">Category Type:</h5>
+                        <Radio.Group onChange={handleRadioChange} value={isCategory}>
+                            <Radio value={true}>Category</Radio>
+                            <Radio value={false}>Subcategory</Radio>
+                        </Radio.Group>
+                    </Row>
+                    {isCategory ?
+                        <div>
+                            <Row className="mb-2">
+                                <h5 className="w-1/3">Category name:</h5>
+                                <Input className="w-2/3"/>
+                            </Row>
+                        </div> :
+                        <div>
+                            <Row className="mb-2">
+                                <h5 className="w-1/3">Category name:</h5>
+                                <Input className="w-2/3"/>
+                            </Row>
+                            <Row className="mb-2">
+                                <h5 className="w-1/3">Subcategory name:</h5>
+                                <Input className="w-2/3"/>
+                            </Row>
+                        </div>
+                    }
+                </Modal>
             </Row>
             <Table
                 columns={CATEGORY_TABLE_HEADER}

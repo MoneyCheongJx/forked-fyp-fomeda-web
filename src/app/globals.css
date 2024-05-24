@@ -56,6 +56,18 @@ h3 {
   line-height: 28px;
 }
 
+h4 {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 24px;
+}
+
+h5 {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 22px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -145,4 +157,23 @@ h3 {
 .ant-table-row-expand-icon:focus-within {
   color: var(--ant-primary-color-active) !important;
   border-color: var(--ant-primary-color-active) !important;
+}
+
+/* model style */
+.ant-modal-mask{
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+.ant-modal-body{
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+.ant-modal-content{
+  padding-left: 48px !important;
+  padding-right: 48px !important;
+}
+
+/* radio button style */
+.ant-radio-checked .ant-radio-inner {
+  background-color: var(--ant-primary-color) !important;
+  border-color: var(--ant-primary-color) !important;
 }

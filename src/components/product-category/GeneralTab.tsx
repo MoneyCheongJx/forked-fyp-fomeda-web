@@ -1,7 +1,9 @@
-import {Button, Dropdown, Row, Table, Tag} from "antd";
+"use client"
+
+import {Button, Dropdown, Input, Modal, Radio, Row, Table, Tag} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {GENERAL_SPECIFICATIONS_CONSTANTS} from "@/constants/category.constant";
-import React from "react";
+import React, {useState} from "react";
 import Link from "next/link";
 import {SpecificationModel} from "@/app/models/specification.model";
 
@@ -50,7 +52,15 @@ const renderActions = (action_list: any) => (
     </Dropdown>
 );
 
+
 const GeneralTab = () => {
+
+    const [openAddModel, setOpenAddModel] = useState(null);
+    const [isSpecification, setIsSpecification] = useState(true);
+    const handleSpecificationRadioChange = (e: any) => {
+        setIsSpecification(e.target.value);
+    };
+
     const defineTableHeader = (tableHeader: any) => tableHeader.map((column: any) => {
         if (column.key === 'is_active') {
             return {
@@ -66,13 +76,73 @@ const GeneralTab = () => {
         }
         return column;
     });
+
+    const modelExtraField = (key: string) => {
+        return (
+            <div>
+                {key === "general_information" ? (
+                    <Row className="mb-2">
+                        <h5 className="w-2/5">Fillable:</h5>
+                        <Radio.Group>
+                            <Radio value={true}>Yes</Radio>
+                            <Radio value={false}>No</Radio>
+                        </Radio.Group>
+                    </Row>
+                ) : key === "product_specification" ? (
+                    <div>
+                        <Row className="mb-2">
+                            <h5 className="w-2/5">Specification Type:</h5>
+                            <Radio.Group onChange={handleSpecificationRadioChange} value={isSpecification}>
+                                <Radio value={true}>Specification</Radio>
+                                <Radio value={false}>Subspecification</Radio>
+                            </Radio.Group>
+                        </Row>
+                        <Row className="mb-2">
+                            <h5 className="w-2/5">Specification name:</h5>
+                            <Input className="w-3/5"/>
+                        </Row>
+                        <Row className="mb-2">
+                            <h5 className="w-2/5">Subspecification name:</h5>
+                            <Input className="w-3/5"/>
+                        </Row>
+                    </div>
+                ) : (
+                    <></>
+                )}
+            </div>
+        )
+    }
+
     return (
         <div>
-            {GENERAL_SPECIFICATIONS_CONSTANTS.map((item) => (
+            {GENERAL_SPECIFICATIONS_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">
                     <Row className="mb-2 justify-between ">
                         <h3>{item.title}</h3>
-                        <Button type="primary" icon={<PlusOutlined/>}>{item.button}</Button>
+                        <Button type="primary" icon={<PlusOutlined/>}
+                                onClick={() => {
+                                    setOpenAddModel(item.key)
+                                }}>
+                            {item.button}
+                        </Button>
+                        <Modal
+                            title={<h3>{item.button}</h3>}
+                            centered
+                            open={openAddModel === item.key}
+                            onOk={() => setOpenAddModel(null)}
+                            okText={item.button}
+                            onCancel={() => setOpenAddModel(null)}
+                            width={"40%"}
+                        >
+                            {modelExtraField(item.key)}
+                            {item.key !== 'product_specification' ?
+                                <Row className="mb-2">
+                                    <h5 className="w-2/5">{item.group} name:</h5>
+                                    <Input className="w-3/5"/>
+                                </Row> : <></>
+                            }
+                        </Modal>
+
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
                            dataSource={dummy}
@@ -80,7 +150,8 @@ const GeneralTab = () => {
                                defaultPageSize: 10,
                                showSizeChanger: true,
                                pageSizeOptions: [10, 20, 50, 100],
-                           }}/>
+                           }}
+                    />
                 </div>
             ))}
         </div>

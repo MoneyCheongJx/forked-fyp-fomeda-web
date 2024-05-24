@@ -83,24 +83,28 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         key: 'general_information',
         title: "General Information",
         button: "Add Information",
+        group: "Information",
         tableHeader: GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS
     },
     {
         key: 'certification',
         title: "Certification",
         button: "Add Certification",
+        group: "Certification",
         tableHeader: CERTIFICATION_TABLE_HEADER_CONSTANTS
     },
     {
         key: 'services_provided',
         title: "Services Provided",
         button: "Add Service",
+        group: "Service",
         tableHeader: SERVICE_PROVIDED_HEADER_CONSTANTS
     },
     {
         key: 'product_specification',
         title: "Product Specification",
         button: "Add Specification",
+        group: "Specification",
         tableHeader: PRODUCT_SPECIFICATION_HEADER_CONSTANTS
     },
 ]
