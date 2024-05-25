@@ -1,6 +1,5 @@
 export class CategoryModel {
     key?: string;
-    cat_id?: string;
     cat_name?: string;
     created_by?: string;
     created_on?: string;

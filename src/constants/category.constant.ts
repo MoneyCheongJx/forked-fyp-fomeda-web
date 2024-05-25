@@ -84,6 +84,7 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         title: "General Information",
         button: "Add Information",
         group: "Information",
+        type: "GENERAL",
         tableHeader: GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS
     },
     {
@@ -91,6 +92,7 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         title: "Certification",
         button: "Add Certification",
         group: "Certification",
+        type: "CERTIFICATION",
         tableHeader: CERTIFICATION_TABLE_HEADER_CONSTANTS
     },
     {
@@ -98,6 +100,7 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         title: "Services Provided",
         button: "Add Service",
         group: "Service",
+        type: "SERVICE",
         tableHeader: SERVICE_PROVIDED_HEADER_CONSTANTS
     },
     {
@@ -105,6 +108,7 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         title: "Product Specification",
         button: "Add Specification",
         group: "Specification",
+        type: "SPECIFICATION",
         tableHeader: PRODUCT_SPECIFICATION_HEADER_CONSTANTS
     },
 ]
