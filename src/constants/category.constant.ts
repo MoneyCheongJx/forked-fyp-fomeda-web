@@ -39,7 +39,7 @@ export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
 ]
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
-    {key: "subspec_name", title: "General Field", dataIndex: "subspec_name", width: "40%"},
+    {key: "subcat_spec_name", title: "General Field", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
@@ -49,7 +49,7 @@ export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
 ]
 
 export const CERTIFICATION_TABLE_HEADER_CONSTANTS = [
-    {key: "subspec_name", title: "Certification", dataIndex: "subspec_name", width: "40%"},
+    {key: "subcat_spec_name", title: "Certification", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
@@ -59,7 +59,7 @@ export const CERTIFICATION_TABLE_HEADER_CONSTANTS = [
 ]
 
 export const SERVICE_PROVIDED_HEADER_CONSTANTS = [
-    {key: "subspec_name", title: "Service Provided", dataIndex: "subspec_name", width: "40%"},
+    {key: "subcat_spec_name", title: "Service Provided", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
@@ -69,7 +69,7 @@ export const SERVICE_PROVIDED_HEADER_CONSTANTS = [
 ]
 
 export const PRODUCT_SPECIFICATION_HEADER_CONSTANTS = [
-    {key: "subspec_name", title: "Service Provided", dataIndex: "subspec_name", width: "40%"},
+    {key: "subcat_spec_name", title: "Specification", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},

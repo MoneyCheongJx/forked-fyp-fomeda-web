@@ -3,9 +3,10 @@
 import {Button, Dropdown, Row, Table, Tag} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {GENERAL_SPECIFICATIONS_CONSTANTS} from "@/constants/category.constant";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Link from "next/link";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
+import CategoryService from "@/services/category.service";
 
 
 const renderStatus = (is_active: boolean) => (
@@ -29,9 +30,11 @@ const renderActions = (action_list: any) => (
 );
 
 const GeneralTab = () => {
-    const [openAddModel, setOpenAddModel] = useState(null);
+    const [specificationData, setSpecificationData] = useState<any[]>([]);
+    const [openAddModel, setOpenAddModel] = useState<string|null>(null);
+    const [loading,setLoading] = useState(true);
 
-    const defineTableHeader = (tableHeader: any) => tableHeader.map((column: any) => {
+    const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
         if (column.key === 'is_active') {
             return {
                 ...column,
@@ -47,6 +50,30 @@ const GeneralTab = () => {
         return column;
     });
 
+    const getAllSpecificationData = async () => {
+        try{
+            const response =  await CategoryService.getAllGeneralSpecifications();
+            setSpecificationData(response);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleOnAdd = async () => {
+        await getAllSpecificationData();
+    }
+
+    useEffect(() => {
+        getAllSpecificationData().then(() => {});
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div>
             {GENERAL_SPECIFICATIONS_CONSTANTS.map((item: any) => (
@@ -59,10 +86,14 @@ const GeneralTab = () => {
                                 }}>
                             {item.button}
                         </Button>
-                    <AddSpecificationModel data={item} isOpen={openAddModel === item.key} onClose={() => setOpenAddModel(null)}/>
+                        <AddSpecificationModel data={item} isOpen={openAddModel === item.key}
+                                               onClose={() => setOpenAddModel(null)} onAdd={handleOnAdd}/>
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
-                        // dataSource={}
+                           dataSource={specificationData.filter(spec => spec.cat_type === item.type).map(spec => ({
+                               ...spec,
+                               key: spec._id,
+                           }))}
                            pagination={{
                                defaultPageSize: 10,
                                showSizeChanger: true,

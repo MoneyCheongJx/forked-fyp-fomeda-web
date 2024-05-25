@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useState} from "react";
-import {Form, Input, Modal, Radio, Row} from "antd";
+import {Form, Input, Modal, Radio} from "antd";
 import CategoryService from "@/services/category.service";
 import {SpecificationModel} from "@/app/models/specification.model";
 
@@ -13,7 +13,7 @@ const initialSpecificationFormData: SpecificationModel = {
     allow_input: false,
 }
 
-const AddSpecificationModel = ({data, isOpen, onClose}: any) => {
+const AddSpecificationModel = ({data, isOpen, onClose, onAdd}: any) => {
     const [form] = Form.useForm();
     const [isFillable, setIsFillable] = useState(true);
     const [isSpecification, setIsSpecification] = useState(true);
@@ -35,18 +35,19 @@ const AddSpecificationModel = ({data, isOpen, onClose}: any) => {
     }
 
     const handleAddModelOnOk = async (type: string) => {
-        form.validateFields().then(async (values) => {
+        form.validateFields().then(async () => {
             specificationFormData.cat_type = type;
-            await handleSpecificationFormSubmit(specificationFormData);
+            await handleSpecificationFormSubmit();
+            form.resetFields();
             setSpecificationFormData(initialSpecificationFormData);
-            form.resetFields(); // Reset the form fields
+            onAdd();
             onClose();
         }).catch(errorInfo => {
             console.error('Validate Failed:', errorInfo);
         });
     }
 
-    const handleSpecificationFormSubmit = async (e: any) => {
+    const handleSpecificationFormSubmit = async () => {
         try {
             await CategoryService.createGeneralSpecification(specificationFormData)
         } catch (error) {
@@ -132,7 +133,7 @@ const AddSpecificationModel = ({data, isOpen, onClose}: any) => {
             onCancel={handleModalClose}
             width={"40%"}
         >
-            <Form form={form} name="specification_form">
+            <Form form={form} name={`${data.key}_form`}>
                 {modelExtraField(data.key)}
                 {data.key !== 'product_specification' ?
                     <Form.Item<SpecificationModel>

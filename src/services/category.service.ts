@@ -28,11 +28,14 @@ export default class CategoryService {
 
     static getAllGeneralSpecifications = async () => {
         try {
-            await HttpService.get(
+            const response = await HttpService.get(
                 ApiConstant.FIND_ALL_GENERAL_SPECIFICATION
             )
+            console.log(response);
+            return response;
         } catch (error) {
             console.error(error);
+            throw error;
         }
     }
 }

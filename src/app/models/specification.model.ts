@@ -1,5 +1,5 @@
 export class SpecificationModel {
-    key?: string;
+    _id?: string;
     subcat_spec_name?: string;
     cat_type?: string;
     created_by?: string;
