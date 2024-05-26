@@ -10,6 +10,9 @@ export class ApiConstant{
 
     /* category api */
     static readonly CREATE_CATEGORY = this.CATEGORY_PREFIX + "create-category";
+    static readonly CREATE_SUBCATEGORY = this.CATEGORY_PREFIX + "create-subcategory";
     static readonly CREATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "create-general-specification";
+    static readonly CREATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-general-subspecification";
+    static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
 }

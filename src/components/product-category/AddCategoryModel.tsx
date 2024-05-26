@@ -1,9 +1,10 @@
 "use client"
 
-import {Form, Input, Modal, Radio, Row} from "antd";
+import {Form, Input, Modal, Radio, Row, Select} from "antd";
 import {CategoryModel} from "@/app/models/category.model";
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
+import {SubcategoryModel} from "@/app/models/subcategory.model";
 
 
 const initialCategoryForm: CategoryModel = {
@@ -13,10 +14,20 @@ const initialCategoryForm: CategoryModel = {
     is_active: false,
 }
 
-const AddCategoryModel = ({ isOpen, onClose }: any) => {
+const initialSubcategoryForm: SubcategoryModel = {
+    cat_id: "",
+    subcat_name: "",
+    created_by: "Admin",
+    last_updated_by: "Admin",
+    is_active: false,
+}
+
+const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
     const [categoryForm] = Form.useForm();
     const [categoryFormData, setCategoryFormData] = useState(initialCategoryForm);
     const [isCategory, setIsCategory] = useState(true);
+    const [subcategoryForm] = Form.useForm();
+    const [subcategoryFormData, setSubcategoryFormData] = useState(initialSubcategoryForm);
 
     const handleRadioChange = (e: any) => {
         setIsCategory(e.target.value);
@@ -29,11 +40,25 @@ const AddCategoryModel = ({ isOpen, onClose }: any) => {
         })
     }
 
+    const handleSubcategoryFormChange = (value: any, fieldName: string) => {
+        setSubcategoryFormData({
+            ...subcategoryFormData,
+            [fieldName]: value,
+        })
+    }
+
     const handleAddModelOnOk = async () => {
         categoryForm.validateFields().then(async () => {
-            await handleCategoryFormSubmit(categoryFormData);
-            setCategoryFormData(initialCategoryForm);
-            categoryForm.resetFields();
+            if (isCategory) {
+                await handleCategoryFormSubmit(categoryFormData);
+                categoryForm.resetFields();
+                setCategoryFormData(initialCategoryForm);
+            } else {
+                await handleSubcategoryFormSubmit(subcategoryFormData);
+                subcategoryForm.resetFields();
+                setSubcategoryFormData(initialSubcategoryForm);
+            }
+            onAdd();
             onClose();
         }).catch(errorInfo => {
             console.error('Validate Failed:', errorInfo);
@@ -49,10 +74,41 @@ const AddCategoryModel = ({ isOpen, onClose }: any) => {
         }
     }
 
+    const handleSubcategoryFormSubmit = async (e: any) => {
+        try {
+            await CategoryService.createSubcategory(subcategoryFormData)
+        } catch (error) {
+            console.error(error)
+            throw error;
+        }
+    }
+
     const handleModalClose = () => {
         categoryForm.resetFields();
         onClose();
     };
+
+    const filterCategoryData = useCallback(() => {
+        return categoryData.map((category: any) => ({
+            value: category._id,
+            label: category.cat_name,
+        }))
+    }, [categoryData]);
+
+    const [selectOptions, setSelectOptions] = useState(filterCategoryData());
+    const [defaultSelectValue, setDefaultSelectValue] = useState("");
+
+    useEffect(() => {
+        const options = filterCategoryData();
+        setSelectOptions(options);
+        if (options.length > 0) {
+            setDefaultSelectValue(options[0].value);
+            setSubcategoryFormData(prevState => ({
+                ...prevState,
+                cat_id: options[0].value,
+            }))
+        }
+    }, [filterCategoryData, categoryFormData]);
 
     return (
         <Modal
@@ -63,13 +119,17 @@ const AddCategoryModel = ({ isOpen, onClose }: any) => {
             okText="Add Category"
             onCancel={handleModalClose}
         >
-            <Row className="mb-2">
-                <h5 className="w-1/3">Category Type:</h5>
+            <Form.Item
+                label={<h5>Category Type</h5>}
+                labelCol={{span: 10}}
+                labelAlign="left"
+                className="mb-2"
+            >
                 <Radio.Group onChange={handleRadioChange} value={isCategory}>
                     <Radio value={true}>Category</Radio>
                     <Radio value={false}>Subcategory</Radio>
                 </Radio.Group>
-            </Row>
+            </Form.Item>
             {isCategory ?
                 <Form form={categoryForm} name="category_form">
                     <Form.Item<CategoryModel>
@@ -82,14 +142,32 @@ const AddCategoryModel = ({ isOpen, onClose }: any) => {
                     </Form.Item>
                 </Form> :
                 <div>
-                    <Row className="mb-2">
-                        <h5 className="w-1/3">Category name:</h5>
-                        <Input className="w-2/3"/>
-                    </Row>
-                    <Row className="mb-2">
-                        <h5 className="w-1/3">Subcategory name:</h5>
-                        <Input className="w-2/3"/>
-                    </Row>
+                    <Form form={subcategoryForm} name="subcategory_form">
+                        <Form.Item<SubcategoryModel>
+                            label={<h5>Category name</h5>}
+                            labelCol={{span: 10}}
+                            labelAlign="left"
+                            className="mb-2"
+                            name="cat_id"
+                        >
+                            <Select
+                                defaultValue={defaultSelectValue}
+                                onChange={(value) => handleSubcategoryFormChange(value, "cat_id")}
+                                options={selectOptions}
+                            />
+                        </Form.Item>
+                        <Form.Item<SubcategoryModel>
+                            label={<h5>Subcategory name</h5>}
+                            labelCol={{span: 10}}
+                            labelAlign="left"
+                            className="mb-2"
+                            name="subcat_name"
+                        >
+                            <Input name="subcat_name"
+                                   onChange={(e) => handleSubcategoryFormChange(e.target.value, "subcat_name")}
+                            />
+                        </Form.Item>
+                    </Form>
                 </div>
             }
         </Modal>

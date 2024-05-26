@@ -35,6 +35,16 @@ const GeneralTab = () => {
     const [loading,setLoading] = useState(true);
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
+        if (column.key === 'subcat_spec_name' ) {
+            return {
+                ...column,
+                render: (text: any, record: any) => {
+                    const value = record.subcat_spec_name || record.subcat_subspec_name;
+                    return <span>{value}</span>;
+                },
+            };
+        }
+
         if (column.key === 'is_active') {
             return {
                 ...column,
@@ -86,14 +96,24 @@ const GeneralTab = () => {
                                 }}>
                             {item.button}
                         </Button>
-                        <AddSpecificationModel data={item} isOpen={openAddModel === item.key}
-                                               onClose={() => setOpenAddModel(null)} onAdd={handleOnAdd}/>
+                        <AddSpecificationModel data={item}
+                                               isOpen={openAddModel === item.key}
+                                               onClose={() => setOpenAddModel(null)}
+                                               onAdd={handleOnAdd}
+                                               specificationData={specificationData}
+                        />
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
-                           dataSource={specificationData.filter(spec => spec.cat_type === item.type).map(spec => ({
-                               ...spec,
-                               key: spec._id,
-                           }))}
+                           dataSource={specificationData.filter(spec => spec.cat_type === item.type).map(spec => {
+                               const dataItem = { ...spec, key: spec._id };
+                               if (spec.children && spec.children.length > 0) {
+                                   dataItem.children = spec.children.map((subspec: any) => ({
+                                       ...subspec,
+                                       key: subspec._id,
+                                   }));
+                               }
+                               return dataItem;
+                           })}
                            pagination={{
                                defaultPageSize: 10,
                                showSizeChanger: true,

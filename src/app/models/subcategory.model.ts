@@ -1,13 +1,11 @@
-import {SubcategoryModel} from "@/app/models/subcategory.model";
-
-export class CategoryModel {
+export class SubcategoryModel {
     _id?: string;
-    cat_name?: string;
+    cat_id?: string;
+    subcat_name?: string;
     created_by?: string;
     created_on?: string;
     last_updated_by?: string;
     last_updated_on?: string;
     is_active?: boolean;
     actions?: string;
-    children?: SubcategoryModel[];
 }

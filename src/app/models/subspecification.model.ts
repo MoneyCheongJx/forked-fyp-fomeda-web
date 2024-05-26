@@ -1,8 +1,7 @@
-import {SubspecificationModel} from "@/app/models/subspecification.model";
-
-export class SpecificationModel {
+export class SubspecificationModel {
     _id?: string;
-    subcat_spec_name?: string;
+    subcat_spec_id?: string;
+    subcat_subspec_name?: string;
     cat_type?: string;
     created_by?: string;
     created_on?: string;
@@ -11,5 +10,4 @@ export class SpecificationModel {
     is_active?: boolean;
     allow_input?: boolean;
     actions?: string;
-    children?: SubspecificationModel[];
 }
