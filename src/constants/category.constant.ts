@@ -14,8 +14,10 @@ export const CATEGORY_TABLE_HEADER_CONSTANTS = [
 ]
 
 export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
-    {key: "edit_category", label: "Edit Category", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_category", label: "Edit Category"},
+    {key: "deactivate", label: "Deactivate Category"},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete_category", label: "Delete Category", link: ""}
 ]
 
 export const GENERAL_INFORMATION_ACTIONS_CONSTANTS = [

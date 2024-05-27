@@ -26,26 +26,58 @@ const CategoryTab = () => {
         if (key === 'edit_category') {
             setUpdateModel(true);
             setSelectedRecord(record);
-            record.subcat_name? setIsParent(false) : setIsParent(true);
+            record.subcat_name ? setIsParent(false) : setIsParent(true);
+        } else if (key === 'deactivate') {
+            (record.subcat_name ? deactivateSubcategory(record._id, false) : deactivateCategory(record._id, false)).then(handleOnUpdate);
+        } else if (key === 'activate') {
+            (record.subcat_name ? deactivateSubcategory(record._id, true) : deactivateCategory(record._id, true)).then(handleOnUpdate);
+        } else {
+
+        }
+    }
+
+    const deactivateCategory = async (id: string, is_active: boolean) => {
+        try {
+            await CategoryService.deactivateCategory(id, is_active);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const deactivateSubcategory = async (id: string, is_active: boolean) => {
+        try {
+            await CategoryService.deactivateSubcategory(id, is_active);
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
     }
 
     const renderActions = (record: any) => (
         <Dropdown menu={{items: defineMenuItem(record)}}>
-            <Button >Actions</Button>
+            <Button>Actions</Button>
         </Dropdown>
     );
 
     const defineMenuItem = (record: any) => {
-        return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => ({
-            key: item.key,
-            label: (
-                <div onClick={() => handleActionsOnClick(item.key, record)}>
-                    {item.label}
-                </div>
-            ),
-        }));
-    }
+        return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => {
+            if (record.is_active && item.key === 'activate') {
+                return null;
+            }
+            if (!record.is_active && item.key === 'deactivate') {
+                return null;
+            }
+            return {
+                key: item.key,
+                label: (
+                    <div onClick={() => handleActionsOnClick(item.key, record)}>
+                        {item.label}
+                    </div>
+                ),
+            };
+        }).filter(item => item !== null);
+    };
 
     const CATEGORY_TABLE_HEADER = CATEGORY_TABLE_HEADER_CONSTANTS.map((column) => {
         if (column.key === 'cat_name') {
@@ -93,7 +125,8 @@ const CategoryTab = () => {
     }
 
     useEffect(() => {
-        getAllCategory().then(() => {});
+        getAllCategory().then(() => {
+        });
     }, [])
 
     if (loading) {

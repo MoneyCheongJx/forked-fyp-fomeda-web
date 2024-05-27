@@ -130,4 +130,32 @@ export default class CategoryService {
             throw error;
         }
     }
+
+    static deactivateCategory = async (id: string, is_active: boolean) => {
+        try{
+            const param = {id, is_active: is_active.toString()}
+            const response = await HttpService.put(
+                ApiConstant.DEACTIVATE_CATEGORY,
+                {},
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static deactivateSubcategory = async (id: string, is_active: boolean) => {
+        try{
+            const param = {id, is_active: is_active.toString()}
+            const response = await HttpService.put(
+                ApiConstant.DEACTIVATE_SUBCATEGORY,
+                {},
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
