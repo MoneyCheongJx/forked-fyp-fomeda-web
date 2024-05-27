@@ -1,32 +1,16 @@
 "use client"
 
-import {Button, Col, Dropdown, Form, Input, Modal, Radio, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Input, Row, Table, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
-import Link from "next/link";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddCategoryModel from "@/components/product-category/AddCategoryModel";
 import CategoryService from "@/services/category.service";
-import commander from "commander";
+import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
         <Tag bordered={false} className="px-3 py-0.5 rounded-xl">Inactive</Tag>
-);
-
-const CATEGORY_TABLE_ACTIONS_LIST = CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => ({
-    key: item.key,
-    label: (
-        <Link href={item.link}>
-            {item.label}
-        </Link>
-    ),
-}))
-
-const renderActions = () => (
-    <Dropdown menu={{items: CATEGORY_TABLE_ACTIONS_LIST}}>
-        <Button>Actions</Button>
-    </Dropdown>
 );
 
 const CategoryTab = () => {
@@ -34,6 +18,34 @@ const CategoryTab = () => {
     const [openAddModel, setOpenAddModel] = useState(false);
     const [categoryData, setCategoryData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [openUpdateModel, setUpdateModel] = useState(false);
+    const [isParent, setIsParent] = useState(true);
+    const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
+
+    const handleActionsOnClick = (key: string, record: any) => {
+        if (key === 'edit_category') {
+            setUpdateModel(true);
+            setSelectedRecord(record);
+            record.subcat_name? setIsParent(false) : setIsParent(true);
+        }
+    }
+
+    const renderActions = (record: any) => (
+        <Dropdown menu={{items: defineMenuItem(record)}}>
+            <Button >Actions</Button>
+        </Dropdown>
+    );
+
+    const defineMenuItem = (record: any) => {
+        return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => ({
+            key: item.key,
+            label: (
+                <div onClick={() => handleActionsOnClick(item.key, record)}>
+                    {item.label}
+                </div>
+            ),
+        }));
+    }
 
     const CATEGORY_TABLE_HEADER = CATEGORY_TABLE_HEADER_CONSTANTS.map((column) => {
         if (column.key === 'cat_name') {
@@ -54,7 +66,7 @@ const CategoryTab = () => {
         if (column.key === 'actions') {
             return {
                 ...column,
-                render: () => renderActions(),
+                render: (text: any, record: any) => renderActions(record)
             };
         }
         return column;
@@ -62,7 +74,7 @@ const CategoryTab = () => {
 
     const getAllCategory = async () => {
         try {
-            const response  = await CategoryService.getAllCategory();
+            const response = await CategoryService.getAllCategory();
             setCategoryData(response);
         } catch (error) {
             console.error(error);
@@ -73,6 +85,10 @@ const CategoryTab = () => {
     }
 
     const handleOnAdd = async () => {
+        await getAllCategory();
+    }
+
+    const handleOnUpdate = async () => {
         await getAllCategory();
     }
 
@@ -92,16 +108,18 @@ const CategoryTab = () => {
                 </Col>
                 <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
                         onClick={() => setOpenAddModel(true)}>Add Category</Button>
-                <AddCategoryModel isOpen={openAddModel} onClose={() => setOpenAddModel(false)} categoryData={categoryData} onAdd={handleOnAdd}/>
+                <AddCategoryModel isOpen={openAddModel} onClose={() => setOpenAddModel(false)}
+                                  categoryData={categoryData} onAdd={handleOnAdd}/>
             </Row>
             <Table
                 columns={CATEGORY_TABLE_HEADER}
                 dataSource={categoryData.map((cat) => {
-                    const dataItem = { ...cat, key: cat._id};
-                    if(cat.children && cat.children.length > 0) {
+                    const dataItem = {...cat, key: cat._id};
+                    if (cat.children && cat.children.length > 0) {
                         dataItem.children = cat.children.map((subcat: any) => ({
                             ...subcat,
                             key: subcat._id,
+                            parent_name: cat.cat_name,
                         }))
                     }
                     return dataItem;
@@ -111,6 +129,15 @@ const CategoryTab = () => {
                     showSizeChanger: true,
                     pageSizeOptions: [10, 20, 50, 100],
                 }}/>
+            <CategoryUpdateModel
+                isOpen={openUpdateModel}
+                onClose={() => setUpdateModel(false)}
+                isParent={isParent}
+                isCategory={true}
+                onUpdate={handleOnUpdate}
+                title="Category"
+                data={selectedRecord}
+            />
         </div>
     )
 }

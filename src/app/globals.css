@@ -173,7 +173,7 @@ h5 {
 }
 
 /* radio button style */
-.ant-radio-checked .ant-radio-inner {
+.ant-radio-checked:not(.ant-radio-disabled) .ant-radio-inner {
   background-color: var(--ant-primary-color) !important;
   border-color: var(--ant-primary-color) !important;
 }

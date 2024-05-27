@@ -15,4 +15,8 @@ export class ApiConstant{
     static readonly CREATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-general-subspecification";
     static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
+    static readonly UPDATE_CATEGORY = this.CATEGORY_PREFIX + "update-category";
+    static readonly UPDATE_SUBCATEGORY = this.CATEGORY_PREFIX + "update-subcategory";
+    static readonly UPDATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "update-general-specification";
+    static readonly UPDATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "update-general-subspecification";
 }
