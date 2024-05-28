@@ -4,7 +4,7 @@ import {Form, FormItemProps, Input, Modal, Radio, Select} from "antd";
 import React, {useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
 
-const CategoryUpdateModel = ({ isOpen, onClose, isParent, isCategory, data, onUpdate, title }: any) => {
+const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpdate, title}: any) => {
     const [form] = Form.useForm();
     const [formData, setFormData] = useState({...data});
     const [originalData, setOriginalData] = useState({...data});
@@ -61,7 +61,7 @@ const CategoryUpdateModel = ({ isOpen, onClose, isParent, isCategory, data, onUp
 
     const renderFormItems = () => {
         const commonProps: FormItemProps = {
-            labelCol: { span: 10 },
+            labelCol: {span: 10},
             labelAlign: "left",
             className: "mb-2"
         };
@@ -74,7 +74,8 @@ const CategoryUpdateModel = ({ isOpen, onClose, isParent, isCategory, data, onUp
             ) : (
                 <>
                     <Form.Item label={<h5>{title} name</h5>} name="cat_id" {...commonProps}>
-                        <Select defaultValue={data.cat_id} options={[{ label: data.parent_name, value: data.cat_id }]} disabled />
+                        <Select defaultValue={data.cat_id} options={[{label: data.parent_name, value: data.cat_id}]}
+                                disabled/>
                     </Form.Item>
                     <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>} name="subcat_name" {...commonProps}>
                         <Input name="subcat_name" onChange={handleFormChange} defaultValue={data.subcat_name}/>
@@ -83,16 +84,18 @@ const CategoryUpdateModel = ({ isOpen, onClose, isParent, isCategory, data, onUp
             );
         } else {
             return isParent ? (
-                <Form.Item label={<h5>{title} name</h5>} {...commonProps}>
-                    <Input name="subcat_spec_name" onChange={handleFormChange} />
+                <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_name" {...commonProps}>
+                    <Input name="subcat_spec_name" onChange={handleFormChange}/>
                 </Form.Item>
             ) : (
                 <>
                     <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_id" {...commonProps}>
-                        <Select defaultValue={data.cat_name} options={[{ label: data.cat_name, value: data.cat_id }]} disabled />
+                        <Select defaultValue={data.cat_name} options={[{label: data.cat_name, value: data.cat_id}]}
+                                disabled/>
                     </Form.Item>
-                    <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>} name="subcat_subspec_name" {...commonProps}>
-                        <Input name="subcat_subsepc_name" onChange={handleFormChange} />
+                    <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>}
+                               name="subcat_subspec_name" {...commonProps}>
+                        <Input name="subcat_subspec_name" onChange={handleFormChange}/>
                     </Form.Item>
                 </>
             );
@@ -101,19 +104,21 @@ const CategoryUpdateModel = ({ isOpen, onClose, isParent, isCategory, data, onUp
 
     return (
         <Modal
-            title={<h3>Update Category</h3>}
+            title={<h3>Update {title}</h3>}
             centered
             open={isOpen}
             onOk={handleUpdateModelOnOk}
             okText="Update"
             onCancel={handleUpdateModelOnCancel}
         >
-            <Form.Item label={<h5>{title} Type</h5>} labelCol={{ span: 10 }} labelAlign="left" className="mb-2">
-                <Radio.Group value={isParent} disabled>
-                    <Radio value={true}>{title}</Radio>
-                    <Radio value={false}>Sub{title.toLowerCase()}</Radio>
-                </Radio.Group>
-            </Form.Item>
+            {isCategory || (!isCategory && data.cat_type === 'SPECIFICATION') ?
+                <Form.Item label={<h5>{title} Type</h5>} labelCol={{span: 10}} labelAlign="left" className="mb-2">
+                    <Radio.Group value={isParent} disabled>
+                        <Radio value={true}>{title}</Radio>
+                        <Radio value={false}>Sub{title.toLowerCase()}</Radio>
+                    </Radio.Group>
+                </Form.Item> : <></>
+            }
             <Form form={form} name="category_form">
                 {renderFormItems()}
             </Form>

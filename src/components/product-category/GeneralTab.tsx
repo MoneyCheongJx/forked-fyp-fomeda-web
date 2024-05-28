@@ -20,7 +20,7 @@ const GeneralTab = () => {
     const [loading, setLoading] = useState(true);
     const [openUpdateModel, setUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
-    const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
+    const [selectedRecord, setSelectedRecord] = useState<any>([]);
 
     const defineActionList = (action: any, record: any) => {
         return action.map((item: any) => {
@@ -107,13 +107,14 @@ const GeneralTab = () => {
         }
     };
 
+    const specTypeMap: { [key: string]: string } = {
+        GENERAL: "Information",
+        CERTIFICATION: "Certification",
+        SERVICE: "Service",
+        SPECIFICATION: "Specification",
+    };
+
     const handleConfirmationModelContent = (key: string, record: any) => {
-        const specTypeMap: { [key: string]: string } = {
-            GENERAL: "Information",
-            CERTIFICATION: "Certification",
-            SERVICE: "Service",
-            SPECIFICATION: "Specification",
-        };
         const spec = specTypeMap[record.cat_type];
         const parent = record.parent_name ?? record.subcat_spec_name;
         const name = record.subcat_subspec_name ?? record.subcat_spec_name;
@@ -236,7 +237,7 @@ const GeneralTab = () => {
                         isParent={isParent}
                         isCategory={false}
                         onUpdate={handleOnUpdate}
-                        title="Specification"
+                        title={String(specTypeMap[selectedRecord.cat_type]).toString()}
                         data={selectedRecord}
                     />
                 </div>
