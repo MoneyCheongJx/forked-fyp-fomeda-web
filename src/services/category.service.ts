@@ -184,4 +184,58 @@ export default class CategoryService {
             throw error;
         }
     }
+
+    static deactivateGeneralSpecification = async (id: string, is_active: boolean) => {
+        try{
+            const param = {id, is_active: is_active.toString()}
+            const response = await HttpService.put(
+                ApiConstant.DEACTIVATE_GENERAL_SPECIFICATION,
+                {},
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static deactivateGeneralSubspecification = async (id: string, is_active: boolean) => {
+        try{
+            const param = {id, is_active: is_active.toString()}
+            const response = await HttpService.put(
+                ApiConstant.DEACTIVATE_GENERAL_SUBSPECIFICATION,
+                {},
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static deleteGeneralSpecification = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.delete(
+                ApiConstant.DELETE_GENERAL_SPECIFICATION,
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static deleteGeneralSubspecification = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.delete(
+                ApiConstant.DELETE_GENERAL_SUBSPECIFICATION,
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }

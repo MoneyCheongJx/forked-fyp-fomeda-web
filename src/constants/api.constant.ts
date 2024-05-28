@@ -21,6 +21,10 @@ export class ApiConstant{
     static readonly UPDATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "update-general-subspecification";
     static readonly DEACTIVATE_CATEGORY = this.CATEGORY_PREFIX + "deactivate-category";
     static readonly DEACTIVATE_SUBCATEGORY = this.CATEGORY_PREFIX + "deactivate-subcategory";
+    static readonly DEACTIVATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "deactivate-general-specification";
+    static readonly DEACTIVATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "deactivate-general-subspecification";
     static readonly DELETE_CATEGORY = this.CATEGORY_PREFIX + "delete-category";
     static readonly DELETE_SUBCATEGORY = this.CATEGORY_PREFIX + "delete-subcategory";
+    static readonly DELETE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "delete-general-specification";
+    static readonly DELETE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-general-subspecification";
 }

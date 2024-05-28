@@ -46,7 +46,7 @@ const CategoryTab = () => {
                 content: handleConfirmationModelContent(key, record),
                 className: "confirmation-modal",
                 centered: true,
-                width: "30%",
+                width: "35%",
                 okText: "Confirm",
                 onOk: () => handleActionsOnClick(key, record),
             })

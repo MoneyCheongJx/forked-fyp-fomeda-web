@@ -17,27 +17,35 @@ export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
     {key: "edit_category", label: "Edit Category"},
     {key: "deactivate", label: "Deactivate Category"},
     {key: "activate", label: "Activate Category"},
-    {key: "delete_category", label: "Delete Category", link: ""}
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const GENERAL_INFORMATION_ACTIONS_CONSTANTS = [
-    {key: "edit_information", label: "Edit Information", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Information", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const CERTIFICATION_ACTIONS_CONSTANTS = [
-    {key: "edit_certification", label: "Edit Certification", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Certification", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const SERVICES_PROVIDED_ACTIONS_CONSTANTS = [
-    {key: "edit_services", label: "Edit Services", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Services", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
     {key: "edit_specification", label: "Edit Specification", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
