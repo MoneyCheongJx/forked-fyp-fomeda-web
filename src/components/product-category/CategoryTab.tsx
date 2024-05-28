@@ -1,12 +1,13 @@
 "use client"
 
-import {Button, Col, Dropdown, Input, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Input, Modal, Row, Table, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddCategoryModel from "@/components/product-category/AddCategoryModel";
 import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
+import "@/styles/category.component.css"
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -32,8 +33,43 @@ const CategoryTab = () => {
         } else if (key === 'activate') {
             (record.subcat_name ? deactivateSubcategory(record._id, true) : deactivateCategory(record._id, true)).then(handleOnUpdate);
         } else {
-
+            (record.subcat_name ? deleteSubcategory(record._id) : deleteCategory(record._id)).then(handleOnUpdate);
         }
+    }
+
+    const handleConfirmationModelOpen = (key: string, record: any) => {
+        if (key === 'edit_category') {
+            handleActionsOnClick(key, record);
+        } else {
+            return Modal.confirm({
+                title: <h3>Confirmation</h3>,
+                content: handleConfirmationModelContent(key, record),
+                className: "confirmation-modal",
+                centered: true,
+                width: "30%",
+                okText: "Confirm",
+                onOk: () => handleActionsOnClick(key, record),
+            })
+        }
+    }
+
+    const handleConfirmationModelContent = (key: string, record: any) => {
+        const isSub = record.subcat_name ? "Subcategory" : "Category";
+        const parent = record.parent_name?? "";
+        const name = record.subcat_name ?? record.cat_name;
+        return (
+            <div>
+                <br/>
+                Are you sure you want to <b>{key}</b> this {isSub}?
+                <br/>
+                {parent ?
+                    <div>
+                        <b>Category:</b> {parent}
+                    </div> : <></>}
+                <b>{isSub}</b>: {name}
+                <br/><br/>
+            </div>
+        )
     }
 
     const deactivateCategory = async (id: string, is_active: boolean) => {
@@ -48,6 +84,24 @@ const CategoryTab = () => {
     const deactivateSubcategory = async (id: string, is_active: boolean) => {
         try {
             await CategoryService.deactivateSubcategory(id, is_active);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const deleteCategory = async (id: string) => {
+        try {
+            await CategoryService.deleteCategory(id);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const deleteSubcategory = async (id: string) => {
+        try {
+            await CategoryService.deleteSubcategory(id);
         } catch (error) {
             console.error(error);
             throw error;
@@ -71,11 +125,11 @@ const CategoryTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <div onClick={() => handleActionsOnClick(item.key, record)}>
+                    <div onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
                     </div>
                 ),
-            };
+            }
         }).filter(item => item !== null);
     };
 
@@ -116,10 +170,6 @@ const CategoryTab = () => {
         }
     }
 
-    const handleOnAdd = async () => {
-        await getAllCategory();
-    }
-
     const handleOnUpdate = async () => {
         await getAllCategory();
     }
@@ -142,7 +192,7 @@ const CategoryTab = () => {
                 <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
                         onClick={() => setOpenAddModel(true)}>Add Category</Button>
                 <AddCategoryModel isOpen={openAddModel} onClose={() => setOpenAddModel(false)}
-                                  categoryData={categoryData} onAdd={handleOnAdd}/>
+                                  categoryData={categoryData} onAdd={handleOnUpdate}/>
             </Row>
             <Table
                 columns={CATEGORY_TABLE_HEADER}

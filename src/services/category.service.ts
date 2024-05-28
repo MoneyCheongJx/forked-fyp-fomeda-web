@@ -158,4 +158,30 @@ export default class CategoryService {
             throw error;
         }
     }
+
+    static deleteCategory = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.delete(
+                ApiConstant.DELETE_CATEGORY,
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static deleteSubcategory = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.delete(
+                ApiConstant.DELETE_SUBCATEGORY,
+                param
+            )
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
