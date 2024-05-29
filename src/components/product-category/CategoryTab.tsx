@@ -8,6 +8,8 @@ import AddCategoryModel from "@/components/product-category/AddCategoryModel";
 import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import "@/styles/category.component.css"
+import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -16,6 +18,7 @@ const renderStatus = (is_active: boolean) => (
 
 const CategoryTab = () => {
 
+    const router = useRouter();
     const [openAddModel, setOpenAddModel] = useState(false);
     const [categoryData, setCategoryData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -40,6 +43,8 @@ const CategoryTab = () => {
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'edit_category') {
             handleActionsOnClick(key, record);
+        } else if (key === 'view_details') {
+            router.push(`product-category/details/${record._id}`)
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -55,7 +60,7 @@ const CategoryTab = () => {
 
     const handleConfirmationModelContent = (key: string, record: any) => {
         const isSub = record.subcat_name ? "Subcategory" : "Category";
-        const parent = record.parent_name?? "";
+        const parent = record.parent_name ?? "";
         const name = record.subcat_name ?? record.cat_name;
         return (
             <div>
@@ -116,10 +121,7 @@ const CategoryTab = () => {
 
     const defineMenuItem = (record: any) => {
         return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => {
-            if (record.is_active && item.key === 'activate') {
-                return null;
-            }
-            if (!record.is_active && item.key === 'deactivate') {
+            if ((record.is_active && item.key === 'activate') || (!record.is_active && item.key === 'deactivate')) {
                 return null;
             }
             return {
@@ -139,7 +141,7 @@ const CategoryTab = () => {
                 ...column,
                 render: (text: any, record: any) => {
                     const value = record.cat_name || record.subcat_name;
-                    return <span>{value}</span>;
+                    return <Link href={`product-category/details/${record._id}`}>{value}</Link>;
                 },
             }
         }

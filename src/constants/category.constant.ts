@@ -14,6 +14,7 @@ export const CATEGORY_TABLE_HEADER_CONSTANTS = [
 ]
 
 export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
+    {key: "view_details", label: "View Details"},
     {key: "edit_category", label: "Edit Category"},
     {key: "deactivate", label: "Deactivate Category"},
     {key: "activate", label: "Activate Category"},
