@@ -89,7 +89,7 @@ export const PRODUCT_SPECIFICATION_HEADER_CONSTANTS = [
     {key: "actions", title: "Actions", actionList: PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS}
 ]
 
-export const GENERAL_SPECIFICATIONS_CONSTANTS = [
+export const SPECIFICATIONS_TABLE_CONSTANTS = [
     {
         key: 'general_information',
         title: "General Information",

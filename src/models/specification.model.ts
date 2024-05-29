@@ -2,6 +2,8 @@ import {SubspecificationModel} from "@/models/subspecification.model";
 
 export class SpecificationModel {
     _id?: string;
+    cat_id?: string;
+    subcat_id?: string;
     subcat_spec_name?: string;
     cat_type?: string;
     created_by?: string;

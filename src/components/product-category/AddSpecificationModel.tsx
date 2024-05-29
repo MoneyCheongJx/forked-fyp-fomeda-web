@@ -7,6 +7,8 @@ import {SpecificationModel} from "@/models/specification.model";
 import {SubspecificationModel} from "@/models/subspecification.model";
 
 const initialSpecificationFormData: SpecificationModel = {
+    cat_id: "",
+    subcat_id: "",
     subcat_spec_name: "",
     cat_type: "",
     created_by: "Admin",
@@ -22,7 +24,7 @@ const initialSubspecificationFormData: SubspecificationModel = {
     allow_input: false,
 };
 
-const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData}: any) => {
+const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData, type, catId}: any) => {
     const [form] = Form.useForm();
     const [isFillable, setIsFillable] = useState(true);
     const [isSpecification, setIsSpecification] = useState(true);
@@ -52,28 +54,35 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData}
     };
 
     const handleAddModelOnOk = async (type: string) => {
-        form.validateFields()
-            .then(async () => {
-                specificationFormData.cat_type = type;
-                if (isSpecification) {
-                    await handleSpecificationFormSubmit();
-                } else {
-                    await handleSubspecificationFormSubmit();
-                }
-                form.resetFields();
-                setSpecificationFormData(initialSpecificationFormData);
-                setSubspecificationFormData(initialSubspecificationFormData);
-                onAdd();
-                onClose();
-            })
-            .catch((errorInfo) => {
-                console.error("Validate Failed:", errorInfo);
-            });
+        try {
+            await form.validateFields();
+            if (isSpecification) {
+                await handleSpecificationFormSubmit(type);
+            } else {
+                await handleSubspecificationFormSubmit();
+            }
+            form.resetFields();
+            setSpecificationFormData(initialSpecificationFormData);
+            setSubspecificationFormData(initialSubspecificationFormData);
+            onAdd();
+            onClose();
+        } catch (errorInfo) {
+            console.error("Validate Failed:", errorInfo);
+        }
     };
 
-    const handleSpecificationFormSubmit = async () => {
+    const handleSpecificationFormSubmit = async (cat_type: string) => {
+        specificationFormData.cat_type = cat_type;
+        specificationFormData.cat_id = catId;
+        specificationFormData.subcat_id = catId;
         try {
-            await CategoryService.createGeneralSpecification(specificationFormData);
+            if (type === "GENERAL") {
+                await CategoryService.createGeneralSpecification(specificationFormData);
+            } else if (type === "CATEGORY") {
+                await CategoryService.createCategoryBaseSpecification(specificationFormData);
+            } else if (type === "SUBCATEGORY") {
+                await CategoryService.createSubcategorySpecification(specificationFormData);
+            }
         } catch (error) {
             console.error(error);
             throw error;
@@ -82,9 +91,13 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData}
 
     const handleSubspecificationFormSubmit = async () => {
         try {
-            await CategoryService.createGeneralSubspecification(
-                subspecificationFormData
-            );
+            if (type === "GENERAL") {
+                await CategoryService.createGeneralSubspecification(subspecificationFormData);
+            } else if (type === "CATEGORY") {
+                await CategoryService.createCategoryBaseSubspecification(subspecificationFormData);
+            } else if (type === "SUBCATEGORY") {
+                await CategoryService.createSubcategorySubspecification(subspecificationFormData);
+            }
         } catch (error) {
             console.error(error);
             throw error;

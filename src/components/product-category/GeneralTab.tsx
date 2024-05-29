@@ -2,7 +2,7 @@
 
 import {Button, Dropdown, Modal, Row, Table, Tag} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import {GENERAL_SPECIFICATIONS_CONSTANTS} from "@/constants/category.constant";
+import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
 import React, {useEffect, useState} from "react";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryService from "@/services/category.service";
@@ -195,7 +195,7 @@ const GeneralTab = () => {
 
     return (
         <div>
-            {GENERAL_SPECIFICATIONS_CONSTANTS.map((item: any) => (
+            {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">
                     <Row className="mb-2 justify-between">
                         <h3>{item.title}</h3>
@@ -210,6 +210,7 @@ const GeneralTab = () => {
                                                onClose={() => setOpenAddModel(null)}
                                                onAdd={handleOnUpdate}
                                                specificationData={specificationData}
+                                               type="SPECIFICATION"
                         />
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
@@ -239,6 +240,7 @@ const GeneralTab = () => {
                         onUpdate={handleOnUpdate}
                         title={String(specTypeMap[selectedRecord.cat_type]).toString()}
                         data={selectedRecord}
+                        type="SPECIFICATION"
                     />
                 </div>
             ))}
