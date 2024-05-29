@@ -68,6 +68,11 @@ h5 {
   line-height: 22px;
 }
 
+a:hover {
+  color: var(--ant-primary-color-hover);
+  text-decoration: underline;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
