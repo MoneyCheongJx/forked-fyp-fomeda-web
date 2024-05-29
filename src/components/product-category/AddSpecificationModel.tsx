@@ -3,8 +3,8 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {Form, Input, Modal, Radio, Select} from "antd";
 import CategoryService from "@/services/category.service";
-import {SpecificationModel} from "@/app/models/specification.model";
-import {SubspecificationModel} from "@/app/models/subspecification.model";
+import {SpecificationModel} from "@/models/specification.model";
+import {SubspecificationModel} from "@/models/subspecification.model";
 
 const initialSpecificationFormData: SpecificationModel = {
     subcat_spec_name: "",

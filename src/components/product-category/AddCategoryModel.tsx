@@ -1,10 +1,10 @@
 "use client"
 
 import {Form, Input, Modal, Radio, Row, Select} from "antd";
-import {CategoryModel} from "@/app/models/category.model";
+import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
-import {SubcategoryModel} from "@/app/models/subcategory.model";
+import {SubcategoryModel} from "@/models/subcategory.model";
 
 
 const initialCategoryForm: CategoryModel = {

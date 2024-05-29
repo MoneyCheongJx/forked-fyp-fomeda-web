@@ -1,9 +1,9 @@
-import {SpecificationModel} from "@/app/models/specification.model";
+import {SpecificationModel} from "@/models/specification.model";
 import {ApiConstant} from "@/constants/api.constant";
 import {HttpService} from "@/services/http.service";
-import {CategoryModel} from "@/app/models/category.model";
-import {SubspecificationModel} from "@/app/models/subspecification.model";
-import {SubcategoryModel} from "@/app/models/subcategory.model";
+import {CategoryModel} from "@/models/category.model";
+import {SubspecificationModel} from "@/models/subspecification.model";
+import {SubcategoryModel} from "@/models/subcategory.model";
 
 export default class CategoryService {
     static async createCategory(categoryModel: CategoryModel) {

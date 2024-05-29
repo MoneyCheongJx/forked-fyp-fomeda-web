@@ -1,4 +1,4 @@
-import {SubspecificationModel} from "@/app/models/subspecification.model";
+import {SubspecificationModel} from "@/models/subspecification.model";
 
 export class SpecificationModel {
     _id?: string;
