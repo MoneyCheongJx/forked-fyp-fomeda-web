@@ -1,10 +1,11 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
 import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
-import {Button, Dropdown, Modal, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Modal, Row, Table, Tag} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -20,6 +21,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const [openUpdateModel, setUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any>([]);
+    const [name, setName] = useState<any>([]);
 
     const defineActionList = (action: any, record: any) => {
         return action.map((item: any) => {
@@ -69,7 +71,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const deactivateSpecification = async (id: string, is_active: boolean) => {
         try {
-            if(isCategory) {
+            if (isCategory) {
                 await CategoryService.deactivateCategoryBaseSpecification(id, is_active);
             } else {
                 await CategoryService.deactivateSubcategorySpecification(id, is_active);
@@ -82,7 +84,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const deactivateSubspecification = async (id: string, is_active: boolean) => {
         try {
-            if(isCategory) {
+            if (isCategory) {
                 await CategoryService.deactivateCategoryBaseSubspecification(id, is_active);
             } else {
                 await CategoryService.deactivateSubcategorySubspecification(id, is_active);
@@ -95,7 +97,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const deleteSpecification = async (id: string) => {
         try {
-            if(isCategory) {
+            if (isCategory) {
                 await CategoryService.deleteCategoryBaseSpecification(id);
             } else {
                 await CategoryService.deleteSubcategorySpecification(id);
@@ -108,7 +110,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const deleteSubspecification = async (id: string) => {
         try {
-            if(isCategory) {
+            if (isCategory) {
                 await CategoryService.deleteCategoryBaseSubspecification(id);
             } else {
                 await CategoryService.deleteSubcategorySubspecification(id);
@@ -149,39 +151,46 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const renderActions = (action_list: any, record: any) => (
-        <Dropdown menu={{items: defineActionList(action_list, record)}}>
+        <Dropdown menu={{items: defineActionList(action_list, record)}} disabled={record.is_origin === false}>
             <Button>Actions</Button>
         </Dropdown>
     );
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
-        if (column.key === 'subcat_spec_name') {
-            return {
-                ...column,
-                render: (text: any, record: any) => {
-                    const value = record.subcat_spec_name || record.subcat_subspec_name;
-                    return <span>{value}</span>;
-                },
-            };
+        switch (column.key) {
+            case 'subcat_spec_name':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => {
+                        const value = record.subcat_spec_name || record.subcat_subspec_name;
+                        return <span>{value}</span>;
+                    },
+                };
+            case 'is_active':
+                return {
+                    ...column,
+                    render: (status: boolean) => renderStatus(status),
+                };
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActions(column.actionList, record),
+                };
+            case 'created_on':
+            case 'last_updated_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                };
+            default:
+                return column;
         }
-
-        if (column.key === 'is_active') {
-            return {
-                ...column,
-                render: (status: boolean) => renderStatus(status),
-            };
-        }
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActions(column.actionList, record),
-            };
-        }
-        return column;
     });
 
     const getDetailsData = async () => {
         try {
+            const nameResponse = await CategoryService.findNameById(id);
+            setName(nameResponse);
             let response
             if (isCategory) {
                 response = await CategoryService.findCategoryBaseSpecificationByCatId(id);
@@ -196,6 +205,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             setLoading(false);
         }
     };
+
 
     const handleOnUpdate = async () => {
         await getDetailsData();
@@ -212,6 +222,17 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     return (
         <div>
+            <Row className="mb-3">
+                <Col span={8}>
+                    <h3 className='font-normal ml-1 truncate'><b>Category:</b> {name.cat_name}</h3>
+                </Col>
+                {!isCategory ?
+                    <Col span={8}>
+                        <h3 className='font-normal ml-1 truncate'><b>SubCategory:</b> {name.subcat_name}</h3>
+                    </Col> : <></>
+                }
+            </Row>
+
             {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">
                     <Row className="mb-2 justify-between">
@@ -227,7 +248,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                                                onClose={() => setOpenAddModel(null)}
                                                onAdd={handleOnUpdate}
                                                specificationData={detailsData}
-                                               type={isCategory? 'CATEGORY':'SUBCATEGORY'}
+                                               type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
                                                catId={id}
                         />
                     </Row>
@@ -261,7 +282,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                         onUpdate={handleOnUpdate}
                         title={String(specTypeMap[selectedRecord.cat_type]).toString()}
                         data={selectedRecord}
-                        type={isCategory? 'CATEGORY':'SUBCATEGORY'}
+                        type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
                     />
                 </div>
             ))}

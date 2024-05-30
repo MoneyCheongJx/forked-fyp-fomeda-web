@@ -45,4 +45,5 @@ export class ApiConstant{
     static readonly DELETE_BASE_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-base-subspecification";
     static readonly DELETE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-specification";
     static readonly DELETE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-subspecification";
+    static readonly FIND_NAME_BY_ID = this.CATEGORY_PREFIX + "find-name-by-id";
 }

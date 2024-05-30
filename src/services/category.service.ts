@@ -480,4 +480,18 @@ export default class CategoryService {
             throw error;
         }
     }
+
+    static findNameById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_NAME_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.log(error)
+            throw error;
+        }
+    }
 }

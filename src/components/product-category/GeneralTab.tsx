@@ -8,6 +8,7 @@ import AddSpecificationModel from "@/components/product-category/AddSpecificatio
 import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import "@/styles/category.component.css"
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -143,29 +144,34 @@ const GeneralTab = () => {
     );
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
-        if (column.key === 'subcat_spec_name') {
-            return {
-                ...column,
-                render: (text: any, record: any) => {
-                    const value = record.subcat_spec_name || record.subcat_subspec_name;
-                    return <span>{value}</span>;
-                },
-            };
+        switch(column.key) {
+            case 'subcat_spec_name':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => {
+                        const value = record.subcat_spec_name || record.subcat_subspec_name;
+                        return <span>{value}</span>;
+                    },
+                };
+            case 'is_active':
+                return {
+                    ...column,
+                    render: (status: boolean) => renderStatus(status),
+                };
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActions(column.actionList, record),
+                };
+            case 'created_on':
+            case 'last_updated_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                };
+            default:
+                return column;
         }
-
-        if (column.key === 'is_active') {
-            return {
-                ...column,
-                render: (status: boolean) => renderStatus(status),
-            };
-        }
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActions(column.actionList, record),
-            };
-        }
-        return column;
     });
 
     const getAllSpecificationData = async () => {

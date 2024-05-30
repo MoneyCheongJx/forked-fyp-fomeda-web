@@ -10,6 +10,7 @@ import CategoryUpdateModel from "@/components/product-category/CategoryUpdateMod
 import "@/styles/category.component.css"
 import Link from "next/link";
 import {useRouter} from "next/navigation";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -21,10 +22,29 @@ const CategoryTab = () => {
     const router = useRouter();
     const [openAddModel, setOpenAddModel] = useState(false);
     const [categoryData, setCategoryData] = useState<any[]>([]);
+    const [filteredCategoryData, setFilteredCategoryData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [openUpdateModel, setUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
+
+    const handleSearch = (value: any) => {
+        const trimmedValue = value.trim();
+        const filteredData = categoryData.filter((item) => {
+            const itemName = item.cat_name || item.subcat_name;
+            const includesName = itemName.toLowerCase().includes(trimmedValue.toLowerCase());
+            const includesChildName = item.children && item.children.some((child: any) => {
+                const childName = child.cat_name || child.subcat_name;
+                return childName.toLowerCase().includes(trimmedValue.toLowerCase());
+            });
+            return includesName || includesChildName;
+        });
+        setFilteredCategoryData(filteredData);
+    };
+
+    useEffect(() => {
+        setFilteredCategoryData(categoryData);
+    }, [categoryData]);
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_category') {
@@ -136,28 +156,35 @@ const CategoryTab = () => {
     };
 
     const CATEGORY_TABLE_HEADER = CATEGORY_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'cat_name') {
-            return {
-                ...column,
-                render: (text: any, record: any) => {
-                    const value = record.cat_name || record.subcat_name;
-                    return <Link href={`product-category/details/${record._id}`}>{value}</Link>;
-                },
-            }
+        switch (column.key) {
+            case 'cat_name':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => (
+                        <Link href={`product-category/details/${record._id}`}>
+                            {record.cat_name || record.subcat_name}
+                        </Link>
+                    ),
+                };
+            case 'is_active':
+                return {
+                    ...column,
+                    render: (status: boolean) => renderStatus(status),
+                };
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActions(record),
+                };
+            case 'created_on':
+            case 'last_updated_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                };
+            default:
+                return column;
         }
-        if (column.key === 'is_active') {
-            return {
-                ...column,
-                render: (status: boolean) => renderStatus(status),
-            };
-        }
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActions(record)
-            };
-        }
-        return column;
     });
 
     const getAllCategory = async () => {
@@ -189,7 +216,11 @@ const CategoryTab = () => {
         <div>
             <Row style={{justifyContent: "space-between", marginBottom: 16}}>
                 <Col span={8}>
-                    <Input placeholder="category" prefix={<SearchOutlined/>} size="large"></Input>
+                    <Input placeholder="category"
+                           prefix={<SearchOutlined/>}
+                           size="large"
+                           onChange={(e) => handleSearch(e.target.value)}
+                    />
                 </Col>
                 <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
                         onClick={() => setOpenAddModel(true)}>Add Category</Button>
@@ -198,7 +229,7 @@ const CategoryTab = () => {
             </Row>
             <Table
                 columns={CATEGORY_TABLE_HEADER}
-                dataSource={categoryData.map((cat) => {
+                dataSource={filteredCategoryData.map((cat) => {
                     const dataItem = {...cat, key: cat._id};
                     if (cat.children && cat.children.length > 0) {
                         dataItem.children = cat.children.map((subcat: any) => ({

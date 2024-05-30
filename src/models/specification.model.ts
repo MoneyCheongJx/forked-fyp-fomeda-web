@@ -14,4 +14,5 @@ export class SpecificationModel {
     allow_input?: boolean;
     actions?: string;
     children?: SubspecificationModel[];
+    is_origin?: boolean;
 }
