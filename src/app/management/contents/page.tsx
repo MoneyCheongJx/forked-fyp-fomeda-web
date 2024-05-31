@@ -116,24 +116,24 @@ const AnnouncementManagementPage = () => {
                 key: item.key,
                 label: (
                     <div onClick={() => handleActionsOnClick(item.key, record)}>
-                        {item.label}
-                    </div>
-                ),
-            };
+            {item.label}
+            </div>
+        ),
+        };
         }).filter(item => item !== null);
     };
 
     const renderActionsDropdown = (record: any) => (
         <Dropdown menu={{items: defineMenuItem(record)}}>
-            <Button>Actions</Button>
-        </Dropdown>
-    );
+    <Button>Actions</Button>
+    </Dropdown>
+);
 
     const renderVisibility = (visibility: boolean) => {
         if (visibility)
             return <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Visible</Tag>
-        else
-            return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Invisible</Tag>
+    else
+        return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Invisible</Tag>
     }
 
 
@@ -165,53 +165,51 @@ const AnnouncementManagementPage = () => {
         return column;
     });
 
-    // @ts-ignore
-    // @ts-ignore
     return (
         <Spin spinning={loading}>
-            <AddAnnouncementModal
-                visible={isAddModalVisible}
-                onClose={unshowAddModal}
-            />
-            <EditAnnouncementModal
-                visible={isEditModalVisible}
-                onClose={unshowEditModal}
-                data={selectedRecord}
-            />
-            <PageLayout>
-                <Breadcrumb items={[{title: 'Announcement Management', href: '/management/announcements'}]}/>
-                <h1 style={{marginBottom: 16}}>Announcement Management</h1>
-                <div>
-                    <Row style={{justifyContent: "space-between", marginBottom: 16}}>
-                        <Col style={{display: "flex", gap: "8px"}} span={16}>
-                            <Input
-                                placeholder="Search Announcement"
-                                onChange={(e) => handleSearch(e.target.value ? [e.target.value] : [])}
-                                prefix={<SearchOutlined/>}
-                                size="large"
-                                style={{width: '60%'}}
-                            />
-                            <RangePicker onChange={handleDateChange} style={{width: '25%'}}/>
-                        </Col>
+        <AddAnnouncementModal
+            visible={isAddModalVisible}
+    onClose={unshowAddModal}
+    />
+    <EditAnnouncementModal
+    visible={isEditModalVisible}
+    onClose={unshowEditModal}
+    data={selectedRecord}
+    />
+    <PageLayout>
+    <Breadcrumb items={[{title: 'Announcement Management', href: '/management/announcements'}]}/>
+    <h1 style={{marginBottom: 16}}>Announcement Management</h1>
+    <div>
+    <Row style={{justifyContent: "space-between", marginBottom: 16}}>
+    <Col style={{display: "flex", gap: "8px"}} span={16}>
+    <Input
+        placeholder="Search Announcement"
+    onChange={(e) => handleSearch(e.target.value ? [e.target.value] : [])}
+    prefix={<SearchOutlined/>}
+    size="large"
+    style={{width: '60%'}}
+    />
+    <RangePicker onChange={handleDateChange} style={{width: '25%'}}/>
+    </Col>
 
-                        <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
-                                onClick={showAddModal}>Add Announcement</Button>
-                    </Row>
-                    <Table
-                        columns={TABLE_HEADER}
-                        dataSource={filteredData.map((announcement: { _id: any; }) => {
-                            const dataItem = {...announcement, key: announcement._id};
-                            return dataItem;
-                        })}
-                        pagination={{
-                            defaultPageSize: 10,
-                            showSizeChanger: true,
-                            pageSizeOptions: [10, 20, 50, 100],
-                        }}/>
-                </div>
-            </PageLayout>
-        </Spin>
-    );
+    <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
+    onClick={showAddModal}>Add Announcement</Button>
+    </Row>
+    <Table
+    columns={TABLE_HEADER}
+    dataSource={filteredData.map((announcement: { _id: any; }) => {
+            const dataItem = {...announcement, key: announcement._id};
+            return dataItem;
+        })}
+    pagination={{
+        defaultPageSize: 10,
+            showSizeChanger: true,
+            pageSizeOptions: [10, 20, 50, 100],
+    }}/>
+    </div>
+    </PageLayout>
+    </Spin>
+);
 };
 
 export default AnnouncementManagementPage;
