@@ -1,4 +1,4 @@
-import {SubcategoryModel} from "@/app/models/subcategory.model";
+import {SubcategoryModel} from "@/models/subcategory.model";
 
 export class CategoryModel {
     _id?: string;

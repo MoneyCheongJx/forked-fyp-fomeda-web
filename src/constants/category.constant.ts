@@ -14,30 +14,39 @@ export const CATEGORY_TABLE_HEADER_CONSTANTS = [
 ]
 
 export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
+    {key: "view_details", label: "View Details"},
     {key: "edit_category", label: "Edit Category"},
     {key: "deactivate", label: "Deactivate Category"},
     {key: "activate", label: "Activate Category"},
-    {key: "delete_category", label: "Delete Category", link: ""}
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const GENERAL_INFORMATION_ACTIONS_CONSTANTS = [
-    {key: "edit_information", label: "Edit Information", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Information", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const CERTIFICATION_ACTIONS_CONSTANTS = [
-    {key: "edit_certification", label: "Edit Certification", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Certification", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const SERVICES_PROVIDED_ACTIONS_CONSTANTS = [
-    {key: "edit_services", label: "Edit Services", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "edit_specification", label: "Edit Services", link: ""},
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
     {key: "edit_specification", label: "Edit Specification", link: ""},
-    {key: "deactivate", label: "Deactivate", link: ""}
+    {key: "deactivate", label: "Deactivate", link: ""},
+    {key: "activate", label: "Activate Category"},
+    {key: "delete", label: "Delete Category", link: ""},
 ]
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
@@ -80,7 +89,7 @@ export const PRODUCT_SPECIFICATION_HEADER_CONSTANTS = [
     {key: "actions", title: "Actions", actionList: PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS}
 ]
 
-export const GENERAL_SPECIFICATIONS_CONSTANTS = [
+export const SPECIFICATIONS_TABLE_CONSTANTS = [
     {
         key: 'general_information',
         title: "General Information",
@@ -113,5 +122,16 @@ export const GENERAL_SPECIFICATIONS_CONSTANTS = [
         type: "SPECIFICATION",
         tableHeader: PRODUCT_SPECIFICATION_HEADER_CONSTANTS
     },
+]
+
+export const CONFIRMATION_MESSAGE_CONSTANT = [
+    {key: "create_category", message: "Are you confirm to create new <b>category</b>?"},
+    {key: "create_subcategory", message: "Are you confirm to create new <b>subcategory</b>?"},
+    {key: "create_information", message: "Are you confirm to create new <b>General Information</b> field?"},
+    {key: "create_certification", message: "Are you confirm to create new <b>Certificate</b> field?"},
+    {key: "create_service", message: "Are you confirm to create new <b>Service</b> field?"},
+    {key: "create_specification", message: "Are you confirm to create new <b>Specification</b> field?"},
+    {key: "create_subspecification", message: "Are you confirm to create new <b>Subspecification</b> field?"},
+    {key: "edit_subspecification", message: "Are you confirm to create new <b>Subspecification</b> field?"},
 ]
 

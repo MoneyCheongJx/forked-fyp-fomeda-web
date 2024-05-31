@@ -1,13 +1,10 @@
-"use client"
-
-import {Button, Dropdown, Modal, Row, Table, Tag} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
-import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
-import React, {useEffect, useState} from "react";
-import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryService from "@/services/category.service";
+import React, {useEffect, useState} from "react";
+import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
+import {Button, Col, Dropdown, Modal, Row, Table, Tag} from "antd";
+import {PlusOutlined} from "@ant-design/icons";
+import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
-import "@/styles/category.component.css"
 import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const renderStatus = (is_active: boolean) => (
@@ -15,20 +12,20 @@ const renderStatus = (is_active: boolean) => (
         <Tag bordered={false} className="px-3 py-0.5 rounded-xl">Inactive</Tag>
 );
 
-const GeneralTab = () => {
-    const [specificationData, setSpecificationData] = useState<any[]>([]);
+const CategoryDetailsPage = ({id}: { id: string }) => {
+
+    const isCategory = !id.includes('SCAT');
+    const [detailsData, setDetailsData] = useState<any>({})
     const [openAddModel, setOpenAddModel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [openUpdateModel, setUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any>([]);
+    const [name, setName] = useState<any>([]);
 
     const defineActionList = (action: any, record: any) => {
         return action.map((item: any) => {
-            if (record.is_active && item.key === 'activate') {
-                return null;
-            }
-            if (!record.is_active && item.key === 'deactivate') {
+            if ((record.is_active && item.key === 'activate') || (!record.is_active && item.key === 'deactivate')) {
                 return null;
             }
             return {
@@ -64,44 +61,60 @@ const GeneralTab = () => {
             setSelectedRecord(record);
             record.subcat_subspec_name ? setIsParent(false) : setIsParent(true);
         } else if (key === 'deactivate') {
-            (record.subcat_subspec_name ? deactivateGeneralSubspecification(record._id, false) : deactivateGeneralSpecification(record._id, false)).then(handleOnUpdate);
+            (record.subcat_subspec_name ? deactivateSubspecification(record._id, false) : deactivateSpecification(record._id, false)).then(handleOnUpdate);
         } else if (key === 'activate') {
-            (record.subcat_subspec_name ? deactivateGeneralSubspecification(record._id, true) : deactivateGeneralSpecification(record._id, true)).then(handleOnUpdate);
+            (record.subcat_subspec_name ? deactivateSubspecification(record._id, true) : deactivateSpecification(record._id, true)).then(handleOnUpdate);
         } else {
-            (record.subcat_subspec_name ? deleteGeneralSubspecification(record._id) : deleteGeneralSpecification(record._id)).then(handleOnUpdate);
+            (record.subcat_subspec_name ? deleteSubspecification(record._id) : deleteSpecification(record._id)).then(handleOnUpdate);
         }
     };
 
-    const deactivateGeneralSpecification = async (id: string, is_active: boolean) => {
+    const deactivateSpecification = async (id: string, is_active: boolean) => {
         try {
-            await CategoryService.deactivateGeneralSpecification(id, is_active);
+            if (isCategory) {
+                await CategoryService.deactivateCategoryBaseSpecification(id, is_active);
+            } else {
+                await CategoryService.deactivateSubcategorySpecification(id, is_active);
+            }
         } catch (error) {
             console.error(error);
             throw error;
         }
     };
 
-    const deactivateGeneralSubspecification = async (id: string, is_active: boolean) => {
+    const deactivateSubspecification = async (id: string, is_active: boolean) => {
         try {
-            await CategoryService.deactivateGeneralSubspecification(id, is_active);
+            if (isCategory) {
+                await CategoryService.deactivateCategoryBaseSubspecification(id, is_active);
+            } else {
+                await CategoryService.deactivateSubcategorySubspecification(id, is_active);
+            }
         } catch (error) {
             console.error(error);
             throw error;
         }
     };
 
-    const deleteGeneralSpecification = async (id: string) => {
+    const deleteSpecification = async (id: string) => {
         try {
-            await CategoryService.deleteGeneralSpecification(id);
+            if (isCategory) {
+                await CategoryService.deleteCategoryBaseSpecification(id);
+            } else {
+                await CategoryService.deleteSubcategorySpecification(id);
+            }
         } catch (error) {
             console.error(error);
             throw error;
         }
     };
 
-    const deleteGeneralSubspecification = async (id: string) => {
+    const deleteSubspecification = async (id: string) => {
         try {
-            await CategoryService.deleteGeneralSubspecification(id);
+            if (isCategory) {
+                await CategoryService.deleteCategoryBaseSubspecification(id);
+            } else {
+                await CategoryService.deleteSubcategorySubspecification(id);
+            }
         } catch (error) {
             console.error(error);
             throw error;
@@ -138,13 +151,13 @@ const GeneralTab = () => {
     };
 
     const renderActions = (action_list: any, record: any) => (
-        <Dropdown menu={{items: defineActionList(action_list, record)}}>
+        <Dropdown menu={{items: defineActionList(action_list, record)}} disabled={record.is_origin === false}>
             <Button>Actions</Button>
         </Dropdown>
     );
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
-        switch(column.key) {
+        switch (column.key) {
             case 'subcat_spec_name':
                 return {
                     ...column,
@@ -174,10 +187,17 @@ const GeneralTab = () => {
         }
     });
 
-    const getAllSpecificationData = async () => {
+    const getDetailsData = async () => {
         try {
-            const response = await CategoryService.getAllGeneralSpecifications();
-            setSpecificationData(response);
+            const nameResponse = await CategoryService.findNameById(id);
+            setName(nameResponse);
+            let response
+            if (isCategory) {
+                response = await CategoryService.findCategoryBaseSpecificationByCatId(id);
+            } else {
+                response = await CategoryService.findSubcategorySpecificationById(id)
+            }
+            setDetailsData(response);
         } catch (error) {
             console.error(error);
             throw error;
@@ -186,12 +206,13 @@ const GeneralTab = () => {
         }
     };
 
+
     const handleOnUpdate = async () => {
-        await getAllSpecificationData();
+        await getDetailsData();
     };
 
     useEffect(() => {
-        getAllSpecificationData().then(() => {
+        getDetailsData().then(() => {
         });
     }, []);
 
@@ -201,6 +222,17 @@ const GeneralTab = () => {
 
     return (
         <div>
+            <Row className="mb-3">
+                <Col span={8}>
+                    <h3 className='font-normal ml-1 truncate'><b>Category:</b> {name.cat_name}</h3>
+                </Col>
+                {!isCategory ?
+                    <Col span={8}>
+                        <h3 className='font-normal ml-1 truncate'><b>SubCategory:</b> {name.subcat_name}</h3>
+                    </Col> : <></>
+                }
+            </Row>
+
             {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">
                     <Row className="mb-2 justify-between">
@@ -215,23 +247,27 @@ const GeneralTab = () => {
                                                isOpen={openAddModel === item.key}
                                                onClose={() => setOpenAddModel(null)}
                                                onAdd={handleOnUpdate}
-                                               specificationData={specificationData}
-                                               type="SPECIFICATION"
+                                               specificationData={detailsData}
+                                               type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
+                                               catId={id}
                         />
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
-                           dataSource={specificationData.filter(spec => spec.cat_type === item.type).map(spec => {
-                               const dataItem = {...spec, key: spec._id};
-                               if (spec.children && spec.children.length > 0) {
-                                   dataItem.children = spec.children.map((subspec: any) => ({
-                                       ...subspec,
-                                       key: subspec._id,
-                                       parent_name: spec.subcat_spec_name,
-                                       cat_type: spec.cat_type,
-                                   }));
-                               }
-                               return dataItem;
-                           })}
+                           dataSource={
+                               detailsData
+                                   .filter((spec: any) => spec.cat_type === item.type)
+                                   .map((spec: any) => {
+                                       const dataItem = {...spec, key: spec._id};
+                                       if (spec.children && spec.children.length > 0) {
+                                           dataItem.children = spec.children.map((subspec: any) => ({
+                                               ...subspec,
+                                               key: subspec._id,
+                                               parent_name: spec.subcat_spec_name,
+                                               cat_type: spec.cat_type,
+                                           }));
+                                       }
+                                       return dataItem;
+                                   })}
                            pagination={{
                                defaultPageSize: 10,
                                showSizeChanger: true,
@@ -246,12 +282,12 @@ const GeneralTab = () => {
                         onUpdate={handleOnUpdate}
                         title={String(specTypeMap[selectedRecord.cat_type]).toString()}
                         data={selectedRecord}
-                        type="SPECIFICATION"
+                        type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
                     />
                 </div>
             ))}
         </div>
-    );
-};
+    )
+}
 
-export default GeneralTab;
+export default CategoryDetailsPage;

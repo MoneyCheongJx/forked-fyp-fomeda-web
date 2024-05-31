@@ -7,21 +7,46 @@ export class ApiConstant{
     /* module */
     static readonly CATEGORY_PREFIX = this.HOST_PREFIX + "category" + this.SUFFIX;
     static readonly ANNOUNCEMENT_PREFIX = this.HOST_PREFIX + "announcement" + this.SUFFIX;
-    static readonly CONTENT_PREFIX = this.HOST_PREFIX + "content" + this.SUFFIX
+    static readonly CONTENT_PREFIX = this.HOST_PREFIX + "content" + this.SUFFIX;
 
     /* category api */
     static readonly CREATE_CATEGORY = this.CATEGORY_PREFIX + "create-category";
     static readonly CREATE_SUBCATEGORY = this.CATEGORY_PREFIX + "create-subcategory";
     static readonly CREATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "create-general-specification";
     static readonly CREATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-general-subspecification";
+    static readonly CREATE_BASE_SPECIFICATION = this.CATEGORY_PREFIX + "create-base-specification";
+    static readonly CREATE_BASE_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-base-subspecification";
+    static readonly CREATE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-specification";
+    static readonly CREATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-subspecification";
     static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
+    static readonly FIND_BASE_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-base-specification-by-cat-id";
+    static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-id";
     static readonly UPDATE_CATEGORY = this.CATEGORY_PREFIX + "update-category";
     static readonly UPDATE_SUBCATEGORY = this.CATEGORY_PREFIX + "update-subcategory";
     static readonly UPDATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "update-general-specification";
     static readonly UPDATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "update-general-subspecification";
+    static readonly UPDATE_BASE_SPECIFICATION = this.CATEGORY_PREFIX + "update-base-specification";
+    static readonly UPDATE_BASE_SUBSPECIFICATION = this.CATEGORY_PREFIX + "update-base-subspecification";
+    static readonly UPDATE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "update-subcategory-specification";
+    static readonly UPDATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "update-subcategory-subspecification";
     static readonly DEACTIVATE_CATEGORY = this.CATEGORY_PREFIX + "deactivate-category";
     static readonly DEACTIVATE_SUBCATEGORY = this.CATEGORY_PREFIX + "deactivate-subcategory";
+    static readonly DEACTIVATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "deactivate-general-specification";
+    static readonly DEACTIVATE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "deactivate-general-subspecification";
+    static readonly DEACTIVATE_BASE_SPECIFICATION = this.CATEGORY_PREFIX + "deactivate-base-specification";
+    static readonly DEACTIVATE_BASE_SUBSPECIFICATION = this.CATEGORY_PREFIX + "deactivate-base-subspecification";
+    static readonly DEACTIVATE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "deactivate-subcategory-specification";
+    static readonly DEACTIVATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "deactivate-subcategory-subspecification";
+    static readonly DELETE_CATEGORY = this.CATEGORY_PREFIX + "delete-category";
+    static readonly DELETE_SUBCATEGORY = this.CATEGORY_PREFIX + "delete-subcategory";
+    static readonly DELETE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "delete-general-specification";
+    static readonly DELETE_GENERAL_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-general-subspecification";
+    static readonly DELETE_BASE_SPECIFICATION = this.CATEGORY_PREFIX + "delete-base-specification";
+    static readonly DELETE_BASE_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-base-subspecification";
+    static readonly DELETE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-specification";
+    static readonly DELETE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-subspecification";
+    static readonly FIND_NAME_BY_ID = this.CATEGORY_PREFIX + "find-name-by-id";
 
     /* announcement api */
     static readonly FIND_ALL_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "find-all-announcement";

@@ -64,4 +64,23 @@ export class HttpService {
             throw error;
         }
     }
+
+    static async delete(url: string, queryParams?: Record<string, string>) {
+        try {
+            if (queryParams) {
+                const queryString = new URLSearchParams(queryParams).toString();
+                url += `?${queryString}`;
+            }
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            return response.json();
+        } catch (error) {
+            console.error('Error in DELETE request:', error);
+            throw error;
+        }
+    }
 }

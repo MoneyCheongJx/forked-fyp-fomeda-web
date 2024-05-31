@@ -1,10 +1,10 @@
 "use client"
 
-import {Form, Input, Modal, Radio, Row, Select} from "antd";
-import {CategoryModel} from "@/app/models/category.model";
+import {Form, Input, Modal, Radio, Select} from "antd";
+import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
-import {SubcategoryModel} from "@/app/models/subcategory.model";
+import {SubcategoryModel} from "@/models/subcategory.model";
 
 
 const initialCategoryForm: CategoryModel = {
@@ -50,11 +50,11 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
     const handleAddModelOnOk = async () => {
         categoryForm.validateFields().then(async () => {
             if (isCategory) {
-                await handleCategoryFormSubmit(categoryFormData);
+                await handleCategoryFormSubmit();
                 categoryForm.resetFields();
                 setCategoryFormData(initialCategoryForm);
             } else {
-                await handleSubcategoryFormSubmit(subcategoryFormData);
+                await handleSubcategoryFormSubmit();
                 subcategoryForm.resetFields();
                 setSubcategoryFormData(initialSubcategoryForm);
             }
@@ -65,7 +65,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
         });
     }
 
-    const handleCategoryFormSubmit = async (e: any) => {
+    const handleCategoryFormSubmit = async () => {
         try {
             await CategoryService.createCategory(categoryFormData)
         } catch (error) {
@@ -74,7 +74,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
         }
     }
 
-    const handleSubcategoryFormSubmit = async (e: any) => {
+    const handleSubcategoryFormSubmit = async () => {
         try {
             await CategoryService.createSubcategory(subcategoryFormData)
         } catch (error) {

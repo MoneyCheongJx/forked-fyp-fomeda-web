@@ -1,12 +1,16 @@
 "use client"
 
-import {Button, Col, Dropdown, Input, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Input, Modal, Row, Table, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddCategoryModel from "@/components/product-category/AddCategoryModel";
 import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
+import "@/styles/category.component.css"
+import Link from "next/link";
+import {useRouter} from "next/navigation";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -15,12 +19,32 @@ const renderStatus = (is_active: boolean) => (
 
 const CategoryTab = () => {
 
+    const router = useRouter();
     const [openAddModel, setOpenAddModel] = useState(false);
     const [categoryData, setCategoryData] = useState<any[]>([]);
+    const [filteredCategoryData, setFilteredCategoryData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [openUpdateModel, setUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
+
+    const handleSearch = (value: any) => {
+        const trimmedValue = value.trim();
+        const filteredData = categoryData.filter((item) => {
+            const itemName = item.cat_name || item.subcat_name;
+            const includesName = itemName.toLowerCase().includes(trimmedValue.toLowerCase());
+            const includesChildName = item.children && item.children.some((child: any) => {
+                const childName = child.cat_name || child.subcat_name;
+                return childName.toLowerCase().includes(trimmedValue.toLowerCase());
+            });
+            return includesName || includesChildName;
+        });
+        setFilteredCategoryData(filteredData);
+    };
+
+    useEffect(() => {
+        setFilteredCategoryData(categoryData);
+    }, [categoryData]);
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_category') {
@@ -32,8 +56,45 @@ const CategoryTab = () => {
         } else if (key === 'activate') {
             (record.subcat_name ? deactivateSubcategory(record._id, true) : deactivateCategory(record._id, true)).then(handleOnUpdate);
         } else {
-
+            (record.subcat_name ? deleteSubcategory(record._id) : deleteCategory(record._id)).then(handleOnUpdate);
         }
+    }
+
+    const handleConfirmationModelOpen = (key: string, record: any) => {
+        if (key === 'edit_category') {
+            handleActionsOnClick(key, record);
+        } else if (key === 'view_details') {
+            router.push(`product-category/details/${record._id}`)
+        } else {
+            return Modal.confirm({
+                title: <h3>Confirmation</h3>,
+                content: handleConfirmationModelContent(key, record),
+                className: "confirmation-modal",
+                centered: true,
+                width: "35%",
+                okText: "Confirm",
+                onOk: () => handleActionsOnClick(key, record),
+            })
+        }
+    }
+
+    const handleConfirmationModelContent = (key: string, record: any) => {
+        const isSub = record.subcat_name ? "Subcategory" : "Category";
+        const parent = record.parent_name ?? "";
+        const name = record.subcat_name ?? record.cat_name;
+        return (
+            <div>
+                <br/>
+                Are you sure you want to <b>{key}</b> this {isSub}?
+                <br/>
+                {parent ?
+                    <div>
+                        <b>Category:</b> {parent}
+                    </div> : <></>}
+                <b>{isSub}</b>: {name}
+                <br/><br/>
+            </div>
+        )
     }
 
     const deactivateCategory = async (id: string, is_active: boolean) => {
@@ -54,6 +115,24 @@ const CategoryTab = () => {
         }
     }
 
+    const deleteCategory = async (id: string) => {
+        try {
+            await CategoryService.deleteCategory(id);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const deleteSubcategory = async (id: string) => {
+        try {
+            await CategoryService.deleteSubcategory(id);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     const renderActions = (record: any) => (
         <Dropdown menu={{items: defineMenuItem(record)}}>
             <Button>Actions</Button>
@@ -62,46 +141,50 @@ const CategoryTab = () => {
 
     const defineMenuItem = (record: any) => {
         return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => {
-            if (record.is_active && item.key === 'activate') {
-                return null;
-            }
-            if (!record.is_active && item.key === 'deactivate') {
+            if ((record.is_active && item.key === 'activate') || (!record.is_active && item.key === 'deactivate')) {
                 return null;
             }
             return {
                 key: item.key,
                 label: (
-                    <div onClick={() => handleActionsOnClick(item.key, record)}>
+                    <div onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
                     </div>
                 ),
-            };
+            }
         }).filter(item => item !== null);
     };
 
     const CATEGORY_TABLE_HEADER = CATEGORY_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'cat_name') {
-            return {
-                ...column,
-                render: (text: any, record: any) => {
-                    const value = record.cat_name || record.subcat_name;
-                    return <span>{value}</span>;
-                },
-            }
+        switch (column.key) {
+            case 'cat_name':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => (
+                        <Link href={`product-category/details/${record._id}`}>
+                            {record.cat_name || record.subcat_name}
+                        </Link>
+                    ),
+                };
+            case 'is_active':
+                return {
+                    ...column,
+                    render: (status: boolean) => renderStatus(status),
+                };
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActions(record),
+                };
+            case 'created_on':
+            case 'last_updated_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                };
+            default:
+                return column;
         }
-        if (column.key === 'is_active') {
-            return {
-                ...column,
-                render: (status: boolean) => renderStatus(status),
-            };
-        }
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActions(record)
-            };
-        }
-        return column;
     });
 
     const getAllCategory = async () => {
@@ -114,10 +197,6 @@ const CategoryTab = () => {
         } finally {
             setLoading(false);
         }
-    }
-
-    const handleOnAdd = async () => {
-        await getAllCategory();
     }
 
     const handleOnUpdate = async () => {
@@ -137,16 +216,20 @@ const CategoryTab = () => {
         <div>
             <Row style={{justifyContent: "space-between", marginBottom: 16}}>
                 <Col span={8}>
-                    <Input placeholder="category" prefix={<SearchOutlined/>} size="large"></Input>
+                    <Input placeholder="category"
+                           prefix={<SearchOutlined/>}
+                           size="large"
+                           onChange={(e) => handleSearch(e.target.value)}
+                    />
                 </Col>
                 <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
                         onClick={() => setOpenAddModel(true)}>Add Category</Button>
                 <AddCategoryModel isOpen={openAddModel} onClose={() => setOpenAddModel(false)}
-                                  categoryData={categoryData} onAdd={handleOnAdd}/>
+                                  categoryData={categoryData} onAdd={handleOnUpdate}/>
             </Row>
             <Table
                 columns={CATEGORY_TABLE_HEADER}
-                dataSource={categoryData.map((cat) => {
+                dataSource={filteredCategoryData.map((cat) => {
                     const dataItem = {...cat, key: cat._id};
                     if (cat.children && cat.children.length > 0) {
                         dataItem.children = cat.children.map((subcat: any) => ({
