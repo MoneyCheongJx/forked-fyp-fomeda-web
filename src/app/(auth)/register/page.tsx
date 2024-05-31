@@ -134,7 +134,7 @@ export default function RegisterPage() {
                                 name="username"
                                 rules={[
                                     {required: true, message: 'Please input your username'},
-                                    {min: 6, max: 30, message: 'The username must be between 6 and 30 characters'},
+                                    {min: 6, max: 20, message: 'The username must be between 6 and 20 characters'},
                                     {whitespace: true, message: 'The username cannot be whitespaces only'},
                                     {
                                         pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
