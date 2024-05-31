@@ -83,4 +83,28 @@ export class HttpService {
             throw error;
         }
     }
+
+    static async patch(url: string, data: any, queryParams?: Record<string, string>) {
+        try {
+            if (queryParams) {
+                const queryString = new URLSearchParams(queryParams).toString();
+                url += `?${queryString}`;
+            }
+
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error('Error in PATCH request:', error);
+            throw error;
+        }
+    }
 }
