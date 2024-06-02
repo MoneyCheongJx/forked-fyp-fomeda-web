@@ -9,6 +9,7 @@ import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import "@/styles/category.component.css"
 import {DateTimeUtils} from "@/utils/date-time.utils";
+import ConfimationContent from "@/components/product-category/ConfimationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -48,7 +49,7 @@ const GeneralTab = () => {
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: handleConfirmationModelContent(key, record),
+                content: <ConfimationContent action={key} record={record} />,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -115,28 +116,6 @@ const GeneralTab = () => {
         SPECIFICATION: "Specification",
     };
 
-    const handleConfirmationModelContent = (key: string, record: any) => {
-        const spec = specTypeMap[record.cat_type];
-        const parent = record.parent_name ?? record.subcat_spec_name;
-        const name = record.subcat_subspec_name ?? record.subcat_spec_name;
-        return (
-            <div>
-                <br/>
-                Are you sure you want to <b>{key}</b> this {spec}?
-                <br/>
-                <div>
-                    <b>{spec}:</b> {parent}
-                </div>
-                {parent != name ?
-                    <div>
-                        <b>Sub{spec.toLowerCase()}:</b> {name}
-                    </div> : <></>
-                }
-                <br/>
-            </div>
-        );
-    };
-
     const renderActions = (action_list: any, record: any) => (
         <Dropdown menu={{items: defineActionList(action_list, record)}}>
             <Button>Actions</Button>
@@ -152,11 +131,13 @@ const GeneralTab = () => {
                         const value = record.subcat_spec_name || record.subcat_subspec_name;
                         return <span>{value}</span>;
                     },
+                    sorter: (a: any, b: any) => (a.subcat_spec_name || a.subcat_subspec_name).localeCompare(b.subcat_spec_name || b.subcat_subspec_name),
                 };
             case 'is_active':
                 return {
                     ...column,
                     render: (status: boolean) => renderStatus(status),
+                    sorter: (a: any, b: any) => b.is_active - a.is_active,
                 };
             case 'actions':
                 return {
@@ -168,9 +149,13 @@ const GeneralTab = () => {
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             default:
-                return column;
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
     });
 
@@ -237,6 +222,8 @@ const GeneralTab = () => {
                                showSizeChanger: true,
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
+                           showSorterTooltip={false}
+                           sortDirections={['ascend', 'descend', 'ascend']}
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}

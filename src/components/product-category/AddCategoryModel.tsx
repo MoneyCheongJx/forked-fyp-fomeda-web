@@ -5,6 +5,7 @@ import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
 import {SubcategoryModel} from "@/models/subcategory.model";
+import ConfimationContent from "@/components/product-category/ConfimationContent";
 
 
 const initialCategoryForm: CategoryModel = {
@@ -16,6 +17,7 @@ const initialCategoryForm: CategoryModel = {
 
 const initialSubcategoryForm: SubcategoryModel = {
     cat_id: "",
+    cat_name: "",
     subcat_name: "",
     created_by: "Admin",
     last_updated_by: "Admin",
@@ -40,12 +42,19 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
         })
     }
 
-    const handleSubcategoryFormChange = (value: any, fieldName: string) => {
-        setSubcategoryFormData({
+    const handleSubcategoryFormChange = (value: any, fieldName: string, option?: any) => {
+        const updatedFormData = {
             ...subcategoryFormData,
             [fieldName]: value,
-        })
+        };
+
+        if (fieldName === "cat_id" && option) {
+            updatedFormData.cat_name = option.label;
+        }
+
+        setSubcategoryFormData(updatedFormData);
     }
+
 
     const handleAddModelOnOk = async () => {
         categoryForm.validateFields().then(async () => {
@@ -57,11 +66,24 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
                 await handleSubcategoryFormSubmit();
                 subcategoryForm.resetFields();
                 setSubcategoryFormData(initialSubcategoryForm);
+                subcategoryFormData.cat_name = selectOptions[0].label;
             }
             onAdd();
             onClose();
         }).catch(errorInfo => {
             console.error('Validate Failed:', errorInfo);
+        });
+    }
+
+    const handleConfirmationModelOpen = () => {
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <ConfimationContent action="add" record={isCategory? categoryFormData : subcategoryFormData} />,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => handleAddModelOnOk(),
         });
     }
 
@@ -85,6 +107,8 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
 
     const handleModalClose = () => {
         categoryForm.resetFields();
+        subcategoryForm.resetFields();
+        subcategoryFormData.cat_name = selectOptions[0].label;
         onClose();
     };
 
@@ -106,6 +130,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             setSubcategoryFormData(prevState => ({
                 ...prevState,
                 cat_id: options[0].value,
+                cat_name: options[0].label,
             }))
         }
     }, [filterCategoryData, categoryFormData]);
@@ -115,7 +140,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             title={<h3>Add Category</h3>}
             centered
             open={isOpen}
-            onOk={handleAddModelOnOk}
+            onOk={handleConfirmationModelOpen}
             okText="Add Category"
             onCancel={handleModalClose}
         >
@@ -152,7 +177,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
                         >
                             <Select
                                 defaultValue={defaultSelectValue}
-                                onChange={(value) => handleSubcategoryFormChange(value, "cat_id")}
+                                onChange={(value, options) => handleSubcategoryFormChange(value, "cat_id", options)}
                                 options={selectOptions}
                             />
                         </Form.Item>

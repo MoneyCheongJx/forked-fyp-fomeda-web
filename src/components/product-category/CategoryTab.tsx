@@ -11,6 +11,7 @@ import "@/styles/category.component.css"
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {DateTimeUtils} from "@/utils/date-time.utils";
+import ConfimationContent from "@/components/product-category/ConfimationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -68,7 +69,7 @@ const CategoryTab = () => {
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: handleConfirmationModelContent(key, record),
+                content: <ConfimationContent action={key} record={record} />,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -165,11 +166,13 @@ const CategoryTab = () => {
                             {record.cat_name || record.subcat_name}
                         </Link>
                     ),
+                    sorter: (a: any, b: any) => (a.cat_name || a.subcat_name).localeCompare(b.cat_name || b.subcat_name),
                 };
             case 'is_active':
                 return {
                     ...column,
                     render: (status: boolean) => renderStatus(status),
+                    sorter: (a: any, b: any) => b.is_active - a.is_active,
                 };
             case 'actions':
                 return {
@@ -181,9 +184,13 @@ const CategoryTab = () => {
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             default:
-                return column;
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
     });
 
@@ -244,7 +251,10 @@ const CategoryTab = () => {
                     defaultPageSize: 10,
                     showSizeChanger: true,
                     pageSizeOptions: [10, 20, 50, 100],
-                }}/>
+                }}
+                showSorterTooltip={false}
+                sortDirections={['ascend', 'descend', 'ascend']}
+            />
             <CategoryUpdateModel
                 isOpen={openUpdateModel}
                 onClose={() => setUpdateModel(false)}
