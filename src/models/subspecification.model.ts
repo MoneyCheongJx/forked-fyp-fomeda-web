@@ -1,6 +1,7 @@
 export class SubspecificationModel {
     _id?: string;
     subcat_spec_id?: string;
+    subcat_spec_name?: string;
     subcat_subspec_name?: string;
     cat_type?: string;
     created_by?: string;

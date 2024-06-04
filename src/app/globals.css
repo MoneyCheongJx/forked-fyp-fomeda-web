@@ -163,6 +163,12 @@ a:hover {
   color: var(--ant-primary-color-active) !important;
   border-color: var(--ant-primary-color-active) !important;
 }
+.ant-table-column-sorter-down.active {
+  color: var(--ant-primary-color) !important;
+}
+.ant-table-column-sorter-up.active {
+  color: var(--ant-primary-color) !important;
+}
 
 /* model style */
 .ant-modal-mask{

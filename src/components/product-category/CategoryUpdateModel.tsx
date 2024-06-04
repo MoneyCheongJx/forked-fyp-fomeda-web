@@ -3,6 +3,7 @@
 import {Form, FormItemProps, Input, Modal, Radio, Select} from "antd";
 import React, {useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
+import ConfimationContent from "@/components/product-category/ConfimationContent";
 
 const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpdate, title, type}: any) => {
     const [form] = Form.useForm();
@@ -58,6 +59,18 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             console.error('Validate Failed:', error);
         }
     };
+
+    const handleConfirmationModelOpen = () => {
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <ConfimationContent action="update" record={formData} />,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => handleUpdateModelOnOk(),
+        });
+    }
 
     const handleUpdateModelOnCancel = () => {
         form.setFieldsValue({...originalData});
@@ -119,7 +132,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             title={<h3>Update {title}</h3>}
             centered
             open={isOpen}
-            onOk={handleUpdateModelOnOk}
+            onOk={handleConfirmationModelOpen}
             okText="Update"
             onCancel={handleUpdateModelOnCancel}
         >

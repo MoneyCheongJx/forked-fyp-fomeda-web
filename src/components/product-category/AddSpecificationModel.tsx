@@ -5,6 +5,8 @@ import {Form, Input, Modal, Radio, Select} from "antd";
 import CategoryService from "@/services/category.service";
 import {SpecificationModel} from "@/models/specification.model";
 import {SubspecificationModel} from "@/models/subspecification.model";
+import ConfimationContent from "@/components/product-category/ConfimationContent";
+import {opt} from "ts-interface-checker";
 
 const initialSpecificationFormData: SpecificationModel = {
     cat_id: "",
@@ -17,7 +19,9 @@ const initialSpecificationFormData: SpecificationModel = {
 };
 
 const initialSubspecificationFormData: SubspecificationModel = {
+    cat_type: "",
     subcat_spec_id: "",
+    subcat_spec_name: "",
     subcat_subspec_name: "",
     created_by: "Admin",
     last_updated_by: "Admin",
@@ -46,16 +50,21 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
         });
     };
 
-    const handleSubspecificationFormChange = (value: any, fieldName: string) => {
-        setSubspecificationFormData({
+    const handleSubspecificationFormChange = (value: any, fieldName: string, option?: any) => {
+        const updatedFormData = {
             ...subspecificationFormData,
             [fieldName]: value,
-        });
+        };
+
+        if (fieldName === "subcat_spec_id" && option) {
+            updatedFormData.subcat_spec_name = option.label;
+        }
+
+        setSubspecificationFormData(updatedFormData);
     };
 
     const handleAddModelOnOk = async (type: string) => {
-        try {
-            await form.validateFields();
+        form.validateFields().then(async () => {
             if (isSpecification) {
                 await handleSpecificationFormSubmit(type);
             } else {
@@ -64,23 +73,48 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
             form.resetFields();
             setSpecificationFormData(initialSpecificationFormData);
             setSubspecificationFormData(initialSubspecificationFormData);
+            subspecificationFormData.subcat_spec_name = defaultSelectValue;
             onAdd();
             onClose();
-        } catch (errorInfo) {
+        }).catch(errorInfo => {
             console.error("Validate Failed:", errorInfo);
-        }
+        });
     };
+
+    const handleConfirmationModelOpen = (type: string) => {
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content:
+                <ConfimationContent
+                    action="add"
+                    record={isSpecification ? {
+                        ...specificationFormData,
+                        cat_type: type
+                    } : {
+                        ...subspecificationFormData,
+                        cat_type: type
+                    }}/>,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => handleAddModelOnOk(type),
+        });
+    }
 
     const handleSpecificationFormSubmit = async (cat_type: string) => {
         specificationFormData.cat_type = cat_type;
         specificationFormData.cat_id = catId;
         specificationFormData.subcat_id = catId;
         try {
-            if (type === "GENERAL") {
+            if (type === "SPECIFICATION") {
+                console.log("call here1")
                 await CategoryService.createGeneralSpecification(specificationFormData);
             } else if (type === "CATEGORY") {
+                console.log("call here2")
                 await CategoryService.createCategoryBaseSpecification(specificationFormData);
             } else if (type === "SUBCATEGORY") {
+                console.log("call here3")
                 await CategoryService.createSubcategorySpecification(specificationFormData);
             }
         } catch (error) {
@@ -91,7 +125,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
 
     const handleSubspecificationFormSubmit = async () => {
         try {
-            if (type === "GENERAL") {
+            if (type === "SPECIFICATION") {
                 await CategoryService.createGeneralSubspecification(subspecificationFormData);
             } else if (type === "CATEGORY") {
                 await CategoryService.createCategoryBaseSubspecification(subspecificationFormData);
@@ -106,12 +140,13 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
 
     const handleModalClose = () => {
         form.resetFields();
+        subspecificationFormData.subcat_spec_name = selectOptions[0].label;
         onClose();
     };
 
     const filterSpecificationData = useCallback(() => {
         return specificationData
-            .filter((spec: any) => spec.cat_type === "SPECIFICATION")
+            .filter((spec: any) => spec.cat_type === "SPECIFICATION" && spec.is_origin === undefined)
             .map((spec: any) => ({
                 value: spec._id,
                 label: spec.subcat_spec_name,
@@ -129,6 +164,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
             setSubspecificationFormData(prevState => ({
                 ...prevState,
                 subcat_spec_id: options[0].value,
+                subcat_spec_name: options[0].label,
             }));
         }
     }, [filterSpecificationData, specificationFormData]);
@@ -185,10 +221,11 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                                 >
                                     <Select
                                         defaultValue={defaultSelectValue}
-                                        onChange={(value) =>
+                                        onChange={(value, option) =>
                                             handleSubspecificationFormChange(
                                                 value,
-                                                "subcat_spec_id"
+                                                "subcat_spec_id",
+                                                option
                                             )
                                         }
                                         options={selectOptions}
@@ -239,7 +276,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
             title={<h3>{data.button}</h3>}
             centered
             open={isOpen}
-            onOk={() => handleAddModelOnOk(data.type)}
+            onOk={() => handleConfirmationModelOpen(data.type)}
             okText={data.button}
             onCancel={handleModalClose}
             width={"40%"}

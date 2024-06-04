@@ -6,6 +6,7 @@ import {PlusOutlined} from "@ant-design/icons";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import {DateTimeUtils} from "@/utils/date-time.utils";
+import ConfirmationContent from "@/components/product-category/ConfimationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -45,7 +46,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: handleConfirmationModelContent(key, record),
+                content: <ConfirmationContent action={key} record={record}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -128,28 +129,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         SPECIFICATION: "Specification",
     };
 
-    const handleConfirmationModelContent = (key: string, record: any) => {
-        const spec = specTypeMap[record.cat_type];
-        const parent = record.parent_name ?? record.subcat_spec_name;
-        const name = record.subcat_subspec_name ?? record.subcat_spec_name;
-        return (
-            <div>
-                <br/>
-                Are you sure you want to <b>{key}</b> this {spec}?
-                <br/>
-                <div>
-                    <b>{spec}:</b> {parent}
-                </div>
-                {parent != name ?
-                    <div>
-                        <b>Sub{spec.toLowerCase()}:</b> {name}
-                    </div> : <></>
-                }
-                <br/>
-            </div>
-        );
-    };
-
     const renderActions = (action_list: any, record: any) => (
         <Dropdown menu={{items: defineActionList(action_list, record)}} disabled={record.is_origin === false}>
             <Button>Actions</Button>
@@ -165,11 +144,13 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                         const value = record.subcat_spec_name || record.subcat_subspec_name;
                         return <span>{value}</span>;
                     },
+                    sorter: (a: any, b: any) => (a.subcat_spec_name || a.subcat_subspec_name).localeCompare(b.subcat_spec_name || b.subcat_subspec_name),
                 };
             case 'is_active':
                 return {
                     ...column,
                     render: (status: boolean) => renderStatus(status),
+                    sorter: (a: any, b: any) => b.is_active - a.is_active,
                 };
             case 'actions':
                 return {
@@ -181,9 +162,13 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             default:
-                return column;
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
     });
 
@@ -256,14 +241,15 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                            dataSource={
                                detailsData
                                    .filter((spec: any) => spec.cat_type === item.type)
-                                   .map((spec: any) => {
-                                       const dataItem = {...spec, key: spec._id};
+                                   .map((spec: any, index: number) => {
+                                       const dataItem = {...spec, key: index};
                                        if (spec.children && spec.children.length > 0) {
-                                           dataItem.children = spec.children.map((subspec: any) => ({
+                                           dataItem.children = spec.children.map((subspec: any, index2: number) => ({
                                                ...subspec,
-                                               key: subspec._id,
+                                               key: `${index}-${index2}`,
                                                parent_name: spec.subcat_spec_name,
                                                cat_type: spec.cat_type,
+                                               is_origin: spec.is_origin,
                                            }));
                                        }
                                        return dataItem;
@@ -273,6 +259,8 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                                showSizeChanger: true,
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
+                           showSorterTooltip={false}
+                           sortDirections={['ascend', 'descend', 'ascend']}
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}
