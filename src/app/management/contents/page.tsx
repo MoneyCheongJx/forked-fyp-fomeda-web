@@ -3,213 +3,364 @@
 import React, {useEffect, useState} from "react";
 import PageLayout from '@/app/page';
 import {Breadcrumb} from "antd";
-import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form} from "antd";
+import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form, Typography} from "antd";
+import Link from "next/link";
 import {
-    ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS,
-    ANNOUNCEMENT_MANAGEMENT_TABLE_ACTIONS_CONSTANTS
-} from "@/constants/announcements.constant";
-import AnnouncementService from "@/services/announcement.service";
+    CAROUSEL_TABLE_HEADER_CONSTANTS,
+    CONTENT_TABLE_HEADER_CONSTANTS,
+    HISTORY_TIMELINE_TABLE_HEADER_CONSTANTS,
+    CONTENT_MANAGEMENT_CONSTANTS
+} from "@/constants/contents.constant";
+import ContentService from "@/services/content.service";
+import AddModal from "@/components/content/AddModal";
+import EditModal from "@/components/content/EditModal";
+
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
-import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal";
-import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
-import moment from 'moment';
 
+const ContentManagementPage = () => {
+    const [carouselData, setCarouselData] = useState<any[]>([]);
+    const [contentData, setContentData] = useState<any[]>([]);
+    const [historyData, setHistoryData] = useState<any[]>([]);
+    const [selectedRecord, setSelectedRecord] = useState<any>([]);
 
-const AnnouncementManagementPage = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [filteredData, setFilteredData] = useState<any>([])
-    const [isAddModalVisible, setAddModalVisible] = useState(false);
-    const [isEditModalVisible, setEditModalVisible] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [modalConfig, setModalConfig] = useState<any>({});
     const [loading, setLoading] = useState(true);
-    const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
-    const [selectedRecord, setSelectedRecord] = useState(null);
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const {RangePicker} = DatePicker;
 
+    useEffect(() => {
+        fetchCarouselData();
+        fetchContentData();
+        fetchHistoryData();
+    }, []);
 
-    const fetchData = async () => {
+    const fetchCarouselData = async () => {
         try {
-            const response = await AnnouncementService.getAllAnnouncements();
-            console.log('response', response)
-            setData(response);
-            setFilteredData(response);
+            const response = await ContentService.getAllCarousels();
+            setCarouselData(response);
         } catch (error) {
             console.error(error);
             throw error;
         } finally {
             setLoading(false);
         }
-    }
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const showAddModal = () => {
-        setAddModalVisible(true);
     };
 
-    const unshowAddModal = () => {
-        setAddModalVisible(false);
-        fetchData();
-    };
-
-    const showEditModal = () => {
-        setEditModalVisible(true);
-    }
-
-    const unshowEditModal = () => {
-        setEditModalVisible(false);
-        setSelectedRecord(null);
-        fetchData();
-    }
-
-    const handleActionsOnClick = (key: string, record: any) => {
-        console.log('record', record);
-        if (key === 'edit_announcement') {
-            setSelectedRecord(record);
-            setEditModalVisible(true);
-        } else if (key === 'hide_announcement') {
-            updateVisibility(record._id, false);
-            console.log('data now is', data)
-        } else if (key === 'unhide_announcement') {
-            updateVisibility(record._id, true);
-        }
-    }
-
-    const handleSearch = (value: any) => {
-        filterData(value, selectedDateRange);
-    };
-
-    const handleDateChange = (dates: any) => {
-        setSelectedDateRange(dates);
-        filterData(searchText, dates);
-    };
-
-    const filterData = (text: any, dates: any) => {
-        const regex = new RegExp(text, 'i'); // 'i' for case-insensitive search
-        const [start, end] = dates || [null, null];
-
-        const filtered = data.filter(item => {
-            const matchesText = regex.test(item.title);
-            const created_on_date = moment(item.created_on).format('YYYY-MM-DD')
-
-            const matchesDate = start && end ? moment(created_on_date)?.isBetween(start?.format('YYYY-MM-DD'), end?.format('YYYY-MM-DD'), null, '[]') : true;
-            return matchesText && matchesDate;
-        });
-        setFilteredData(filtered);
-    };
-
-
-
-    const defineMenuItem = (record: any) => {
-        return ANNOUNCEMENT_MANAGEMENT_TABLE_ACTIONS_CONSTANTS.map((item) => {
-            if (record.visibility && item.key === 'unhide_announcement') {
-                return null;
-            }
-            if (!record.visibility && item.key === 'hide_announcement') {
-                return null;
-            }
-
-            return {
-                key: item.key,
-                label: (
-                    <div onClick={() => handleActionsOnClick(item.key, record)}>
-            {item.label}
-            </div>
-        ),
-        };
-        }).filter(item => item !== null);
-    };
-
-    const renderActionsDropdown = (record: any) => (
-        <Dropdown menu={{items: defineMenuItem(record)}}>
-    <Button>Actions</Button>
-    </Dropdown>
-);
-
-    const renderVisibility = (visibility: boolean) => {
-        if (visibility)
-            return <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Visible</Tag>
-    else
-        return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Invisible</Tag>
-    }
-
-
-    const updateVisibility = async (id: string, visibility: boolean) => {
+    const fetchContentData = async () => {
         try {
-            await AnnouncementService.updateAnnouncementVisibility(id, visibility);
+            const response = await ContentService.getAllContent();
+            setContentData(response);
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setLoading(false);
         }
-        fetchData()
+    };
+
+    const fetchHistoryData = async () => {
+        try {
+            const response = await ContentService.getAllHistoryTimeline();
+            setHistoryData(response);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const openModal = (type: string) => {
+        const config = {
+            title: '',
+            type: '',
+            fields: [],
+            onSubmit: handleSubmit,
+            onCancel: handleClose,
+        };
+
+        switch (type) {
+            case 'add_carousel':
+                config.type = 'add_carousel';
+                config.title = 'Add Carousel';
+                // @ts-ignore
+                config.fields = [{name: 'image', label: 'Upload Image', type: 'file'}];
+                setIsAddModalOpen(true);
+                break;
+            case 'edit_carousel':
+                config.type = 'edit_carousel';
+                config.title = 'Edit Carousel';
+                // @ts-ignore
+                config.fields = [{name: 'image', label: 'Upload Image', type: 'file'}];
+                setIsEditModalOpen(true);
+                break;
+            case 'add_content':
+                config.type = 'add_content';
+                config.title = 'Add Content';
+                config.fields = [
+                    {name: 'title', label: 'Content title', type: 'text'},
+                    {name: 'description', label: 'Content description', type: 'textarea'}
+                ];
+                setIsAddModalOpen(true);
+                break;
+            case 'edit_content':
+                config.type = 'edit_content';
+                config.title = 'Edit Content';
+                config.fields = [
+                    {name: 'title', label: 'Content title', type: 'text'},
+                    {name: 'description', label: 'Content description', type: 'textarea'}
+                ];
+                setIsEditModalOpen(true);
+                break;
+            case 'add_history_timeline':
+                config.type = 'add_history_timeline';
+                config.title = 'Add History Timeline';
+                // @ts-ignore
+                config.fields = [
+                    {name: 'title', label: 'Title', type: 'text'},
+                    {name: 'description', label: 'Description', type: 'textarea'},
+                    {name: 'date', label: 'Date', type: 'date'}
+                ];
+                setIsAddModalOpen(true);
+                break;
+            case 'edit_history_timeline':
+                config.type = 'edit_history_timeline';
+                config.title = 'Edit History Timeline';
+                // @ts-ignore
+                config.fields = [
+                    {name: 'title', label: 'Title', type: 'text'},
+                    {name: 'description', label: 'Description', type: 'textarea'},
+                    {name: 'date', label: 'Date', type: 'date'}
+                ];
+                setIsEditModalOpen(true);
+                break;
+        }
+        setModalConfig(config);
+    };
+
+    const handleSubmit = async (data: any, type: any) => {
+        console.log('Submitted data:', data);
+        const payload = {
+            ...data,
+            "created_by": "admin",
+            "last_updated_by": "admin123"
+        }
+
+        switch (type) {
+            case 'add_carousel':
+                try {
+                    await ContentService.createCarousel(payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchCarouselData();
+                break;
+            case 'add_content':
+                try {
+                    await ContentService.createContent(payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchContentData();
+                break;
+            case 'add_history_timeline':
+                try {
+                    await ContentService.createHistoryTimeline(payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchHistoryData();
+                break;
+            case 'edit_carousel':
+                console.log('cb data._id', data._id)
+                try {
+                    await ContentService.updateCarousel(data._id, payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchCarouselData();
+                break;
+            case 'edit_content':
+                try {
+                    await ContentService.updateContent(data._id, payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchContentData();
+                break;
+            case 'edit_history_timeline':
+                try {
+                    await ContentService.updateHistoryTimeline(data._id, payload);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchHistoryData();
+                break;
+            case 'delete_carousel':
+                try {
+                    await ContentService.deleteCarousel(data._id);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchCarouselData();
+                break;
+            case 'delete_content':
+                try {
+                    await ContentService.deleteContent(data._id);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchContentData();
+                break;
+            case 'delete_history_timeline':
+                try {
+                    await ContentService.deleteHistoryTimeline(data._id);
+                } catch (error) {
+                    console.error(error);
+                    throw error;
+                }
+                fetchHistoryData();
+                break;
+        }
+        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
+    };
+
+    const handleClose = () => {
+        setIsAddModalOpen(false);
+        setIsEditModalOpen(false);
+    };
+
+    const defineActionList = (action: any, record: any) => {
+        return action.map((item: any) => {
+            return {
+                key: item.key,
+                label: (
+                    <div onClick={() => {
+                        setSelectedRecord(record)
+                        switch (item.key) {
+                            case 'add_carousel':
+                            case 'edit_carousel':
+                            case 'add_content':
+                            case 'edit_content':
+                            case 'add_history_timeline':
+                            case 'edit_history_timeline':
+                                openModal(item.key)
+                                break;
+                            case 'delete_carousel':
+                            case 'delete_content':
+                            case 'delete_history_timeline':
+                                handleSubmit(record, item.key);
+                        }
+                        }}>
+                        {item.label}
+                    </div>
+                ),
+            };
+        }).filter((item: any) => item !== null);
+    };
+    const renderActionsDropdown = (action_list: any, record: any) => (
+        <Dropdown menu={{items: defineActionList(action_list, record)}}>
+            <Button>Actions</Button>
+        </Dropdown>
+    );
+
+    const mappingTableActions = (constant: any) => {
+        return constant.map((column: any) => {
+            if (column.key === 'actions') {
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActionsDropdown(column.actionList, record)
+                };
+            }
+
+            if (column.key === 'image') {
+                return {
+                    ...column,
+                    render: (image: any) => (
+                        <Typography.Text>{image?.fileList[0]?.name}</Typography.Text>
+                    ),
+                };
+            }
+            return column;
+        });
     }
 
-    const TABLE_HEADER = ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'visibility') {
-            return {
-                ...column,
-                render: (visibility: boolean) => renderVisibility(visibility),
-            };
-        }
-
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActionsDropdown(record)
-            };
-        }
-
-        return column;
-    });
-
     return (
-        <Spin spinning={loading}>
-        <AddAnnouncementModal
-            visible={isAddModalVisible}
-    onClose={unshowAddModal}
-    />
-    <EditAnnouncementModal
-    visible={isEditModalVisible}
-    onClose={unshowEditModal}
-    data={selectedRecord}
-    />
-    <PageLayout>
-    <Breadcrumb items={[{title: 'Announcement Management', href: '/management/announcements'}]}/>
-    <h1 style={{marginBottom: 16}}>Announcement Management</h1>
-    <div>
-    <Row style={{justifyContent: "space-between", marginBottom: 16}}>
-    <Col style={{display: "flex", gap: "8px"}} span={16}>
-    <Input
-        placeholder="Search Announcement"
-    onChange={(e) => handleSearch(e.target.value ? [e.target.value] : [])}
-    prefix={<SearchOutlined/>}
-    size="large"
-    style={{width: '60%'}}
-    />
-    <RangePicker onChange={handleDateChange} style={{width: '25%'}}/>
-    </Col>
+        <PageLayout>
+            <Breadcrumb items={[{title: 'Content Management', href: '/management/contents'}]}/>
+            <h1 style={{marginBottom: 16}}>Content Management</h1>
 
-    <Button type="primary" icon={<PlusOutlined/>} iconPosition="start"
-    onClick={showAddModal}>Add Announcement</Button>
-    </Row>
-    <Table
-    columns={TABLE_HEADER}
-    dataSource={filteredData.map((announcement: { _id: any; }) => {
-            const dataItem = {...announcement, key: announcement._id};
-            return dataItem;
-        })}
-    pagination={{
-        defaultPageSize: 10,
-            showSizeChanger: true,
-            pageSizeOptions: [10, 20, 50, 100],
-    }}/>
-    </div>
-    </PageLayout>
-    </Spin>
-);
+            <div className="mb-8">
+                <Row className="mb-2 justify-between">
+                    <h3>Carousel</h3>
+                    <Button type="primary" icon={<PlusOutlined/>}
+                            onClick={() => openModal('add_carousel')}>
+                        Add carousel
+                    </Button>
+                </Row>
+                <Table className="mb-8"
+                       columns={mappingTableActions(CAROUSEL_TABLE_HEADER_CONSTANTS)}
+                       dataSource={carouselData.map((data: { _id: any }) => {
+                           return {...data, key: data._id}
+                       })}
+                       pagination={false}/>
+            </div>
+            <div className="mb-8">
+                <Row className="mb-2 justify-between">
+                    <h3>Content</h3>
+                    <Button type="primary" icon={<PlusOutlined/>}
+                            onClick={() => openModal('add_content')}>
+                        Add content
+                    </Button>
+                </Row>
+                <Table columns={mappingTableActions(CONTENT_TABLE_HEADER_CONSTANTS)}
+                       dataSource={contentData.map((data: { _id: any }) => {
+                           return {...data, key: data._id}
+                       })}
+                       pagination={false}/>
+            </div>
+            <div className="mb-8">
+                <Row className="mb-2 justify-between">
+                    <h3>History timeline</h3>
+                    <Button type="primary" icon={<PlusOutlined/>}
+                            onClick={() => openModal('add_history_timeline')}>
+                        Add history timeline
+                    </Button>
+                </Row>
+                <Table columns={mappingTableActions(HISTORY_TIMELINE_TABLE_HEADER_CONSTANTS)}
+                       dataSource={historyData.map((data: { _id: any }) => {
+                           return {...data, key: data._id}
+                       })}
+                       pagination={false}/>
+            </div>
+            <AddModal
+                isOpen={isAddModalOpen}
+                type={modalConfig.type}
+                title={modalConfig.title}
+                fields={modalConfig.fields}
+                onSubmit={modalConfig.onSubmit}
+                onCancel={modalConfig.onCancel}
+            />
+            <EditModal
+                data={selectedRecord}
+                isOpen={isEditModalOpen}
+                type={modalConfig.type}
+                title={modalConfig.title}
+                fields={modalConfig.fields}
+                onSubmit={modalConfig.onSubmit}
+                onCancel={modalConfig.onCancel}
+            />
+        </PageLayout>
+    );
 };
 
-export default AnnouncementManagementPage;
+export default ContentManagementPage;
