@@ -19,7 +19,7 @@ export const ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS: ColumnType<any>[] =
         title: "Date",
         dataIndex: "created_on",
         width: "18%",
-        render: (text: any) => moment(text).format('YYYY-MM-DD'),
+        render: (text: any) => moment(text).format('DD-MM-YYYY'),
         sorter: (a: any, b: any) => {
             const dateA = moment(a.created_on);
             const dateB = moment(b.created_on);

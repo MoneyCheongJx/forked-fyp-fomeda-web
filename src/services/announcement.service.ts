@@ -1,4 +1,4 @@
-import {AnnouncementModel} from "@/app/models/announcement.model";
+import {AnnouncementModel} from "@/models/announcement.model";
 import {ApiConstant} from "@/constants/api.constant";
 import {HttpService} from "@/services/http.service";
 import moment from 'moment';
@@ -12,7 +12,7 @@ export default class AnnouncementService {
             )
             // sort the response by created_on field
             response.sort((a: any, b: any) => moment(b.created_on).diff(moment(a.created_on)));
-            
+
             return response;
         } catch (error) {
             console.error(error);
