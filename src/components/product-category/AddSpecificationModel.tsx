@@ -108,13 +108,10 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
         specificationFormData.subcat_id = catId;
         try {
             if (type === "SPECIFICATION") {
-                console.log("call here1")
                 await CategoryService.createGeneralSpecification(specificationFormData);
             } else if (type === "CATEGORY") {
-                console.log("call here2")
                 await CategoryService.createCategoryBaseSpecification(specificationFormData);
             } else if (type === "SUBCATEGORY") {
-                console.log("call here3")
                 await CategoryService.createSubcategorySpecification(specificationFormData);
             }
         } catch (error) {
@@ -140,7 +137,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
 
     const handleModalClose = () => {
         form.resetFields();
-        subspecificationFormData.subcat_spec_name = selectOptions[0].label;
+        subspecificationFormData.subcat_spec_name = selectOptions[0]?.label;
         onClose();
     };
 

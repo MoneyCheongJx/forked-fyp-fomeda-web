@@ -26,7 +26,7 @@ const ConfirmationContent = ({ action, record }: any) => {
             </div>
             {isSubspecification || isSubcategory ?
                 <div>
-                    <b>{isCategory? catType : specType}:</b> {name}
+                    <b>{isCategory? catType : "Sub"+specType.toLowerCase()}:</b> {name}
                 </div> :<></>
             }
             <br/>

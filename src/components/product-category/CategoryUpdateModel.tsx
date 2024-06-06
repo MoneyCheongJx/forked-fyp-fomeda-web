@@ -115,7 +115,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             ) : (
                 <>
                     <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_id" {...commonProps}>
-                        <Select defaultValue={data.cat_name} options={[{label: data.cat_name, value: data.cat_id}]}
+                        <Select defaultValue={data.subcat_spec_name} options={[{label: data.parent_name, value: data.subcat_spec_id}]} onClick={() => console.log(data)}
                                 disabled/>
                     </Form.Item>
                     <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>}
@@ -135,6 +135,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             onOk={handleConfirmationModelOpen}
             okText="Update"
             onCancel={handleUpdateModelOnCancel}
+            width={"40%"}
         >
             {isCategory || (!isCategory && data.cat_type === 'SPECIFICATION') ?
                 <Form.Item label={<h5>{title} Type</h5>} labelCol={{span: 10}} labelAlign="left" className="mb-2">
