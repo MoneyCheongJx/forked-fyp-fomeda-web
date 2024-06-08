@@ -11,8 +11,8 @@ export const HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS = [
 ]
 
 export const HEADER_USER_DROPDOWN_CONSTANTS = [
-    {key: "logout", label: "Logout", link: ""},
     {key: "manage_profile", label: "Manage Profile", link: ""},
+    {key: "logout", label: "Logout", link: ""},
 ]
 
 /* can be used in the future. Current State we just hardcode it */

@@ -8,6 +8,7 @@ export class ApiConstant{
     static readonly CATEGORY_PREFIX = this.HOST_PREFIX + "category" + this.SUFFIX;
     static readonly ANNOUNCEMENT_PREFIX = this.HOST_PREFIX + "announcement" + this.SUFFIX;
     static readonly CONTENT_PREFIX = this.HOST_PREFIX + "content" + this.SUFFIX;
+    static readonly AUTH_PREFIX = this.HOST_PREFIX + "auth" + this.SUFFIX;
 
     /* category api */
     static readonly CREATE_CATEGORY = this.CATEGORY_PREFIX + "create-category";
@@ -68,4 +69,8 @@ export class ApiConstant{
     static readonly CREATE_HISTORY_TIMELINE = this.CONTENT_PREFIX + "create-history-timeline";
     static readonly EDIT_HISTORY_TIMELINE = this.CONTENT_PREFIX + "update-history-timeline";
     static readonly DELETE_HISTORY_TIMELINE = this.CONTENT_PREFIX + "delete-history-timeline";
+
+    /* auth api */
+    static readonly LOGIN = this.AUTH_PREFIX + "login";
+    static readonly REGISTER = this.AUTH_PREFIX + "register";
 }

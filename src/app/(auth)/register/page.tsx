@@ -1,37 +1,51 @@
 "use client";
 
 import React from "react";
-import {useRouter} from "next/navigation";
 import {Image, Card, Row, Col, Button, Form, Input, Typography} from "antd";
-
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
+import AuthenticationService from "@/services/authentication.service";
+import { useRouter } from 'next/navigation';
 
 const {Title, Link} = Typography;
 
 type FieldType = {
-    fullName?: string;
-    email?: string;
-    confirmEmail?: string;
-    tradingCompanyName?: string;
-    tradingCompanyNo?: string;
-    tradingCompanyAddress?: string;
+    fullname?: string;
+    email_address?: string;
+    confirm_email_address?: string;
+    company_name?: string;
+    company_no?: string;
+    company_address?: string;
     username?: string;
     password?: string;
-    confirmPassword?: string;
+    confirm_password?: string;
 };
-
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
-};
-
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
-
-
 
 export default function RegisterPage() {
+    const router = useRouter();
+
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        console.log('Success:', values);
+        try {
+            const { confirm_password, confirm_email_address, ...rest} = values
+            const payload = {
+                ...rest,
+                type: "supplier"
+            }
+
+            await AuthenticationService.register(payload).then(res => {
+                router.push('/login');
+            });
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
 
     return (
         <PageLayout>
@@ -57,7 +71,7 @@ export default function RegisterPage() {
                             <Title level={3}>Personal information</Title>
                             <Form.Item<FieldType>
                                 label="Fullname"
-                                name="fullName"
+                                name="fullname"
                                 rules={[
                                     {required: true, message: 'Please input your fullname'},
                                 ]}
@@ -67,7 +81,7 @@ export default function RegisterPage() {
                             </Form.Item>
                             <Form.Item<FieldType>
                                 label="Email addresss"
-                                name="email"
+                                name="email_address"
                                 rules={[
                                     {required: true, message: 'Please input your email address'},
                                     {type: "email", message: 'Please enter a valid email address'}
@@ -79,14 +93,14 @@ export default function RegisterPage() {
                             </Form.Item>
                             <Form.Item<FieldType>
                                 label="Confirm email addresss"
-                                name="confirmEmail"
-                                dependencies={["email"]}
+                                name="confirm_email_address"
+                                dependencies={["email_address"]}
                                 rules={[
                                     {required: true, message: 'Please input to confirm email address'},
                                     {type: "email", message: 'Please enter a valid email address'},
                                     ({getFieldValue}) => ({
                                         validator(_, value) {
-                                            if (!value || getFieldValue('email') === value) {
+                                            if (!value || getFieldValue('email_address') === value) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('The confirm email that you entered does not match with email above'));
@@ -100,7 +114,7 @@ export default function RegisterPage() {
                             <Title level={3}>Company information</Title>
                             <Form.Item<FieldType>
                                 label="Trading company name"
-                                name="tradingCompanyName"
+                                name="company_name"
                                 rules={[
                                     {required: true, message: 'Please input your trading company name'},
                                 ]}
@@ -110,7 +124,7 @@ export default function RegisterPage() {
                             </Form.Item>
                             <Form.Item<FieldType>
                                 label="Trading company no"
-                                name="tradingCompanyNo"
+                                name="company_no"
                                 rules={[
                                     {required: true, message: 'Please input your trading company no'},
                                 ]}
@@ -120,7 +134,7 @@ export default function RegisterPage() {
                             </Form.Item>
                             <Form.Item<FieldType>
                                 label="Trading company address"
-                                name="tradingCompanyAddress"
+                                name="company_address"
                                 rules={[
                                     {required: true, message: 'Please input your trading company address'},
                                 ]}
@@ -163,7 +177,7 @@ export default function RegisterPage() {
                             <Form.Item<FieldType>
                                 label="Confirm password"
                                 dependencies={['password']}
-                                name="confirmPassword"
+                                name="confirm_password"
                                 rules={[
                                     {required: true, message: 'Please input your password'},
                                     {min: 12, max: 20, message: 'The username must be between 12 and 20 characters'},
