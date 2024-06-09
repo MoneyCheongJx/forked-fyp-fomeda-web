@@ -51,7 +51,7 @@ export default function LoginPage() {
 
     return (
         <PageLayout>
-            <Row align="middle" justify="space-evenly" style={{height: '100vh', width: '100vw'}}>
+            <Row align="middle" justify="space-evenly" style={{height: '100vh'}}>
                 <Col>
                     <Image
                         preview={false}
@@ -114,7 +114,7 @@ export default function LoginPage() {
                                 Create account now
                             </Link>
                         </div>
-
+            
                         <div style={{textAlign: 'center'}}>
                             <Typography.Text style={{padding: '5px'}}>
                                 Check account registration status?
