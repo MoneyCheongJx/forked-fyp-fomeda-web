@@ -326,7 +326,9 @@ const ContentManagementPage = () => {
                        dataSource={contentData.map((data: { _id: any }) => {
                            return {...data, key: data._id}
                        })}
-                       pagination={false}/>
+                       pagination={false}
+                       showSorterTooltip={false}
+                />
             </div>
             <div className="mb-8">
                 <Row className="mb-2 justify-between">
