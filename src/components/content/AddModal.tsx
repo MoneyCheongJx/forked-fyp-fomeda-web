@@ -29,7 +29,10 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
         <Modal
             open={isOpen}
             title={<h3 style={{textAlign: 'center'}}> {title} </h3>}
-            onCancel={onCancel}
+            onCancel={() => {
+                form.resetFields();
+                onCancel();
+            }}
             onOk={handleOk}
             cancelText="Cancel"
             okText="Add"
@@ -69,6 +72,7 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
                             (<Form.Item
                                 key={name}
                                 name={name}
+                                label= {label}
                                 rules={[{required: true, message: `Please upload the ${label.toLowerCase()}`}]}>
                                 <Upload name="file" accept=".jpg,.jpeg,.png" beforeUpload={() => false}
                                         listType="picture"
