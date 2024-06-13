@@ -223,7 +223,6 @@ const GeneralTab = () => {
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
                            showSorterTooltip={false}
-                           sortDirections={['ascend', 'descend', 'ascend']}
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}

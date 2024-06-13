@@ -79,25 +79,6 @@ const CategoryTab = () => {
         }
     }
 
-    const handleConfirmationModelContent = (key: string, record: any) => {
-        const isSub = record.subcat_name ? "Subcategory" : "Category";
-        const parent = record.parent_name ?? "";
-        const name = record.subcat_name ?? record.cat_name;
-        return (
-            <div>
-                <br/>
-                Are you sure you want to <b>{key}</b> this {isSub}?
-                <br/>
-                {parent ?
-                    <div>
-                        <b>Category:</b> {parent}
-                    </div> : <></>}
-                <b>{isSub}</b>: {name}
-                <br/><br/>
-            </div>
-        )
-    }
-
     const deactivateCategory = async (id: string, is_active: boolean) => {
         try {
             await CategoryService.deactivateCategory(id, is_active);
@@ -253,7 +234,6 @@ const CategoryTab = () => {
                     pageSizeOptions: [10, 20, 50, 100],
                 }}
                 showSorterTooltip={false}
-                sortDirections={['ascend', 'descend', 'ascend']}
             />
             <CategoryUpdateModel
                 isOpen={openUpdateModel}

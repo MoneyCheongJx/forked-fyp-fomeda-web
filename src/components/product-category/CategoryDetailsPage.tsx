@@ -260,7 +260,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
                            showSorterTooltip={false}
-                           sortDirections={['ascend', 'descend', 'ascend']}
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}
