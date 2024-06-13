@@ -15,10 +15,8 @@ export const ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS: ColumnType<any>[] =
     },
     {
         key: "created_on",
-        align: 'center',
         title: "Date",
         dataIndex: "created_on",
-        width: "18%",
         render: (text: any) => moment(text).format('DD-MM-YYYY'),
         sorter: (a: any, b: any) => {
             const dateA = moment(a.created_on);
@@ -29,10 +27,8 @@ export const ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS: ColumnType<any>[] =
     },
     {
         key: "created_by",
-        align: 'center',
         title: "Created by",
         dataIndex: "created_by",
-        width: "15%",
         sorter: (a: any, b: any) => {
             const firstCharA = a.created_by.charAt(0).toLowerCase();
             const firstCharB = b.created_by.charAt(0).toLowerCase();
@@ -41,10 +37,8 @@ export const ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS: ColumnType<any>[] =
     },
     {
         key: "visibility",
-        align: 'center',
         title: "Visibility",
         dataIndex: "visibility",
-        width: "15%",
         filters: [
             {
                 text: 'Invisibile',
