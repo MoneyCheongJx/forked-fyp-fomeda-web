@@ -6,7 +6,7 @@ import {PlusOutlined} from "@ant-design/icons";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import ConfirmationContent from "@/components/product-category/ConfimationContent";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -19,7 +19,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const [detailsData, setDetailsData] = useState<any>({})
     const [openAddModel, setOpenAddModel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [openUpdateModel, setUpdateModel] = useState(false);
+    const [openUpdateModel, setOpenUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any>([]);
     const [name, setName] = useState<any>([]);
@@ -32,9 +32,9 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             return {
                 key: item.key,
                 label: (
-                    <div onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
-                    </div>
+                    </Button>
                 ),
             };
         }).filter((item: any) => item !== null);
@@ -58,7 +58,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_specification') {
-            setUpdateModel(true);
+            setOpenUpdateModel(true);
             setSelectedRecord(record);
             record.subcat_subspec_name ? setIsParent(false) : setIsParent(true);
         } else if (key === 'deactivate') {
@@ -213,7 +213,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                 </Col>
                 {!isCategory ?
                     <Col span={8}>
-                        <h3 className='font-normal ml-1 truncate'><b>SubCategory:</b> {name.subcat_name}</h3>
+                        <h3 className='font-normal ml-1 truncate'><b>Subcategory:</b> {name.subcat_name}</h3>
                     </Col> : <></>
                 }
             </Row>
@@ -263,7 +263,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}
-                        onClose={() => setUpdateModel(false)}
+                        onClose={() => setOpenUpdateModel(false)}
                         isParent={isParent}
                         isCategory={false}
                         onUpdate={handleOnUpdate}

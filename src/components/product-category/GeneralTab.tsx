@@ -9,7 +9,7 @@ import CategoryService from "@/services/category.service";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import "@/styles/category.component.css"
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import ConfimationContent from "@/components/product-category/ConfimationContent";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -20,7 +20,7 @@ const GeneralTab = () => {
     const [specificationData, setSpecificationData] = useState<any[]>([]);
     const [openAddModel, setOpenAddModel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [openUpdateModel, setUpdateModel] = useState(false);
+    const [openUpdateModel, setOpenUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any>([]);
 
@@ -35,9 +35,9 @@ const GeneralTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <div onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
-                    </div>
+                    </Button>
                 ),
             };
         }).filter((item: any) => item !== null);
@@ -49,7 +49,7 @@ const GeneralTab = () => {
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ConfimationContent action={key} record={record} />,
+                content: <ConfirmationContent action={key} record={record} />,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -61,7 +61,7 @@ const GeneralTab = () => {
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_specification') {
-            setUpdateModel(true);
+            setOpenUpdateModel(true);
             setSelectedRecord(record);
             record.subcat_subspec_name ? setIsParent(false) : setIsParent(true);
         } else if (key === 'deactivate') {
@@ -226,7 +226,7 @@ const GeneralTab = () => {
                     />
                     <CategoryUpdateModel
                         isOpen={openUpdateModel}
-                        onClose={() => setUpdateModel(false)}
+                        onClose={() => setOpenUpdateModel(false)}
                         isParent={isParent}
                         isCategory={false}
                         onUpdate={handleOnUpdate}

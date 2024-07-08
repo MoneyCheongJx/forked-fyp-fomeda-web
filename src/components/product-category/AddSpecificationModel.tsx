@@ -5,8 +5,7 @@ import {Form, Input, Modal, Radio, Select} from "antd";
 import CategoryService from "@/services/category.service";
 import {SpecificationModel} from "@/models/specification.model";
 import {SubspecificationModel} from "@/models/subspecification.model";
-import ConfimationContent from "@/components/product-category/ConfimationContent";
-import {opt} from "ts-interface-checker";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 const initialSpecificationFormData: SpecificationModel = {
     cat_id: "",
@@ -85,7 +84,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
         Modal.confirm({
             title: <h3>Confirmation</h3>,
             content:
-                <ConfimationContent
+                <ConfirmationContent
                     action="add"
                     record={isSpecification ? {
                         ...specificationFormData,
@@ -166,106 +165,134 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
         }
     }, [filterSpecificationData, specificationFormData]);
 
-    const modelExtraField = (key: string) => {
+    const validateModelButton = (): boolean => {
+        let isValid = false;
+
+        if ((isSpecification && !specificationFormData.subcat_spec_name) ||
+            (!isSpecification && !subspecificationFormData.subcat_subspec_name))
+            isValid = true;
+
+        return isValid;
+    }
+
+    const renderGeneralInformation = () => {
+        return (
+            <Form.Item<SpecificationModel>
+                label={<h5>Fillable:</h5>}
+                labelCol={{span: 10}}
+                labelAlign="left"
+                className="mb-2"
+                name="allow_input"
+            >
+                <Radio.Group
+                    name="allow_input"
+                    onChange={(e) => {
+                        handleSpecificationFormChange(e);
+                        handleIsFillableRadioChange(e);
+                    }}
+                    value={isFillable}
+                    defaultValue={true}
+                >
+                    <Radio value={true}>Yes</Radio>
+                    <Radio value={false}>No</Radio>
+                </Radio.Group>
+            </Form.Item>
+        )
+    }
+
+    const renderProductSpecification = () => {
         return (
             <div>
-                {key === "general_information" ? (
-                    <Form.Item<SpecificationModel>
-                        label={<h5>Fillable:</h5>}
-                        labelCol={{span: 10}}
-                        labelAlign="left"
-                        className="mb-2"
-                        name="allow_input"
+                <Form.Item<SpecificationModel>
+                    label={<h5>Specification Type:</h5>}
+                    labelCol={{span: 10}}
+                    labelAlign="left"
+                    className="mb-2"
+                >
+                    <Radio.Group
+                        onChange={handleSpecificationRadioChange}
+                        value={isSpecification}
                     >
-                        <Radio.Group
-                            name="allow_input"
-                            onChange={(e) => {
-                                handleSpecificationFormChange(e);
-                                handleIsFillableRadioChange(e);
-                            }}
-                            value={isFillable}
-                            defaultValue={true}
-                        >
-                            <Radio value={true}>Yes</Radio>
-                            <Radio value={false}>No</Radio>
-                        </Radio.Group>
-                    </Form.Item>
-                ) : key === "product_specification" ? (
+                        <Radio value={true}>Specification</Radio>
+                        <Radio value={false}>Subspecification</Radio>
+                    </Radio.Group>
+                </Form.Item>
+
+                {!isSpecification ? (
                     <div>
-                        <Form.Item<SpecificationModel>
-                            label={<h5>Specification Type:</h5>}
+                        <Form.Item<SubspecificationModel>
+                            label={<h5>Specification name</h5>}
                             labelCol={{span: 10}}
                             labelAlign="left"
                             className="mb-2"
+                            name="subcat_spec_id"
+                            rules={[
+                                {required: true, message: 'specification name is required'}
+                            ]}
                         >
-                            <Radio.Group
-                                onChange={handleSpecificationRadioChange}
-                                value={isSpecification}
-                            >
-                                <Radio value={true}>Specification</Radio>
-                                <Radio value={false}>Subspecification</Radio>
-                            </Radio.Group>
+                            <Select
+                                defaultValue={defaultSelectValue}
+                                onChange={(value, option) =>
+                                    handleSubspecificationFormChange(
+                                        value,
+                                        "subcat_spec_id",
+                                        option
+                                    )
+                                }
+                                options={selectOptions}
+                            />
                         </Form.Item>
-
-                        {!isSpecification ? (
-                            <div>
-                                <Form.Item<SubspecificationModel>
-                                    label={<h5>Specification name</h5>}
-                                    labelCol={{span: 10}}
-                                    labelAlign="left"
-                                    className="mb-2"
-                                    name="subcat_spec_id"
-                                >
-                                    <Select
-                                        defaultValue={defaultSelectValue}
-                                        onChange={(value, option) =>
-                                            handleSubspecificationFormChange(
-                                                value,
-                                                "subcat_spec_id",
-                                                option
-                                            )
-                                        }
-                                        options={selectOptions}
-                                    />
-                                </Form.Item>
-                                <Form.Item<SubspecificationModel>
-                                    label={<h5>Subspecification name</h5>}
-                                    labelCol={{span: 10}}
-                                    labelAlign="left"
-                                    className="mb-2"
-                                    name="subcat_subspec_name"
-                                >
-                                    <Input
-                                        name="subcat_subspec_name"
-                                        onChange={(e) =>
-                                            handleSubspecificationFormChange(
-                                                e.target.value,
-                                                "subcat_subspec_name"
-                                            )
-                                        }
-                                    />
-                                </Form.Item>
-                            </div>
-                        ) : (
-                            <Form.Item<SpecificationModel>
-                                label={<h5>Specification name</h5>}
-                                labelCol={{span: 10}}
-                                labelAlign="left"
-                                className="mb-2"
-                                name="subcat_spec_name"
-                            >
-                                <Input
-                                    name="subcat_spec_name"
-                                    onChange={handleSpecificationFormChange}
-                                />
-                            </Form.Item>
-                        )}
+                        <Form.Item<SubspecificationModel>
+                            label={<h5>Subspecification name</h5>}
+                            labelCol={{span: 10}}
+                            labelAlign="left"
+                            className="mb-2"
+                            name="subcat_subspec_name"
+                            rules={[
+                                {required: true, message: 'subspecification name is required'}
+                            ]}
+                        >
+                            <Input
+                                name="subcat_subspec_name"
+                                onChange={(e) =>
+                                    handleSubspecificationFormChange(
+                                        e.target.value,
+                                        "subcat_subspec_name"
+                                    )
+                                }
+                            />
+                        </Form.Item>
                     </div>
                 ) : (
-                    <></>
+                    <Form.Item<SpecificationModel>
+                        label={<h5>Specification name</h5>}
+                        labelCol={{span: 10}}
+                        labelAlign="left"
+                        className="mb-2"
+                        name="subcat_spec_name"
+                        rules={[
+                            {required: true, message: 'specification name is required'}
+                        ]}
+                    >
+                        <Input
+                            name="subcat_spec_name"
+                            onChange={handleSpecificationFormChange}
+                        />
+                    </Form.Item>
                 )}
             </div>
-        );
+        )
+    }
+
+    const modelExtraField = (key: string) => {
+        switch(key) {
+            case "general_information":
+                return renderGeneralInformation();
+            case "product_specification":
+                return renderProductSpecification();
+            default:
+                return null;
+        }
     };
 
     return (
@@ -277,6 +304,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
             okText={data.button}
             onCancel={handleModalClose}
             width={"40%"}
+            okButtonProps={{disabled: validateModelButton()}}
         >
             <Form form={form} name={`${data.key}_form`}>
                 {modelExtraField(data.key)}
@@ -287,6 +315,9 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                         labelAlign="left"
                         className="mb-2"
                         name="subcat_spec_name"
+                        rules={[
+                            {required: true, message: 'specification name is required'}
+                        ]}
                     >
                         <Input name="subcat_spec_name" onChange={handleSpecificationFormChange}/>
                     </Form.Item>

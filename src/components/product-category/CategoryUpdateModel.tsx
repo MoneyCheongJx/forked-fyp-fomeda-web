@@ -3,7 +3,7 @@
 import {Form, FormItemProps, Input, Modal, Radio, Select} from "antd";
 import React, {useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
-import ConfimationContent from "@/components/product-category/ConfimationContent";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpdate, title, type}: any) => {
     const [form] = Form.useForm();
@@ -63,7 +63,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
     const handleConfirmationModelOpen = () => {
         Modal.confirm({
             title: <h3>Confirmation</h3>,
-            content: <ConfimationContent action="update" record={formData} />,
+            content: <ConfirmationContent action="update" record={formData} />,
             className: "confirmation-modal",
             centered: true,
             width: "35%",

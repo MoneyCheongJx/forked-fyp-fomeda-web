@@ -5,7 +5,7 @@ import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
 import {SubcategoryModel} from "@/models/subcategory.model";
-import ConfimationContent from "@/components/product-category/ConfimationContent";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 
 const initialCategoryForm: CategoryModel = {
@@ -78,7 +78,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
     const handleConfirmationModelOpen = () => {
         Modal.confirm({
             title: <h3>Confirmation</h3>,
-            content: <ConfimationContent action="add" record={isCategory? categoryFormData : subcategoryFormData} />,
+            content: <ConfirmationContent action="add" record={isCategory? categoryFormData : subcategoryFormData} />,
             className: "confirmation-modal",
             centered: true,
             width: "35%",
@@ -135,6 +135,16 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
         }
     }, [filterCategoryData, categoryFormData]);
 
+    const validateModelButton = (): boolean => {
+        let isValid = false;
+
+        if((isCategory && !categoryFormData.cat_name) ||
+            (!isCategory && !subcategoryFormData.subcat_name))
+            isValid = true;
+
+        return isValid;
+    }
+
     return (
         <Modal
             title={<h3>Add Category</h3>}
@@ -143,6 +153,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             onOk={handleConfirmationModelOpen}
             okText="Add Category"
             onCancel={handleModalClose}
+            okButtonProps={{ disabled: validateModelButton() }}
         >
             <Form.Item
                 label={<h5>Category Type</h5>}
@@ -162,6 +173,10 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
                         labelCol={{span: 10}}
                         labelAlign="left"
                         className="mb-2"
+                        name='cat_name'
+                        rules={[
+                            {required: true, message: 'Category name is required'}
+                        ]}
                     >
                         <Input name="cat_name" onChange={handleCategoryFormChange}/>
                     </Form.Item>
@@ -174,6 +189,9 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
                             labelAlign="left"
                             className="mb-2"
                             name="cat_id"
+                            rules={[
+                                {required: true, message: 'Category name is required'}
+                            ]}
                         >
                             <Select
                                 defaultValue={defaultSelectValue}
@@ -187,6 +205,9 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
                             labelAlign="left"
                             className="mb-2"
                             name="subcat_name"
+                            rules={[
+                                {required: true, message: 'Subcategory name is required'}
+                            ]}
                         >
                             <Input name="subcat_name"
                                    onChange={(e) => handleSubcategoryFormChange(e.target.value, "subcat_name")}

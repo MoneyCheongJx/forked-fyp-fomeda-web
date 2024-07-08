@@ -11,7 +11,7 @@ import "@/styles/category.component.css"
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import ConfimationContent from "@/components/product-category/ConfimationContent";
+import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -25,7 +25,7 @@ const CategoryTab = () => {
     const [categoryData, setCategoryData] = useState<any[]>([]);
     const [filteredCategoryData, setFilteredCategoryData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [openUpdateModel, setUpdateModel] = useState(false);
+    const [openUpdateModel, setOpenUpdateModel] = useState(false);
     const [isParent, setIsParent] = useState(true);
     const [selectedRecord, setSelectedRecord] = useState<any[]>([]);
 
@@ -34,10 +34,12 @@ const CategoryTab = () => {
         const filteredData = categoryData.filter((item) => {
             const itemName = item.cat_name || item.subcat_name;
             const includesName = itemName.toLowerCase().includes(trimmedValue.toLowerCase());
-            const includesChildName = item.children && item.children.some((child: any) => {
-                const childName = child.cat_name || child.subcat_name;
-                return childName.toLowerCase().includes(trimmedValue.toLowerCase());
-            });
+            let includesChildName = null;
+            if (item.children) {
+                includesChildName = item.children.some((child: any) =>
+                    child.subcat_name.toLowerCase().includes(trimmedValue.toLowerCase())
+                );
+            }
             return includesName || includesChildName;
         });
         setFilteredCategoryData(filteredData);
@@ -49,7 +51,7 @@ const CategoryTab = () => {
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_category') {
-            setUpdateModel(true);
+            setOpenUpdateModel(true);
             setSelectedRecord(record);
             record.subcat_name ? setIsParent(false) : setIsParent(true);
         } else if (key === 'deactivate') {
@@ -69,7 +71,7 @@ const CategoryTab = () => {
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ConfimationContent action={key} record={record} />,
+                content: <ConfirmationContent action={key} record={record}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -129,9 +131,9 @@ const CategoryTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <div onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
-                    </div>
+                    </Button>
                 ),
             }
         }).filter(item => item !== null);
@@ -237,7 +239,7 @@ const CategoryTab = () => {
             />
             <CategoryUpdateModel
                 isOpen={openUpdateModel}
-                onClose={() => setUpdateModel(false)}
+                onClose={() => setOpenUpdateModel(false)}
                 isParent={isParent}
                 isCategory={true}
                 onUpdate={handleOnUpdate}

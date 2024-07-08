@@ -124,14 +124,4 @@ export const SPECIFICATIONS_TABLE_CONSTANTS = [
     },
 ]
 
-export const CONFIRMATION_MESSAGE_CONSTANT = [
-    {key: "create_category", message: "Are you confirm to create new <b>category</b>?"},
-    {key: "create_subcategory", message: "Are you confirm to create new <b>subcategory</b>?"},
-    {key: "create_information", message: "Are you confirm to create new <b>General Information</b> field?"},
-    {key: "create_certification", message: "Are you confirm to create new <b>Certificate</b> field?"},
-    {key: "create_service", message: "Are you confirm to create new <b>Service</b> field?"},
-    {key: "create_specification", message: "Are you confirm to create new <b>Specification</b> field?"},
-    {key: "create_subspecification", message: "Are you confirm to create new <b>Subspecification</b> field?"},
-    {key: "edit_subspecification", message: "Are you confirm to create new <b>Subspecification</b> field?"},
-]
 
