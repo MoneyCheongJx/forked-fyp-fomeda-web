@@ -179,7 +179,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
     const renderGeneralInformation = () => {
         return (
             <Form.Item<SpecificationModel>
-                label={<h5>Fillable:</h5>}
+                label={<h5>Fillable</h5>}
                 labelCol={{span: 10}}
                 labelAlign="left"
                 className="mb-2"
@@ -228,7 +228,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                             className="mb-2"
                             name="subcat_spec_id"
                             rules={[
-                                {required: true, message: 'specification name is required'}
+                                {required: true, message: `Specification name is required`}
                             ]}
                         >
                             <Select
@@ -250,7 +250,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                             className="mb-2"
                             name="subcat_subspec_name"
                             rules={[
-                                {required: true, message: 'subspecification name is required'}
+                                {required: true, message: 'Subspecification name is required'}
                             ]}
                         >
                             <Input
@@ -272,7 +272,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                         className="mb-2"
                         name="subcat_spec_name"
                         rules={[
-                            {required: true, message: 'specification name is required'}
+                            {required: true, message: `Specification name is required`}
                         ]}
                     >
                         <Input
@@ -317,7 +317,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
                         className="mb-2"
                         name="subcat_spec_name"
                         rules={[
-                            {required: true, message: 'specification name is required'}
+                            {required: true, message: `${data.group} name is required`}
                         ]}
                     >
                         <Input name="subcat_spec_name" onChange={handleSpecificationFormChange}/>

@@ -1,6 +1,6 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
-import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
+import {SPECIFICATION_TYPE_CONSTANT, SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
 import {Button, Col, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
@@ -120,13 +120,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             console.error(error);
             throw error;
         }
-    };
-
-    const specTypeMap: { [key: string]: string } = {
-        GENERAL: "Information",
-        CERTIFICATION: "Certification",
-        SERVICE: "Service",
-        SPECIFICATION: "Specification",
     };
 
     const renderActions = (action_list: any, record: any) => (
@@ -267,7 +260,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                         isParent={isParent}
                         isCategory={false}
                         onUpdate={handleOnUpdate}
-                        title={String(specTypeMap[selectedRecord.cat_type]).toString()}
+                        title={String(SPECIFICATION_TYPE_CONSTANT[selectedRecord.cat_type]).toString()}
                         data={selectedRecord}
                         type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
                     />

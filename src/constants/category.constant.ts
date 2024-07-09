@@ -124,4 +124,10 @@ export const SPECIFICATIONS_TABLE_CONSTANTS = [
     },
 ]
 
+export const SPECIFICATION_TYPE_CONSTANT: { [key: string]: string } = {
+    GENERAL: "Information",
+    CERTIFICATION: "Certification",
+    SERVICE: "Service",
+    SPECIFICATION: "Specification",
+};
 

@@ -65,7 +65,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
     const handleConfirmationModelOpen = () => {
         Modal.confirm({
             title: <h3>Confirmation</h3>,
-            content: <ConfirmationContent action="update" record={formData} />,
+            content: <ConfirmationContent action="update" record={formData}/>,
             className: "confirmation-modal",
             centered: true,
             width: "35%",
@@ -86,6 +86,18 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
         });
     };
 
+    const validateModelButton = (): boolean => {
+        let isValid = false;
+
+        if ((isCategory && isParent && !formData.cat_name) ||
+            (isCategory && !isParent && !formData.subcat_name) ||
+            (!isCategory && isParent && !formData.subcat_spec_name) ||
+            (!isCategory && !isParent && !formData.subcat_subspec_name))
+            isValid = true;
+
+        return isValid;
+    }
+
     const renderFormItems = () => {
         const commonProps: FormItemProps = {
             labelCol: {span: 10},
@@ -95,12 +107,14 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
 
         if (isCategory) {
             return isParent ? (
-                <Form.Item label={<h5>{title} name</h5>} name="cat_name" {...commonProps}>
+                <Form.Item label={<h5>{title} name</h5>} name="cat_name" {...commonProps}
+                           rules={[{required: true, message: 'Category name is required'}]}>
                     <Input name="cat_name" onChange={handleFormChange}/>
                 </Form.Item>
             ) : (
                 <>
-                    <Form.Item label={<h5>{title} name</h5>} name="cat_id" {...commonProps}>
+                    <Form.Item label={<h5>{title} name</h5>} name="cat_id" {...commonProps}
+                               rules={[{required: true, message: 'Subcategory name is required'}]}>
                         <Select options={[{label: data.parent_name, value: data.cat_id}]}
                                 disabled/>
                     </Form.Item>
@@ -111,17 +125,21 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             );
         } else {
             return isParent ? (
-                <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_name" {...commonProps}>
+                <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_name" {...commonProps}
+                           rules={[{required: true, message: `${title} name is required`}]}>
                     <Input name="subcat_spec_name" onChange={handleFormChange}/>
                 </Form.Item>
             ) : (
                 <>
                     <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_id" {...commonProps}>
-                        <Select defaultValue={data.subcat_spec_name} options={[{label: data.parent_name, value: data.subcat_spec_id}]} onClick={() => console.log(data)}
+                        <Select defaultValue={data.subcat_spec_name}
+                                options={[{label: data.parent_name, value: data.subcat_spec_id}]}
+                                onClick={() => console.log(data)}
                                 disabled/>
                     </Form.Item>
                     <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>}
-                               name="subcat_subspec_name" {...commonProps}>
+                               name="subcat_subspec_name" {...commonProps}
+                               rules={[{required: true, message: `Sub${title.toLowerCase()} name is required`}]}>
                         <Input name="subcat_subspec_name" onChange={handleFormChange}/>
                     </Form.Item>
                 </>
@@ -138,6 +156,7 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             okText="Update"
             onCancel={handleUpdateModelOnCancel}
             width={"40%"}
+            okButtonProps={{disabled: validateModelButton()}}
         >
             {isCategory || (!isCategory && data.cat_type === 'SPECIFICATION') ?
                 <Form.Item label={<h5>{title} Type</h5>} labelCol={{span: 10}} labelAlign="left" className="mb-2">
