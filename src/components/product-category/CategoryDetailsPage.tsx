@@ -1,7 +1,7 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
 import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
-import {Button, Col, Dropdown, Modal, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
@@ -32,9 +32,9 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             return {
                 key: item.key,
                 label: (
-                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Typography onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
-                    </Button>
+                    </Typography>
                 ),
             };
         }).filter((item: any) => item !== null);

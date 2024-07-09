@@ -14,7 +14,8 @@ export class HttpService {
                 body: JSON.stringify(data)
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorMessage = await response.json();
+                throw new Error(`${errorMessage.message}`);
             }
             return response.json();
         } catch (error) {
@@ -56,7 +57,8 @@ export class HttpService {
                 body: JSON.stringify(data)
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorMessage = await response.json();
+                throw new Error(`${errorMessage.message}`);
             }
             return response.json();
         } catch (error) {
@@ -77,6 +79,10 @@ export class HttpService {
                     "Content-Type": "application/json",
                 },
             });
+            if (!response.ok) {
+                const errorMessage = await response.json();
+                throw new Error(`${errorMessage.message}`);
+            }
             return response.json();
         } catch (error) {
             console.error('Error in DELETE request:', error);
@@ -99,7 +105,8 @@ export class HttpService {
                 body: JSON.stringify(data)
             });
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorMessage = await response.json();
+                throw new Error(`${errorMessage.message}`);
             }
             return response.json();
         } catch (error) {

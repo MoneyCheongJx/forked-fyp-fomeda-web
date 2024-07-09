@@ -4,6 +4,7 @@ import {Form, FormItemProps, Input, Modal, Radio, Select} from "antd";
 import React, {useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import MessageService from "@/services/message.service";
 
 const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpdate, title, type}: any) => {
     const [form] = Form.useForm();
@@ -55,7 +56,8 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             await handleFormSubmit();
             onUpdate();
             onClose();
-        } catch (error) {
+        } catch (error: any) {
+            MessageService.error(error.message)
             console.error('Validate Failed:', error);
         }
     };

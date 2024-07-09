@@ -6,6 +6,7 @@ import CategoryService from "@/services/category.service";
 import {SpecificationModel} from "@/models/specification.model";
 import {SubspecificationModel} from "@/models/subspecification.model";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import MessageService from "@/services/message.service";
 
 const initialSpecificationFormData: SpecificationModel = {
     cat_id: "",
@@ -76,7 +77,7 @@ const AddSpecificationModel = ({data, isOpen, onClose, onAdd, specificationData,
             onAdd();
             onClose();
         }).catch(errorInfo => {
-            console.error("Validate Failed:", errorInfo);
+            MessageService.error(errorInfo.message);
         });
     };
 

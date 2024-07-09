@@ -1,6 +1,6 @@
 "use client"
 
-import {Button, Col, Dropdown, Input, Modal, Row, Table, Tag} from "antd";
+import {Button, Col, Dropdown, Input, Modal, Row, Table, Tag, Typography} from "antd";
 import React, {useEffect, useState} from "react";
 import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
@@ -131,9 +131,9 @@ const CategoryTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Typography onClick={() => handleConfirmationModelOpen(item.key, record)} >
                         {item.label}
-                    </Button>
+                    </Typography>
                 ),
             }
         }).filter(item => item !== null);

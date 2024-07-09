@@ -1,6 +1,6 @@
 "use client"
 
-import {Button, Dropdown, Modal, Row, Table, Tag} from "antd";
+import {Button, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
 import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
 import React, {useEffect, useState} from "react";
@@ -35,9 +35,9 @@ const GeneralTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <Button type="link" onClick={() => handleConfirmationModelOpen(item.key, record)}>
+                    <Typography onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
-                    </Button>
+                    </Typography>
                 ),
             };
         }).filter((item: any) => item !== null);

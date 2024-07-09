@@ -6,6 +6,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
 import {SubcategoryModel} from "@/models/subcategory.model";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import MessageService from "@/services/message.service";
 
 
 const initialCategoryForm: CategoryModel = {
@@ -71,14 +72,14 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             onAdd();
             onClose();
         }).catch(errorInfo => {
-            console.error('Validate Failed:', errorInfo);
+            MessageService.error(errorInfo.message);
         });
     }
 
     const handleConfirmationModelOpen = () => {
         Modal.confirm({
             title: <h3>Confirmation</h3>,
-            content: <ConfirmationContent action="add" record={isCategory? categoryFormData : subcategoryFormData} />,
+            content: <ConfirmationContent action="add" record={isCategory ? categoryFormData : subcategoryFormData}/>,
             className: "confirmation-modal",
             centered: true,
             width: "35%",
