@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {Image, Card, Row, Col, Button, Form, Input, Typography} from "antd";
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
@@ -22,10 +22,13 @@ type FieldType = {
 };
 
 export default function RegisterPage() {
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         console.log('Success:', values);
+        setIsLoading(true);
+
         try {
             const { confirm_password, confirm_email_address, ...rest} = values
             const payload = {
@@ -40,6 +43,8 @@ export default function RegisterPage() {
 
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -199,8 +204,8 @@ export default function RegisterPage() {
                                 <Input.Password placeholder="Confirm password"/>
                             </Form.Item>
                             <Form.Item style={{paddingTop: '5px'}}>
-                                <Button block type="primary" htmlType="submit">
-                                    Create an account
+                                <Button block type="primary" htmlType="submit" loading={isLoading}>
+                                    Create an  account
                                 </Button>
                             </Form.Item>
                         </Form>

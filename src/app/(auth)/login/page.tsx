@@ -18,6 +18,7 @@ type FieldType = {
 
 export default function LoginPage() {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const [user, setUser] = useState({
         username: "",
         password: "",
@@ -25,6 +26,7 @@ export default function LoginPage() {
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         console.log('Success:', values);
+        setIsLoading(true);
         try {
             await AuthenticationService.login(values).then(res => {
                 notification.success({
@@ -42,6 +44,9 @@ export default function LoginPage() {
                 description: 'Invalid credentials during login. Please try again.',
                 duration: 3,
             });
+        }
+        finally {
+            setIsLoading(false);
         }
     };
 
@@ -96,7 +101,7 @@ export default function LoginPage() {
                                 <Input.Password placeholder="Password"/>
                             </Form.Item>
                             <Form.Item style={{paddingTop: '5px'}}>
-                                <Button block type="primary" htmlType="submit">
+                                <Button block type="primary" htmlType="submit" loading={isLoading}>
                                     Sign in
                                 </Button>
                                 <div style={{padding: '5px', textAlign: 'right'}}>
