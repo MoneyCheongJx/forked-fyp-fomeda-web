@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import PageLayout from '@/app/page';
 import {Breadcrumb} from "antd";
-import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form, Typography} from "antd";
+import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form, Typography, Image} from "antd";
 import Link from "next/link";
 import {
     CAROUSEL_TABLE_HEADER_CONSTANTS,
@@ -260,7 +260,7 @@ const ContentManagementPage = () => {
                             case 'delete_history_timeline':
                                 handleSubmit(record, item.key);
                         }
-                        }}>
+                    }}>
                         {item.label}
                     </div>
                 ),
@@ -286,7 +286,9 @@ const ContentManagementPage = () => {
                 return {
                     ...column,
                     render: (image: any) => (
-                        <Typography.Text>{image?.fileList[0]?.name}</Typography.Text>
+                        <>
+                            <Image src={image?.fileList[0]?.thumbUrl} />
+                        </>
                     ),
                 };
             }
