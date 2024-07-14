@@ -286,9 +286,7 @@ const ContentManagementPage = () => {
                 return {
                     ...column,
                     render: (image: any) => (
-                        <>
-                            <Image src={image?.fileList[0]?.thumbUrl} />
-                        </>
+                            <Image src={image?.base64} width="25%"/>
                     ),
                 };
             }

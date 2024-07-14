@@ -14,8 +14,25 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
     const handleOk = () => {
         form
             .validateFields()
-            .then(values => {
+            .then(async values => {
                 form.resetFields();
+
+                // format image payload
+                if (type == "add_carousel") {
+                    const file = values?.image?.fileList[0];
+
+                    if (file) {
+                        values.image = {
+                            name: file.name,
+                            percent: file.percent,
+                            size: file.percent,
+                            type: file.type,
+                            uid: file.uid,
+                            base64: await getBase64(file.originFileObj)
+                        }
+                    }
+                }
+
                 onSubmit(values, type);
             })
             .catch(info => {
@@ -24,6 +41,14 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
 
     };
 
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
 
     return (
         <Modal
