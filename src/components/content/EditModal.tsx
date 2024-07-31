@@ -1,18 +1,18 @@
 "use client";
 
-import React, {useCallback, useEffect, useState} from "react";
-import {Form, Input, Modal, Radio, Select, DatePicker, Upload, Button} from "antd";
-import PropTypes from 'prop-types';
+import React, {useEffect, useState} from "react";
+import {Form, Input, Modal, DatePicker, Upload, Button, Image} from "antd";
 import {UploadOutlined} from '@ant-design/icons';
 import dayjs from 'dayjs';
 import {UploadFile, UploadChangeParam} from 'antd/es/upload/interface';
 
 const {TextArea} = Input;
 
-
 const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any) => {
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
     const dateFormat = 'DD-MM-YYYY';
 
     useEffect(() => {
@@ -23,9 +23,8 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
                 date: data.date ? dayjs(data.date) : null,
             };
 
-
-            if (data?.image?.fileList) {
-                setFileList(data?.image?.fileList)
+            if (data?.image) {
+                setFileList([data?.image])
             }
 
             form.setFieldsValue(formData);
@@ -33,34 +32,61 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
 
     }, [data, form]);
 
-    const handleUploadChange = ({fileList: newFileList}: UploadChangeParam<UploadFile>) => {
+    const handleUploadChange = async ({fileList: newFileList}: UploadChangeParam<UploadFile>) => {
         setFileList(newFileList);
+        if (newFileList[0]) {
+            const image = {
+                name: newFileList[0].name,
+                percent: newFileList[0].percent,
+                size: newFileList[0].percent,
+                type: newFileList[0].type,
+                uid: newFileList[0].uid,
+                thumbUrl: newFileList[0].thumbUrl,
+                base64: await getBase64(newFileList[0].originFileObj)
+            }
+            form.setFieldsValue({image: image});
+        }
     };
 
-    const handleRemove = (file: any) => {
+    const handleRemove = async (file: any) => {
         const newFileList = fileList.filter(f => f.uid !== file.uid);
         setFileList(newFileList);
+        form.setFieldsValue({image: newFileList});
     };
 
+    const handlePreview = async (file: any) => {
+        if (!file.base64 && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+
+        setPreviewImage(file.base64 || (file.preview as string));
+        setPreviewOpen(true);
+    };
+
+    const getBase64 = (file: any): Promise<string> =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+        });
 
     const handleOk = () => {
         form
             .validateFields()
             .then(values => {
-                form.resetFields();
                 const payload = {
                     ...data,
                     ...values
                 }
-
                 onSubmit(payload, type);
+                form.resetFields();
             })
             .catch(info => {
                 console.log('Validate Failed:', info);
             });
     };
 
-    // @ts-ignore
     return (
         <Modal
             open={isOpen}
@@ -115,11 +141,23 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
                                         maxCount={1}
                                         multiple={false}
                                         fileList={fileList}
+                                        onPreview={handlePreview}
                                         onChange={handleUploadChange}
                                         onRemove={handleRemove}
                                 >
                                     <Button icon={<UploadOutlined/>}>Upload Image (Max: 1)</Button>
                                 </Upload>
+                                {previewImage && (
+                                    <Image
+                                        wrapperStyle={{ display: 'none' }}
+                                        preview={{
+                                            visible: previewOpen,
+                                            onVisibleChange: (visible) => setPreviewOpen(visible),
+                                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                        }}
+                                        src={previewImage}
+                                    />
+                                )}
                             </Form.Item>)}
                     </div>
                 ))}

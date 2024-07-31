@@ -2,9 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import PageLayout from '@/app/page';
-import {Breadcrumb} from "antd";
-import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form, Typography, Image} from "antd";
-import Link from "next/link";
+import {Button, Breadcrumb, Dropdown, Row, Table, Image} from "antd";
 import {
     CAROUSEL_TABLE_HEADER_CONSTANTS,
     CONTENT_TABLE_HEADER_CONSTANTS,
@@ -14,8 +12,8 @@ import {
 import ContentService from "@/services/content.service";
 import AddModal from "@/components/content/AddModal";
 import EditModal from "@/components/content/EditModal";
-
-import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import DeleteModal from "@/components/content/DeleteModal.";
+import {PlusOutlined} from "@ant-design/icons";
 
 const ContentManagementPage = () => {
     const [carouselData, setCarouselData] = useState<any[]>([]);
@@ -25,8 +23,8 @@ const ContentManagementPage = () => {
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState<any>({});
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchCarouselData();
@@ -41,8 +39,6 @@ const ContentManagementPage = () => {
         } catch (error) {
             console.error(error);
             throw error;
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -53,8 +49,6 @@ const ContentManagementPage = () => {
         } catch (error) {
             console.error(error);
             throw error;
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -65,8 +59,6 @@ const ContentManagementPage = () => {
         } catch (error) {
             console.error(error);
             throw error;
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -94,6 +86,12 @@ const ContentManagementPage = () => {
                 config.fields = [{name: 'image', label: 'Upload Image', type: 'file'}];
                 setIsEditModalOpen(true);
                 break;
+            case 'delete_carousel':
+                config.type = 'delete_carousel';
+                config.title = 'Delete Carousel';
+                config.fields = [];
+                setIsDeleteModalOpen(true);
+                break;
             case 'add_content':
                 config.type = 'add_content';
                 config.title = 'Add Content';
@@ -111,6 +109,12 @@ const ContentManagementPage = () => {
                     {name: 'description', label: 'Content description', type: 'textarea'}
                 ];
                 setIsEditModalOpen(true);
+                break;
+            case 'delete_content':
+                config.type = 'delete_content';
+                config.title = 'Delete Content';
+                config.fields = [];
+                setIsDeleteModalOpen(true);
                 break;
             case 'add_history_timeline':
                 config.type = 'add_history_timeline';
@@ -134,6 +138,13 @@ const ContentManagementPage = () => {
                 ];
                 setIsEditModalOpen(true);
                 break;
+            case 'delete_history_timeline':
+                config.type = 'delete_history_timeline';
+                config.title = 'Delete History timeline';
+                config.fields = [];
+                setIsDeleteModalOpen(true);
+                break;
+
         }
         setModalConfig(config);
     };
@@ -175,7 +186,6 @@ const ContentManagementPage = () => {
                 fetchHistoryData();
                 break;
             case 'edit_carousel':
-                console.log('cb data._id', data._id)
                 try {
                     await ContentService.updateCarousel(data._id, payload);
                 } catch (error) {
@@ -232,11 +242,13 @@ const ContentManagementPage = () => {
         }
         setIsAddModalOpen(false);
         setIsEditModalOpen(false);
+        setIsDeleteModalOpen(false);
     };
 
     const handleClose = () => {
         setIsAddModalOpen(false);
         setIsEditModalOpen(false);
+        setIsDeleteModalOpen(false);
     };
 
     const defineActionList = (action: any, record: any) => {
@@ -253,12 +265,15 @@ const ContentManagementPage = () => {
                             case 'edit_content':
                             case 'add_history_timeline':
                             case 'edit_history_timeline':
-                                openModal(item.key)
-                                break;
                             case 'delete_carousel':
                             case 'delete_content':
                             case 'delete_history_timeline':
-                                handleSubmit(record, item.key);
+                                openModal(item.key)
+                                break;
+                            // case 'delete_carousel':
+                            // case 'delete_content':
+                            // case 'delete_history_timeline':
+                            //     handleSubmit(record, item.key);
                         }
                     }}>
                         {item.label}
@@ -267,6 +282,7 @@ const ContentManagementPage = () => {
             };
         }).filter((item: any) => item !== null);
     };
+
     const renderActionsDropdown = (action_list: any, record: any) => (
         <Dropdown menu={{items: defineActionList(action_list, record)}}>
             <Button>Actions</Button>
@@ -281,12 +297,11 @@ const ContentManagementPage = () => {
                     render: (text: any, record: any) => renderActionsDropdown(column.actionList, record)
                 };
             }
-
             if (column.key === 'image') {
                 return {
                     ...column,
                     render: (image: any) => (
-                            <Image src={image?.base64} width="25%"/>
+                        <Image src={image?.base64} width="25%"/>
                     ),
                 };
             }
@@ -355,6 +370,15 @@ const ContentManagementPage = () => {
             <EditModal
                 data={selectedRecord}
                 isOpen={isEditModalOpen}
+                type={modalConfig.type}
+                title={modalConfig.title}
+                fields={modalConfig.fields}
+                onSubmit={modalConfig.onSubmit}
+                onCancel={modalConfig.onCancel}
+            />
+            <DeleteModal
+                data={selectedRecord}
+                isOpen={isDeleteModalOpen}
                 type={modalConfig.type}
                 title={modalConfig.title}
                 fields={modalConfig.fields}
