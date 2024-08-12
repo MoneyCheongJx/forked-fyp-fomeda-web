@@ -72,5 +72,8 @@ export class ApiConstant{
 
     /* auth api */
     static readonly LOGIN = this.AUTH_PREFIX + "login";
+    static readonly LOGOUT = this.AUTH_PREFIX + "logout";
     static readonly REGISTER = this.AUTH_PREFIX + "register";
+    static readonly GET_DETAILS = this.AUTH_PREFIX + "get-details";
+
 }

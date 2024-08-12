@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import {useState, useEffect} from 'react';
 import {useRouter} from 'next/navigation';
+import AuthenticationService from "@/services/authentication.service";
 
 const MANAGEMENT_DROPDOWN_LIST: MenuProps["items"] = HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS.map((item) => ({
     key: item.key,
@@ -23,36 +24,37 @@ const MANAGEMENT_DROPDOWN_LIST: MenuProps["items"] = HEADER_MANAGEMENT_DROPDOWN_
 }));
 
 interface UserData {
-    user_id: string;
-    fullname: string;
-    username: string;
-    email_address: string;
-    password: string;
-    is_active: boolean;
-    type: string;
+    user_id?: string;
+    fullname?: string;
+    username?: string;
+    email_address?: string;
+    is_active?: string;
+    type?: string;
 }
 
 
 const NavigationBar = () => {
-    const [userData, setUserData] = useState<UserData | null>(null);
+    const [userData, setUserData] = useState<UserData>({});
     const router = useRouter();
 
     const handleLogout = async () => {
         try {
-            // Clear session storage
-            sessionStorage.clear();
+            const sessionId = sessionStorage.getItem('session');
 
-            // Show a success message
-            notification.success({
-                message: 'Logout Successful',
-                description: 'You have successfully logged out.',
-                duration: 3,
-            })
+            if (sessionId) {
+                await AuthenticationService.logout(sessionId).then(res => {
+                    sessionStorage.clear();
 
-            // Redirect to content page
-            router.push('/login');
+                    notification.success({
+                        message: 'Logout Successful',
+                        description: 'You have successfully logged out.',
+                        duration: 3,
+                    })
+
+                    router.push('/login');
+                });
+            }
         } catch (error) {
-            // Handle error
             console.error('Logout error:', error);
         }
     };
@@ -69,12 +71,22 @@ const NavigationBar = () => {
     }));
 
     // Check session storage on component mount
-    useEffect(() => {
-        const storedUserData = sessionStorage.getItem('user');
-
-        if (storedUserData) {
-            setUserData(JSON.parse(storedUserData));
+    useEffect( () => {
+        const fetchData = async () => {
+            const sessionId = sessionStorage.getItem('session')
+            if (sessionId) {
+                try {
+                    await AuthenticationService.getDetails(sessionId).then(res => {
+                        console.log('res', res)
+                        setUserData(res);
+                        console.log('userData', userData)
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
         }
+        fetchData();
     }, []);
 
     return (
@@ -90,7 +102,6 @@ const NavigationBar = () => {
                 <Button type="text" className="nav-button">Announcement</Button>
                 <Button type="text" className="nav-button">Product</Button>
 
-                {/*Conditional rendering*/}
                 {userData ? (
                     <>
                         <Divider className="divider" type="vertical"/>
@@ -102,7 +113,7 @@ const NavigationBar = () => {
                         <Avatar icon={<UserOutlined/>} className="nav-avatar"/>
                         <Dropdown menu={{items: PROFILE_DROPDOWN_LIST}}>
                             <Button type="text" className="nav-button" icon={<DownOutlined/>} iconPosition="end">
-                                {userData.fullname}
+                                {userData.username}
                             </Button>
                         </Dropdown>
                     </>

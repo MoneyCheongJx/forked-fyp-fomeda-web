@@ -25,7 +25,6 @@ export default function LoginPage() {
     })
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
-        console.log('Success:', values);
         setIsLoading(true);
         try {
             await AuthenticationService.login(values).then(res => {
@@ -34,7 +33,8 @@ export default function LoginPage() {
                     description: 'You have successfully logged in.',
                     duration: 3,
                 });
-                sessionStorage.setItem('user', JSON.stringify(res));
+                const sessionId = res?.sessionId
+                sessionStorage.setItem('session', sessionId);
                 router.push('/content');
             });
         } catch (error) {

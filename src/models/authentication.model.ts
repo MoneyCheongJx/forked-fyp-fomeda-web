@@ -7,3 +7,4 @@ export class AuthenticationModel {
     company_no?: string;
     company_address?: string;
 }
+
