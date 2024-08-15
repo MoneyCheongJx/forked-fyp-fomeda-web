@@ -34,7 +34,7 @@ interface UserData {
 
 
 const NavigationBar = () => {
-    const [userData, setUserData] = useState<UserData>({});
+    const [userData, setUserData] = useState<UserData | null>(null);
     const router = useRouter();
 
     const handleLogout = async () => {
@@ -42,7 +42,7 @@ const NavigationBar = () => {
             const sessionId = sessionStorage.getItem('session');
 
             if (sessionId) {
-                await AuthenticationService.logout(sessionId).then(res => {
+                await AuthenticationService.logout({session_id: sessionId}).then(res => {
                     sessionStorage.clear();
 
                     notification.success({
@@ -77,9 +77,7 @@ const NavigationBar = () => {
             if (sessionId) {
                 try {
                     await AuthenticationService.getDetails(sessionId).then(res => {
-                        console.log('res', res)
                         setUserData(res);
-                        console.log('userData', userData)
                     });
                 } catch (error) {
                     console.error('Error:', error);

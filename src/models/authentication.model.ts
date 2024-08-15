@@ -6,5 +6,6 @@ export class AuthenticationModel {
     company_name?: string;
     company_no?: string;
     company_address?: string;
+    session_id?: string;
 }
 

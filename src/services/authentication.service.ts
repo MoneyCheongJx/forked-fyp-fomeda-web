@@ -17,11 +17,11 @@ export default class Authenticationervice {
         }
     }
 
-    static logout = async (sessionId: string) => {
+    static logout = async (authenticationModel: AuthenticationModel) => {
         try {
             const response = await HttpService.post(
                 ApiConstant.LOGOUT,
-                sessionId
+                authenticationModel
             )
             return response;
         } catch (error) {
