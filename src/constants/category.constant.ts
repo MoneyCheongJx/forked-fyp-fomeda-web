@@ -1,6 +1,25 @@
+export class CategoryConstant {
+    static readonly DISPLAY_SPECIFICATION: string = "Specification";
+    static readonly DISPLAY_INFORMATION: string = "Information";
+    static readonly DISPLAY_WARRANTY: string = "Warranty";
+    static readonly DISPLAY_CERTIFICATION: string = "Certification";
+    static readonly SPECIFICATION: string = "SPECIFICATION";
+    static readonly INFORMATION: string = "INFORMATION";
+    static readonly WARRANTY: string = "WARRANTY";
+    static readonly CERTIFICATION: string = "CERTIFICATION";
+    static readonly SUBCATEGORY_PREFIX = "SCAT";
+    static readonly CATEGORY_PREFIX = "CAT";
+    static readonly SPECIFICATION_PREFIX = "SPEC";
+    static readonly SUBSPECIFICATION_PREFIX = "SSPEC";
+    static readonly BASE_SPECIFICATION_PREFIX = "BSPEC";
+    static readonly BASE_SUBSPECIFICATION_PREFIX = "BSSPEC";
+    static readonly GENERAL_SPECIFICATION_PREFIX = "GSPEC";
+    static readonly GENERAL_SUBSPECIFICATION_PREFIX = "GSSPEC";
+}
+
 export const CATEGORY_TAB_CONSTANTS = [
     {key: "category", label: "Category"},
-    {key: "general", label: "General Information"},
+    {key: "general", label: "General Specification"},
 ]
 
 export const CATEGORY_TABLE_HEADER_CONSTANTS = [
@@ -35,11 +54,11 @@ export const CERTIFICATION_ACTIONS_CONSTANTS = [
     {key: "delete", label: "Delete Certification", link: ""},
 ]
 
-export const SERVICES_PROVIDED_ACTIONS_CONSTANTS = [
-    {key: "edit_specification", label: "Edit Services", link: ""},
-    {key: "deactivate", label: "Deactivate Services", link: ""},
-    {key: "activate", label: "Activate Services"},
-    {key: "delete", label: "Delete Services", link: ""},
+export const WARRANTY_ACTIONS_CONSTANTS = [
+    {key: "edit_specification", label: "Edit Warranty", link: ""},
+    {key: "deactivate", label: "Deactivate Warranty", link: ""},
+    {key: "activate", label: "Activate Warranty"},
+    {key: "delete", label: "Delete Warranty", link: ""},
 ]
 
 export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
@@ -50,7 +69,7 @@ export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
 ]
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
-    {key: "subcat_spec_name", title: "General Field", dataIndex: "subcat_spec_name", width: "40%"},
+    {key: "subcat_spec_name", title: "General Information", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
@@ -69,14 +88,14 @@ export const CERTIFICATION_TABLE_HEADER_CONSTANTS = [
     {key: "actions", title: "Actions", actionList: CERTIFICATION_ACTIONS_CONSTANTS}
 ]
 
-export const SERVICE_PROVIDED_HEADER_CONSTANTS = [
-    {key: "subcat_spec_name", title: "Service Provided", dataIndex: "subcat_spec_name", width: "40%"},
+export const WARRANTY_HEADER_CONSTANTS = [
+    {key: "subcat_spec_name", title: "Warranty", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
     {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
-    {key: "actions", title: "Actions", actionList: SERVICES_PROVIDED_ACTIONS_CONSTANTS}
+    {key: "actions", title: "Actions", actionList: WARRANTY_ACTIONS_CONSTANTS}
 ]
 
 export const PRODUCT_SPECIFICATION_HEADER_CONSTANTS = [
@@ -95,7 +114,7 @@ export const SPECIFICATIONS_TABLE_CONSTANTS = [
         title: "General Information",
         button: "Add Information",
         group: "Information",
-        type: "GENERAL",
+        type: "INFORMATION",
         tableHeader: GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS
     },
     {
@@ -107,12 +126,12 @@ export const SPECIFICATIONS_TABLE_CONSTANTS = [
         tableHeader: CERTIFICATION_TABLE_HEADER_CONSTANTS
     },
     {
-        key: 'services_provided',
-        title: "Services Provided",
-        button: "Add Service",
-        group: "Service",
-        type: "SERVICE",
-        tableHeader: SERVICE_PROVIDED_HEADER_CONSTANTS
+        key: 'warranty',
+        title: "Warranty",
+        button: "Add Warranty",
+        group: "Warranty",
+        type: "WARRANTY",
+        tableHeader: WARRANTY_HEADER_CONSTANTS
     },
     {
         key: 'product_specification',
@@ -125,9 +144,27 @@ export const SPECIFICATIONS_TABLE_CONSTANTS = [
 ]
 
 export const SPECIFICATION_TYPE_CONSTANT: { [key: string]: string } = {
-    GENERAL: "Information",
+    INFORMATION: "Information",
     CERTIFICATION: "Certification",
-    SERVICE: "Service",
+    WARRANTY: "Warranty",
     SPECIFICATION: "Specification",
 };
+
+export const SPECIFICATION_FIELD_TYPE_OPTIONS = [
+    {key: "NUMERIC", label: "Numeric",},
+    {key: "ALPHANUMERIC", label: "Alphanumeric",},
+    {key: "ALPHABET", label: "Alphabet",},
+];
+
+export const SCORE_CONTRIBUTION_ACTION_OPTIONS = [
+    {key: "MORE_THAN", label: "More Than", type: ["NUMERIC"]},
+    {key: "LESS_THAN", label: "Less Than", type: ["NUMERIC"]},
+    {key: "EQUAL_TO", label: "Equal To", type: ["NUMERIC"]},
+    {key: "CONTAINS", label: "Contains", type: ["ALPHABET", "ALPHANUMERIC"]},
+]
+
+
+
+
+
 

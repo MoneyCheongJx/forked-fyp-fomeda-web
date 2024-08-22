@@ -2,14 +2,13 @@
 
 import {Button, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import {SPECIFICATION_TYPE_CONSTANT, SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
+import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
 import React, {useEffect, useState} from "react";
-import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
 import CategoryService from "@/services/category.service";
-import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import "@/styles/category.component.css"
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import {usePathname, useRouter} from "next/navigation";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -17,19 +16,16 @@ const renderStatus = (is_active: boolean) => (
 );
 
 const GeneralTab = () => {
+    const router = useRouter();
+    const pathname = usePathname();
+
     const [specificationData, setSpecificationData] = useState<any[]>([]);
-    const [openAddModel, setOpenAddModel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [openUpdateModel, setOpenUpdateModel] = useState(false);
-    const [isParent, setIsParent] = useState(true);
-    const [selectedRecord, setSelectedRecord] = useState<any>([]);
 
     const defineActionList = (action: any, record: any) => {
         return action.map((item: any) => {
-            if (record.is_active && item.key === 'activate') {
-                return null;
-            }
-            if (!record.is_active && item.key === 'deactivate') {
+            if ((record.is_active && item.key === 'activate') ||
+                (!record.is_active && item.key === 'deactivate')) {
                 return null;
             }
             return {
@@ -45,11 +41,11 @@ const GeneralTab = () => {
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'edit_specification') {
-            handleActionsOnClick(key, record);
+            router.push(`${pathname}/edit-specification?type=${record.cat_type}&id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ConfirmationContent action={key} record={record} />,
+                content: <ConfirmationContent action={key} record={record}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -59,54 +55,26 @@ const GeneralTab = () => {
         }
     };
 
+    const actionMappings: any = {
+        deactivate: {
+            specification: CategoryService.deactivateGeneralSpecification,
+            subspecification: CategoryService.deactivateGeneralSubspecification,
+        },
+        activate: {
+            specification: (id: string) => CategoryService.deactivateGeneralSpecification(id, true),
+            subspecification: (id: string) => CategoryService.deactivateGeneralSubspecification(id, true),
+        },
+        delete: {
+            specification: CategoryService.deleteGeneralSpecification,
+            subspecification: CategoryService.deleteGeneralSubspecification,
+        },
+    };
+
     const handleActionsOnClick = (key: string, record: any) => {
-        if (key === 'edit_specification') {
-            setOpenUpdateModel(true);
-            setSelectedRecord(record);
-            record.subcat_subspec_name ? setIsParent(false) : setIsParent(true);
-        } else if (key === 'deactivate') {
-            (record.subcat_subspec_name ? deactivateGeneralSubspecification(record._id, false) : deactivateGeneralSpecification(record._id, false)).then(handleOnUpdate);
-        } else if (key === 'activate') {
-            (record.subcat_subspec_name ? deactivateGeneralSubspecification(record._id, true) : deactivateGeneralSpecification(record._id, true)).then(handleOnUpdate);
-        } else {
-            (record.subcat_subspec_name ? deleteGeneralSubspecification(record._id) : deleteGeneralSpecification(record._id)).then(handleOnUpdate);
-        }
-    };
-
-    const deactivateGeneralSpecification = async (id: string, is_active: boolean) => {
-        try {
-            await CategoryService.deactivateGeneralSpecification(id, is_active);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deactivateGeneralSubspecification = async (id: string, is_active: boolean) => {
-        try {
-            await CategoryService.deactivateGeneralSubspecification(id, is_active);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deleteGeneralSpecification = async (id: string) => {
-        try {
-            await CategoryService.deleteGeneralSpecification(id);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deleteGeneralSubspecification = async (id: string) => {
-        try {
-            await CategoryService.deleteGeneralSubspecification(id);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const actionType = record.subcat_subspec_name ? 'subspecification' : 'specification';
+        actionMappings[key][actionType](record._id)
+            .then(handleOnUpdate)
+            .catch((error: any) => console.error(error));
     };
 
     const renderActions = (action_list: any, record: any) => (
@@ -116,7 +84,7 @@ const GeneralTab = () => {
     );
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
-        switch(column.key) {
+        switch (column.key) {
             case 'subcat_spec_name':
                 return {
                     ...column,
@@ -169,8 +137,7 @@ const GeneralTab = () => {
     };
 
     useEffect(() => {
-        getAllSpecificationData().then(() => {
-        });
+        getAllSpecificationData().then();
     }, []);
 
     if (loading) {
@@ -185,17 +152,10 @@ const GeneralTab = () => {
                         <h3>{item.title}</h3>
                         <Button type="primary" icon={<PlusOutlined/>}
                                 onClick={() => {
-                                    setOpenAddModel(item.key);
+                                    router.push(`${pathname}/add-specification?type=${item.type}`);
                                 }}>
                             {item.button}
                         </Button>
-                        <AddSpecificationModel data={item}
-                                               isOpen={openAddModel === item.key}
-                                               onClose={() => setOpenAddModel(null)}
-                                               onAdd={handleOnUpdate}
-                                               specificationData={specificationData}
-                                               type="SPECIFICATION"
-                        />
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
                            dataSource={specificationData.filter(spec => spec.cat_type === item.type).map(spec => {
@@ -216,16 +176,6 @@ const GeneralTab = () => {
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
                            showSorterTooltip={false}
-                    />
-                    <CategoryUpdateModel
-                        isOpen={openUpdateModel}
-                        onClose={() => setOpenUpdateModel(false)}
-                        isParent={isParent}
-                        isCategory={false}
-                        onUpdate={handleOnUpdate}
-                        title={String(SPECIFICATION_TYPE_CONSTANT[selectedRecord.cat_type]).toString()}
-                        data={selectedRecord}
-                        type="SPECIFICATION"
                     />
                 </div>
             ))}

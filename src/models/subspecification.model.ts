@@ -1,3 +1,5 @@
+import {ScoreContributionModel} from "@/models/score_contribution.model";
+
 export class SubspecificationModel {
     _id?: string;
     subcat_spec_id?: string;
@@ -11,4 +13,10 @@ export class SubspecificationModel {
     is_active?: boolean;
     allow_input?: boolean;
     actions?: string;
+    is_required?: boolean;
+    prefix?: string;
+    suffix?: string;
+    field_type?: string;
+    is_score_contributed?: boolean;
+    rating_score?: ScoreContributionModel[];
 }
