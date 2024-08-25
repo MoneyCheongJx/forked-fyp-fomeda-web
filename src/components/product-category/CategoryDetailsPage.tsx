@@ -37,8 +37,8 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
-        if (key === 'edit_specification') {
-            router.push(`../edit-specification?type=${record.cat_type}&id=${record._id}`);
+        if (key === 'view_specification') {
+            router.push(`../view-specification?type=${record.cat_type}&id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,

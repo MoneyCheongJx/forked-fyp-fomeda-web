@@ -41,28 +41,28 @@ export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
 ]
 
 export const GENERAL_INFORMATION_ACTIONS_CONSTANTS = [
-    {key: "edit_specification", label: "Edit Information", link: ""},
+    {key: "view_specification", label: "View Information", link: ""},
     {key: "deactivate", label: "Deactivate Information", link: ""},
     {key: "activate", label: "Activate Information"},
     {key: "delete", label: "Delete Information", link: ""},
 ]
 
 export const CERTIFICATION_ACTIONS_CONSTANTS = [
-    {key: "edit_specification", label: "Edit Certification", link: ""},
+    {key: "view_specification", label: "View Certification", link: ""},
     {key: "deactivate", label: "Deactivate Certification", link: ""},
     {key: "activate", label: "Activate Certification"},
     {key: "delete", label: "Delete Certification", link: ""},
 ]
 
 export const WARRANTY_ACTIONS_CONSTANTS = [
-    {key: "edit_specification", label: "Edit Warranty", link: ""},
+    {key: "view_specification", label: "View Warranty", link: ""},
     {key: "deactivate", label: "Deactivate Warranty", link: ""},
     {key: "activate", label: "Activate Warranty"},
     {key: "delete", label: "Delete Warranty", link: ""},
 ]
 
 export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
-    {key: "edit_specification", label: "Edit Specification", link: ""},
+    {key: "view_specification", label: "View Specification", link: ""},
     {key: "deactivate", label: "Deactivate Specification", link: ""},
     {key: "activate", label: "Activate Specification"},
     {key: "delete", label: "Delete Specification", link: ""},

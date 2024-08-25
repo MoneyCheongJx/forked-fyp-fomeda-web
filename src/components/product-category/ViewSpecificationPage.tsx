@@ -13,7 +13,7 @@ import {EditOutlined} from "@ant-design/icons";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import NotificationService from "@/services/notification.service";
 
-const EditSpecificationPage = ({specId}: any) => {
+const ViewSpecificationPage = ({specId}: any) => {
     const [form] = Form.useForm();
     const [specificationData, setSpecificationData] = useState<any>({});
     const [originalSpecificationData, setOriginalSpecificationData] = useState<any>({});
@@ -331,4 +331,4 @@ const EditSpecificationPage = ({specId}: any) => {
     );
 };
 
-export default EditSpecificationPage;
+export default ViewSpecificationPage;
