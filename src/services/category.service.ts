@@ -386,11 +386,123 @@ export default class CategoryService {
         }
     }
 
+    static readonly findSubcategorySpecificationByCatId = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_SUBCATEGORY_SPECIFICATION_BY_CAT_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     static readonly findSubcategorySpecificationById = async (id: string) => {
         try {
             const param = {id}
             const response = await HttpService.get(
                 ApiConstant.FIND_SUBCATEGORY_SPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findSubcategorySubspecificationById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_SUBCATEGORY_SUBSPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findGeneralSpecificationById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_GENERAL_SPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findGeneralSubspecificationById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_GENERAL_SUBSPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findBaseSpecificationById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_BASE_SPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findBaseSubspecificationById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_BASE_SUBSPECIFICATION_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findAllBaseSpecificationWithSameSubcatById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findAllSubcategorySpecificationWithSameSubcatById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_ALL_SUBCATEGORY_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID,
                 param
             )
             return response;

@@ -21,8 +21,16 @@ export class ApiConstant{
     static readonly CREATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-subspecification";
     static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
+    static readonly FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-base-specification-with-same-subcat-by-id";
+    static readonly FIND_ALL_SUBCATEGORY_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-subcategory-specification-with-same-subcat-by-id";
     static readonly FIND_BASE_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-base-specification-by-cat-id";
     static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-id";
+    static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-cat-id";
+    static readonly FIND_SUBCATEGORY_SUBSPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-subspecification-by-id";
+    static readonly FIND_GENERAL_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-general-specification-by-id";
+    static readonly FIND_GENERAL_SUBSPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-general-subspecification-by-id";
+    static readonly FIND_BASE_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-base-specification-by-id";
+    static readonly FIND_BASE_SUBSPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-base-subspecification-by-id";
     static readonly UPDATE_CATEGORY = this.CATEGORY_PREFIX + "update-category";
     static readonly UPDATE_SUBCATEGORY = this.CATEGORY_PREFIX + "update-subcategory";
     static readonly UPDATE_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "update-general-specification";

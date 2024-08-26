@@ -1,4 +1,5 @@
 import {SubspecificationModel} from "@/models/subspecification.model";
+import {ScoreContributionModel} from "@/models/score_contribution.model";
 
 export class SpecificationModel {
     _id?: string;
@@ -15,4 +16,10 @@ export class SpecificationModel {
     actions?: string;
     children?: SubspecificationModel[];
     is_origin?: boolean;
+    is_required?: boolean;
+    prefix?: string;
+    suffix?: string;
+    field_type?: string;
+    is_score_contributed?: boolean;
+    rating_score?: ScoreContributionModel[];
 }

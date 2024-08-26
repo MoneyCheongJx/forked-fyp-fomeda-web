@@ -1,12 +1,11 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
-import {SPECIFICATION_TYPE_CONSTANT, SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
+import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
 import {Button, Col, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
 import {PlusOutlined} from "@ant-design/icons";
-import AddSpecificationModel from "@/components/product-category/AddSpecificationModel";
-import CategoryUpdateModel from "@/components/product-category/CategoryUpdateModel";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import {useRouter} from "next/navigation";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -14,14 +13,11 @@ const renderStatus = (is_active: boolean) => (
 );
 
 const CategoryDetailsPage = ({id}: { id: string }) => {
+    const router = useRouter();
 
     const isCategory = !id.includes('SCAT');
     const [detailsData, setDetailsData] = useState<any>({})
-    const [openAddModel, setOpenAddModel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [openUpdateModel, setOpenUpdateModel] = useState(false);
-    const [isParent, setIsParent] = useState(true);
-    const [selectedRecord, setSelectedRecord] = useState<any>([]);
     const [name, setName] = useState<any>([]);
 
     const defineActionList = (action: any, record: any) => {
@@ -41,8 +37,8 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
-        if (key === 'edit_specification') {
-            handleActionsOnClick(key, record);
+        if (key === 'view_specification') {
+            router.push(`../view-specification?type=${record.cat_type}&id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -56,71 +52,39 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         }
     };
 
-    const handleActionsOnClick = (key: string, record: any) => {
-        if (key === 'edit_specification') {
-            setOpenUpdateModel(true);
-            setSelectedRecord(record);
-            record.subcat_subspec_name ? setIsParent(false) : setIsParent(true);
-        } else if (key === 'deactivate') {
-            (record.subcat_subspec_name ? deactivateSubspecification(record._id, false) : deactivateSpecification(record._id, false)).then(handleOnUpdate);
-        } else if (key === 'activate') {
-            (record.subcat_subspec_name ? deactivateSubspecification(record._id, true) : deactivateSpecification(record._id, true)).then(handleOnUpdate);
-        } else {
-            (record.subcat_subspec_name ? deleteSubspecification(record._id) : deleteSpecification(record._id)).then(handleOnUpdate);
+    const actionMappings: any = {
+        deactivate: {
+            spec: isCategory ? CategoryService.deactivateCategoryBaseSpecification : CategoryService.deactivateSubcategorySpecification,
+            subspec: isCategory ? CategoryService.deactivateCategoryBaseSubspecification : CategoryService.deactivateSubcategorySubspecification,
+        },
+        activate: {
+            spec: isCategory ? CategoryService.deactivateCategoryBaseSpecification : CategoryService.deactivateSubcategorySpecification,
+            subspec: isCategory ? CategoryService.deactivateCategoryBaseSubspecification : CategoryService.deactivateSubcategorySubspecification,
+        },
+        delete: {
+            spec: isCategory ? CategoryService.deleteCategoryBaseSpecification : CategoryService.deleteSubcategorySpecification,
+            subspec: isCategory ? CategoryService.deleteCategoryBaseSubspecification : CategoryService.deleteSubcategorySubspecification,
+        },
+    };
+
+    const handleActionsOnClick = async (key: string, record: any) => {
+        const { _id, subcat_subspec_name } = record;
+        const isSubspecification = Boolean(subcat_subspec_name);
+        const actionType = isSubspecification ? 'subspec' : 'spec';
+
+        try {
+            const actionFunction = actionMappings[key]?.[actionType];
+            if (actionFunction) {
+                await actionFunction(_id, key === 'activate');
+            } else {
+                console.error('Invalid action key');
+            }
+            handleOnUpdate();
+        } catch (error) {
+            console.error(error);
         }
     };
 
-    const deactivateSpecification = async (id: string, is_active: boolean) => {
-        try {
-            if (isCategory) {
-                await CategoryService.deactivateCategoryBaseSpecification(id, is_active);
-            } else {
-                await CategoryService.deactivateSubcategorySpecification(id, is_active);
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deactivateSubspecification = async (id: string, is_active: boolean) => {
-        try {
-            if (isCategory) {
-                await CategoryService.deactivateCategoryBaseSubspecification(id, is_active);
-            } else {
-                await CategoryService.deactivateSubcategorySubspecification(id, is_active);
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deleteSpecification = async (id: string) => {
-        try {
-            if (isCategory) {
-                await CategoryService.deleteCategoryBaseSpecification(id);
-            } else {
-                await CategoryService.deleteSubcategorySpecification(id);
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
-
-    const deleteSubspecification = async (id: string) => {
-        try {
-            if (isCategory) {
-                await CategoryService.deleteCategoryBaseSubspecification(id);
-            } else {
-                await CategoryService.deleteSubcategorySubspecification(id);
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    };
 
     const renderActions = (action_list: any, record: any) => (
         <Dropdown menu={{items: defineActionList(action_list, record)}} disabled={record.is_origin === false}>
@@ -173,7 +137,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             if (isCategory) {
                 response = await CategoryService.findCategoryBaseSpecificationByCatId(id);
             } else {
-                response = await CategoryService.findSubcategorySpecificationById(id)
+                response = await CategoryService.findSubcategorySpecificationByCatId(id)
             }
             setDetailsData(response);
         } catch (error) {
@@ -184,14 +148,12 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         }
     };
 
-
     const handleOnUpdate = async () => {
         await getDetailsData();
     };
 
     useEffect(() => {
-        getDetailsData().then(() => {
-        });
+        getDetailsData().then();
     }, []);
 
     if (loading) {
@@ -217,18 +179,10 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                         <h3>{item.title}</h3>
                         <Button type="primary" icon={<PlusOutlined/>}
                                 onClick={() => {
-                                    setOpenAddModel(item.key);
+                                    router.push(`../add-specification?type=${item.type}&id=${id}`);
                                 }}>
                             {item.button}
                         </Button>
-                        <AddSpecificationModel data={item}
-                                               isOpen={openAddModel === item.key}
-                                               onClose={() => setOpenAddModel(null)}
-                                               onAdd={handleOnUpdate}
-                                               specificationData={detailsData}
-                                               type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
-                                               catId={id}
-                        />
                     </Row>
                     <Table columns={defineTableHeader(item.tableHeader)}
                            dataSource={
@@ -253,16 +207,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
                            showSorterTooltip={false}
-                    />
-                    <CategoryUpdateModel
-                        isOpen={openUpdateModel}
-                        onClose={() => setOpenUpdateModel(false)}
-                        isParent={isParent}
-                        isCategory={false}
-                        onUpdate={handleOnUpdate}
-                        title={String(SPECIFICATION_TYPE_CONSTANT[selectedRecord.cat_type]).toString()}
-                        data={selectedRecord}
-                        type={isCategory ? 'CATEGORY' : 'SUBCATEGORY'}
                     />
                 </div>
             ))}

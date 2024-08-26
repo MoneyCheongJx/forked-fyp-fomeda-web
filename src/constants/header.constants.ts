@@ -20,7 +20,7 @@ export const HEADER_MENU_LIST_CONSTANTS = [
     {
         key: "home",
         label: "Home",
-        link: "",
+        link: "/content",
         disabled: false,
         visible: true,
         hasChild: false,
@@ -29,7 +29,7 @@ export const HEADER_MENU_LIST_CONSTANTS = [
     {
         key: "announcement",
         label: "Announcement",
-        link: "",
+        link: "/announcement",
         disabled: false,
         visible: true,
         hasChild: false,
@@ -38,18 +38,23 @@ export const HEADER_MENU_LIST_CONSTANTS = [
     {
         key: "product",
         label: "Product",
-        link: "",
+        link: "/product",
         disabled: false,
         visible: true,
         hasChild: false,
         children: [],
     },
     {
+        key: "divider",
+        type: "divider"
+    },
+    {
         key: "management",
         label: "Management",
-        link: "",
+        link: "/management",
         disabled: false,
         visible: true,
+        hasChild: true,
         children: HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS,
     },
 ]

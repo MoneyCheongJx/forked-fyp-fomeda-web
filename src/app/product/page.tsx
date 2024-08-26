@@ -3,8 +3,7 @@ import PageLayout from '@/app/page';
 
 const ProductPage = () => {
     return (
-        <PageLayout>
-            <h1>Product</h1>
+        <PageLayout title="Product">
             <p>Welcome to the product page.</p>
         </PageLayout>
     );

@@ -2,15 +2,21 @@
     margin-right: 4px;
 }
 
+.nav-button-selected:hover,
 .nav-button:hover {
     background-color: var(--ant-primary-color-hover) !important;
     color: white !important;
 }
-
 .nav-button:focus,
 .nav-button:active {
     background-color: var(--ant-primary-color-active);
     color: white;
+}
+
+.nav-button-selected {
+    background-color: var(--ant-primary-color-active);
+    color: white;
+    margin-right: 4px;
 }
 
 .nav-avatar {

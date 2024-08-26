@@ -19,30 +19,15 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
 
     const handleFormSubmit = async () => {
         const updateFunctions: any = {
-            category: {
-                true: CategoryService.updateCategory,
-                false: CategoryService.updateSubcategory,
-            },
-            specification: {
-                true: {
-                    SPECIFICATION: CategoryService.updateGeneralSpecification,
-                    CATEGORY: CategoryService.updateBaseSpecification,
-                    SUBCATEGORY: CategoryService.updateSubcategorySpecification,
-                },
-                false: {
-                    SPECIFICATION: CategoryService.updateGeneralSubspecification,
-                    CATEGORY: CategoryService.updateBaseSubspecification,
-                    SUBCATEGORY: CategoryService.updateSubcategorySubspecification,
-                },
-            }
+            true: CategoryService.updateCategory,
+            false: CategoryService.updateSubcategory,
         };
 
-        const categoryType = isCategory ? 'category' : 'specification';
         try {
-            if (typeof updateFunctions[categoryType][isParent] === 'function') {
-                await updateFunctions[categoryType][isParent](data._id, formData);
+            if (typeof updateFunctions[isParent] === 'function') {
+                await updateFunctions[isParent](data._id, formData);
             } else {
-                await updateFunctions[categoryType][isParent][type](data._id, formData);
+                await updateFunctions[isParent][type](data._id, formData);
             }
         } catch (error) {
             console.error(error);
@@ -90,74 +75,27 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
         let isValid = false;
 
         if ((isCategory && isParent && !formData.cat_name) ||
-            (isCategory && !isParent && !formData.subcat_name) ||
-            (!isCategory && isParent && !formData.subcat_spec_name) ||
-            (!isCategory && !isParent && !formData.subcat_subspec_name))
+            (isCategory && !isParent && !formData.subcat_name))
             isValid = true;
 
         return isValid;
     }
 
-    const renderFormItems = () => {
-        const commonProps: FormItemProps = {
-            labelCol: {span: 10},
-            labelAlign: "left",
-            className: "mb-2"
-        };
-
-        if (isCategory) {
-            return isParent ? (
-                <Form.Item label={<h5>{title} name</h5>} name="cat_name" {...commonProps}
-                           rules={[{required: true, message: 'Category name is required'}]}>
-                    <Input name="cat_name" onChange={handleFormChange}/>
-                </Form.Item>
-            ) : (
-                <>
-                    <Form.Item label={<h5>{title} name</h5>} name="cat_id" {...commonProps}
-                               rules={[{required: true, message: 'Subcategory name is required'}]}>
-                        <Select options={[{label: data.parent_name, value: data.cat_id}]}
-                                disabled/>
-                    </Form.Item>
-                    <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>} name="subcat_name" {...commonProps}>
-                        <Input name="subcat_name" onChange={handleFormChange}/>
-                    </Form.Item>
-                </>
-            );
-        } else {
-            return isParent ? (
-                <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_name" {...commonProps}
-                           rules={[{required: true, message: `${title} name is required`}]}>
-                    <Input name="subcat_spec_name" onChange={handleFormChange}/>
-                </Form.Item>
-            ) : (
-                <>
-                    <Form.Item label={<h5>{title} name</h5>} name="subcat_spec_id" {...commonProps}>
-                        <Select defaultValue={data.subcat_spec_name}
-                                options={[{label: data.parent_name, value: data.subcat_spec_id}]}
-                                onClick={() => console.log(data)}
-                                disabled/>
-                    </Form.Item>
-                    <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>}
-                               name="subcat_subspec_name" {...commonProps}
-                               rules={[{required: true, message: `Sub${title.toLowerCase()} name is required`}]}>
-                        <Input name="subcat_subspec_name" onChange={handleFormChange}/>
-                    </Form.Item>
-                </>
-            );
-        }
+    const commonProps: FormItemProps = {
+        labelCol: {span: 10},
+        labelAlign: "left",
+        className: "mb-2"
     };
 
     return (
-        <Modal
-            title={<h3>Update {title}</h3>}
-            centered
-            open={isOpen}
-            onOk={handleConfirmationModelOpen}
-            okText="Update"
-            onCancel={handleUpdateModelOnCancel}
-            width={"40%"}
-            okButtonProps={{disabled: validateModelButton()}}
-        >
+        <Modal title={<h3>Update {title}</h3>}
+               centered
+               open={isOpen}
+               onOk={handleConfirmationModelOpen}
+               okText="Update"
+               onCancel={handleUpdateModelOnCancel}
+               width={"40%"}
+               okButtonProps={{disabled: validateModelButton()}}>
             {isCategory || (!isCategory && data.cat_type === 'SPECIFICATION') ?
                 <Form.Item label={<h5>{title} Type</h5>} labelCol={{span: 10}} labelAlign="left" className="mb-2">
                     <Radio.Group value={isParent} disabled>
@@ -167,7 +105,23 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
                 </Form.Item> : <></>
             }
             <Form form={form} name="category_form">
-                {renderFormItems()}
+                {isParent ? (
+                    <Form.Item label={<h5>{title} name</h5>} name="cat_name" {...commonProps}
+                               rules={[{required: true, message: 'Category name is required'}]}>
+                        <Input name="cat_name" onChange={handleFormChange}/>
+                    </Form.Item>
+                ) : (
+                    <>
+                        <Form.Item label={<h5>{title} name</h5>} name="cat_id" {...commonProps}
+                                   rules={[{required: true, message: 'Subcategory name is required'}]}>
+                            <Select options={[{label: data.parent_name, value: data.cat_id}]}
+                                    disabled/>
+                        </Form.Item>
+                        <Form.Item label={<h5>Sub{title.toLowerCase()} name</h5>} name="subcat_name" {...commonProps}>
+                            <Input name="subcat_name" onChange={handleFormChange}/>
+                        </Form.Item>
+                    </>
+                )}
             </Form>
         </Modal>
     );
