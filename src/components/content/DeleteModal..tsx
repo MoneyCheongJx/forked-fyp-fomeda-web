@@ -9,7 +9,6 @@ const {Title, Paragraph, Text, Link} = Typography;
 const deleteModal = ({data, type, isOpen, title, onSubmit, onCancel}: any) => {
     return (
         React.useEffect(() => {
-            console.log('data', data);
             if (isOpen) {
                 Modal.confirm({
                     title: <h3>Confirmation</h3>,
@@ -57,7 +56,6 @@ const deleteModal = ({data, type, isOpen, title, onSubmit, onCancel}: any) => {
                 ;
             }
         }, [isOpen, onCancel, onSubmit, data, type, title]));
-    return null;
 };
 
 export default deleteModal;
