@@ -15,7 +15,6 @@ const AddAnnouncementModal: React.FC<AnnouncementModalProps> = ({ visible, onClo
         try {
             const values = await form.validateFields();
             const data = {...values, created_by: "Admin", updated_by: "Admin"};
-            console.log('data', data)
             try {
                 await AnnouncementService.createAnnouncement(data);
             } catch (error) {

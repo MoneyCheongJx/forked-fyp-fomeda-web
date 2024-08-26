@@ -31,7 +31,6 @@ const AnnouncementManagementPage = () => {
     const fetchData = async () => {
         try {
             const response = await AnnouncementService.getAllAnnouncements();
-            console.log('response', response)
             setData(response);
             setFilteredData(response);
         } catch (error) {
@@ -66,13 +65,11 @@ const AnnouncementManagementPage = () => {
     }
 
     const handleActionsOnClick = (key: string, record: any) => {
-        console.log('record', record);
         if (key === 'edit_announcement') {
             setSelectedRecord(record);
             setEditModalVisible(true);
         } else if (key === 'hide_announcement') {
             updateVisibility(record._id, false);
-            console.log('data now is', data)
         } else if (key === 'unhide_announcement') {
             updateVisibility(record._id, true);
         }

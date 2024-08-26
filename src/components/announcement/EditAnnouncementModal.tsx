@@ -16,7 +16,6 @@ const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            console.log('data', originalData)
 
             const data = {...values, updated_by: "Admin"};
 
