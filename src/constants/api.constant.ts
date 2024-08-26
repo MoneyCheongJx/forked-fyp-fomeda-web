@@ -75,5 +75,7 @@ export class ApiConstant{
     static readonly LOGOUT = this.AUTH_PREFIX + "logout";
     static readonly REGISTER = this.AUTH_PREFIX + "register";
     static readonly GET_DETAILS = this.AUTH_PREFIX + "get-details";
-
+    static readonly GET_INACTIVE_SUPPLIERS = this.AUTH_PREFIX + "inactive-suppliers";
+    static readonly GET_ACTIVE_SUPPLIERS = this.AUTH_PREFIX + "active-suppliers";
+    static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "review";
 }
