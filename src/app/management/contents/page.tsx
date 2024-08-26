@@ -310,10 +310,7 @@ const ContentManagementPage = () => {
     }
 
     return (
-        <PageLayout>
-            <Breadcrumb items={[{title: 'Content Management', href: '/management/contents'}]}/>
-            <h1 style={{marginBottom: 16}}>Content Management</h1>
-
+        <PageLayout title={"Content Management"}>
             <div className="mb-8">
                 <Row className="mb-2 justify-between">
                     <h3>Carousel</h3>

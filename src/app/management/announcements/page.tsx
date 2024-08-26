@@ -175,9 +175,7 @@ const AnnouncementManagementPage = () => {
                 onClose={unshowEditModal}
                 data={selectedRecord}
             />
-            <PageLayout>
-                <Breadcrumb items={[{title: 'Announcement Management', href: '/management/announcements'}]}/>
-                <h1 style={{marginBottom: 16}}>Announcement Management</h1>
+            <PageLayout title={"Announcement Management"}>
                 <div>
                     <Row style={{justifyContent: "space-between", marginBottom: 16}}>
                         <Col style={{display: "flex", gap: "8px"}} span={16}>
