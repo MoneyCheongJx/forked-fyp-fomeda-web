@@ -10,7 +10,7 @@ const DetailsPage = () => {
     const id = pathname.substring(pathname.lastIndexOf("/") + 1);
 
     return (
-        <PageLayout title={"Product Details"}>
+        <PageLayout title={"Category Details"}>
             <CategoryDetailsPage id={id} />
         </PageLayout>
     )
