@@ -7,6 +7,7 @@ import AuthenticationService from "@/services/authentication.service";
 import {SearchOutlined} from "@ant-design/icons";
 import ViewModal from "@/components/suppliers/ViewModal";
 import moment, {Moment} from 'moment';
+import { DateTimeUtils } from "@/utils/date-time.utils";
 
 interface HistoryTabContentProps {
     setLoading: (loading: boolean) => void;
@@ -64,15 +65,26 @@ const HistoryTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
     }
 
     const TABLE_HEADER = SUPPLIERS_HISTORY_TAB_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => (
-                    <Button onClick={() => handleOnClick(text, record)}>View</Button>
-                )
-            };
+        switch(column.key) {
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => (
+                        <Button onClick={() => handleOnClick(text, record)}>View</Button>
+                    )
+                };
+            case 'approved_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                };
+            default:
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
-        return column;
     });
 
     return (

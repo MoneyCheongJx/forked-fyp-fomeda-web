@@ -2,12 +2,10 @@
 
 import React, {useState} from "react";
 import PageLayout from '@/app/page';
-import {Breadcrumb} from "antd";
 import { Spin, Segmented } from "antd";
 import {SUPPLIERS_TAB_CONSTANTS} from "@/constants/suppliers.constant";
 import PendingTabContent from "@/components/suppliers/PendingTabContent";
 import HistoryTabContent from "@/components/suppliers/HistoryTabContent";
-import moment, {Moment} from 'moment';
 
 const SupplierManagementPage = () => {
     const [loading, setLoading] = useState(false);

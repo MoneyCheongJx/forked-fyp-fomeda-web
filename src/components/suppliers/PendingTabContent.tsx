@@ -7,6 +7,7 @@ import AuthenticationService from "@/services/authentication.service";
 import {SearchOutlined} from "@ant-design/icons";
 import ReviewModal from "@/components/suppliers/ReviewModal";
 import moment, {Moment} from 'moment';
+import { DateTimeUtils } from "@/utils/date-time.utils";
 
 interface PendingTabContentProps {
     setLoading: (loading: boolean) => void;
@@ -64,15 +65,26 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
     }
 
     const TABLE_HEADER = SUPPLIERS_PENDING_TAB_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => (
-                    <Button onClick={() => handleOnClick(text, record)}>Review</Button>
-                )
-            };
+        switch(column.key) {
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => (
+                        <Button onClick={() => handleOnClick(text, record)}>Review</Button>
+                    )
+                };
+            case 'registered_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                };
+            default:
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
-        return column;
     });
 
     return (
