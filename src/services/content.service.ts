@@ -32,7 +32,7 @@ export default class ContentService {
         try {
             const param = {id}
             const response = await HttpService.patch(
-                ApiConstant.EDIT_CAROUSEL,
+                ApiConstant.EDIT_CAROUSEL,  
                 carouselModel,
                 param
             )

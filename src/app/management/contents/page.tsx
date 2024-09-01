@@ -2,12 +2,13 @@
 
 import React, {useEffect, useState} from "react";
 import PageLayout from '@/app/page';
-import {Button, Breadcrumb, Dropdown, Row, Table, Image} from "antd";
+import {Button, Dropdown, Row, Table, Image} from "antd";
 import {
+    ContentActionsConstant,
     CAROUSEL_TABLE_HEADER_CONSTANTS,
     CONTENT_TABLE_HEADER_CONSTANTS,
     HISTORY_TIMELINE_TABLE_HEADER_CONSTANTS,
-    CONTENT_MANAGEMENT_CONSTANTS
+    MODAL_CONFIGS
 } from "@/constants/contents.constant";
 import ContentService from "@/services/content.service";
 import AddModal from "@/components/content/AddModal";
@@ -62,187 +63,58 @@ const ContentManagementPage = () => {
         }
     };
 
+    const servicesMapping: any = {
+        [ContentActionsConstant.ADD_CAROUSEL]: ContentService.createCarousel,
+        [ContentActionsConstant.EDIT_CAROUSEL]: ContentService.updateCarousel ,
+        [ContentActionsConstant.DELETE_CAROUSEL]: ContentService.deleteCarousel,
+        [ContentActionsConstant.ADD_CONTENT]: ContentService.createContent,
+        [ContentActionsConstant.EDIT_CONTENT]: ContentService.updateContent,
+        [ContentActionsConstant.DELETE_CONTENT]: ContentService.deleteContent,
+        [ContentActionsConstant.ADD_HISTORY_TIMELINE]:  ContentService.createHistoryTimeline,
+        [ContentActionsConstant.EDIT_HISTORY_TIMELINE]: ContentService.updateHistoryTimeline,
+        [ContentActionsConstant.DELETE_HISTORY_TIMELINE]: ContentService.deleteHistoryTimeline
+    }
+
     const openModal = (type: string) => {
         const config = {
-            title: '',
-            type: '',
-            fields: [],
+            ...MODAL_CONFIGS[type as keyof typeof MODAL_CONFIGS],
             onSubmit: handleSubmit,
             onCancel: handleClose,
-        };
-
-        switch (type) {
-            case 'add_carousel':
-                config.type = 'add_carousel';
-                config.title = 'Add Carousel';
-                // @ts-ignore
-                config.fields = [{name: 'image', label: 'Upload Image', type: 'file'}];
-                setIsAddModalOpen(true);
-                break;
-            case 'edit_carousel':
-                config.type = 'edit_carousel';
-                config.title = 'Edit Carousel';
-                // @ts-ignore
-                config.fields = [{name: 'image', label: 'Upload Image', type: 'file'}];
-                setIsEditModalOpen(true);
-                break;
-            case 'delete_carousel':
-                config.type = 'delete_carousel';
-                config.title = 'Delete Carousel';
-                config.fields = [];
-                setIsDeleteModalOpen(true);
-                break;
-            case 'add_content':
-                config.type = 'add_content';
-                config.title = 'Add Content';
-                config.fields = [
-                    {name: 'title', label: 'Content title', type: 'text'},
-                    {name: 'description', label: 'Content description', type: 'textarea'}
-                ];
-                setIsAddModalOpen(true);
-                break;
-            case 'edit_content':
-                config.type = 'edit_content';
-                config.title = 'Edit Content';
-                config.fields = [
-                    {name: 'title', label: 'Content title', type: 'text'},
-                    {name: 'description', label: 'Content description', type: 'textarea'}
-                ];
-                setIsEditModalOpen(true);
-                break;
-            case 'delete_content':
-                config.type = 'delete_content';
-                config.title = 'Delete Content';
-                config.fields = [];
-                setIsDeleteModalOpen(true);
-                break;
-            case 'add_history_timeline':
-                config.type = 'add_history_timeline';
-                config.title = 'Add History Timeline';
-                // @ts-ignore
-                config.fields = [
-                    {name: 'title', label: 'Title', type: 'text'},
-                    {name: 'description', label: 'Description', type: 'textarea'},
-                    {name: 'date', label: 'Date', type: 'date'}
-                ];
-                setIsAddModalOpen(true);
-                break;
-            case 'edit_history_timeline':
-                config.type = 'edit_history_timeline';
-                config.title = 'Edit History Timeline';
-                // @ts-ignore
-                config.fields = [
-                    {name: 'title', label: 'Title', type: 'text'},
-                    {name: 'description', label: 'Description', type: 'textarea'},
-                    {name: 'date', label: 'Date', type: 'date'}
-                ];
-                setIsEditModalOpen(true);
-                break;
-            case 'delete_history_timeline':
-                config.type = 'delete_history_timeline';
-                config.title = 'Delete History timeline';
-                config.fields = [];
-                setIsDeleteModalOpen(true);
-                break;
-
         }
         setModalConfig(config);
+
+        if (type.startsWith('add_'))
+            setIsAddModalOpen(true);
+        else if (type.startsWith('edit_'))
+            setIsEditModalOpen(true);
+        else if (type.startsWith('delete_'))
+            setIsDeleteModalOpen(true);
     };
 
     const handleSubmit = async (data: any, type: any) => {
-        console.log('Submitted data:', data);
         const payload = {
             ...data,
             "created_by": "admin",
             "last_updated_by": "admin123"
         }
 
-        switch (type) {
-            case 'add_carousel':
-                try {
-                    await ContentService.createCarousel(payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchCarouselData();
-                break;
-            case 'add_content':
-                try {
-                    await ContentService.createContent(payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchContentData();
-                break;
-            case 'add_history_timeline':
-                try {
-                    await ContentService.createHistoryTimeline(payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchHistoryData();
-                break;
-            case 'edit_carousel':
-                try {
-                    await ContentService.updateCarousel(data._id, payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchCarouselData();
-                break;
-            case 'edit_content':
-                try {
-                    await ContentService.updateContent(data._id, payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchContentData();
-                break;
-            case 'edit_history_timeline':
-                try {
-                    await ContentService.updateHistoryTimeline(data._id, payload);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchHistoryData();
-                break;
-            case 'delete_carousel':
-                try {
-                    await ContentService.deleteCarousel(data._id);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchCarouselData();
-                break;
-            case 'delete_content':
-                try {
-                    await ContentService.deleteContent(data._id);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchContentData();
-                break;
-            case 'delete_history_timeline':
-                try {
-                    await ContentService.deleteHistoryTimeline(data._id);
-                } catch (error) {
-                    console.error(error);
-                    throw error;
-                }
-                fetchHistoryData();
-                break;
+        const action = servicesMapping[type];
+
+        try {
+            if (type.startsWith('add_'))
+                await action(payload);
+            else if (type.startsWith('edit_'))
+                await action(data._id,payload);
+            else if (type.startsWith('delete_'))
+                await action(data._id)
+            fetchCarouselData()
+            fetchContentData();
+            fetchHistoryData();
+        } catch (error) {
+            console.error(error);
+            throw error;
         }
-        setIsAddModalOpen(false);
-        setIsEditModalOpen(false);
-        setIsDeleteModalOpen(false);
+        handleClose();
     };
 
     const handleClose = () => {
@@ -258,23 +130,7 @@ const ContentManagementPage = () => {
                 label: (
                     <div onClick={() => {
                         setSelectedRecord(record)
-                        switch (item.key) {
-                            case 'add_carousel':
-                            case 'edit_carousel':
-                            case 'add_content':
-                            case 'edit_content':
-                            case 'add_history_timeline':
-                            case 'edit_history_timeline':
-                            case 'delete_carousel':
-                            case 'delete_content':
-                            case 'delete_history_timeline':
-                                openModal(item.key)
-                                break;
-                            // case 'delete_carousel':
-                            // case 'delete_content':
-                            // case 'delete_history_timeline':
-                            //     handleSubmit(record, item.key);
-                        }
+                        openModal(item.key)
                     }}>
                         {item.label}
                     </div>
@@ -378,7 +234,6 @@ const ContentManagementPage = () => {
                 isOpen={isDeleteModalOpen}
                 type={modalConfig.type}
                 title={modalConfig.title}
-                fields={modalConfig.fields}
                 onSubmit={modalConfig.onSubmit}
                 onCancel={modalConfig.onCancel}
             />

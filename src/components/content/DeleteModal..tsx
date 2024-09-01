@@ -6,8 +6,16 @@ import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const {Title, Paragraph, Text, Link} = Typography;
 
-const deleteModal = ({data, type, isOpen, title, onSubmit, onCancel}: any) => {
-    return (
+interface DeleteModalProps {
+    data: any;
+    type: string;
+    isOpen: boolean;
+    title: string;
+    onSubmit: (data: any, type: any) => void;
+    onCancel: () => void;
+}
+
+const deleteModal: React.FC<DeleteModalProps> = ({data, type, isOpen, title, onSubmit, onCancel}) => {
         React.useEffect(() => {
             if (isOpen) {
                 Modal.confirm({
@@ -55,7 +63,8 @@ const deleteModal = ({data, type, isOpen, title, onSubmit, onCancel}: any) => {
                 })
                 ;
             }
-        }, [isOpen, onCancel, onSubmit, data, type, title]));
+        }, [isOpen, onCancel, onSubmit, data, type, title]);
+        return null;
 };
 
 export default deleteModal;
