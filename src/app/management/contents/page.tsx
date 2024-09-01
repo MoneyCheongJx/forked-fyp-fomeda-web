@@ -15,6 +15,7 @@ import AddModal from "@/components/content/AddModal";
 import EditModal from "@/components/content/EditModal";
 import DeleteModal from "@/components/content/DeleteModal.";
 import {PlusOutlined} from "@ant-design/icons";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const ContentManagementPage = () => {
     const [carouselData, setCarouselData] = useState<any[]>([]);
@@ -65,12 +66,12 @@ const ContentManagementPage = () => {
 
     const servicesMapping: any = {
         [ContentActionsConstant.ADD_CAROUSEL]: ContentService.createCarousel,
-        [ContentActionsConstant.EDIT_CAROUSEL]: ContentService.updateCarousel ,
+        [ContentActionsConstant.EDIT_CAROUSEL]: ContentService.updateCarousel,
         [ContentActionsConstant.DELETE_CAROUSEL]: ContentService.deleteCarousel,
         [ContentActionsConstant.ADD_CONTENT]: ContentService.createContent,
         [ContentActionsConstant.EDIT_CONTENT]: ContentService.updateContent,
         [ContentActionsConstant.DELETE_CONTENT]: ContentService.deleteContent,
-        [ContentActionsConstant.ADD_HISTORY_TIMELINE]:  ContentService.createHistoryTimeline,
+        [ContentActionsConstant.ADD_HISTORY_TIMELINE]: ContentService.createHistoryTimeline,
         [ContentActionsConstant.EDIT_HISTORY_TIMELINE]: ContentService.updateHistoryTimeline,
         [ContentActionsConstant.DELETE_HISTORY_TIMELINE]: ContentService.deleteHistoryTimeline
     }
@@ -104,7 +105,7 @@ const ContentManagementPage = () => {
             if (type.startsWith('add_'))
                 await action(payload);
             else if (type.startsWith('edit_'))
-                await action(data._id,payload);
+                await action(data._id, payload);
             else if (type.startsWith('delete_'))
                 await action(data._id)
             fetchCarouselData()
@@ -147,19 +148,35 @@ const ContentManagementPage = () => {
 
     const mappingTableActions = (constant: any) => {
         return constant.map((column: any) => {
-            if (column.key === 'actions') {
-                return {
-                    ...column,
-                    render: (text: any, record: any) => renderActionsDropdown(column.actionList, record)
-                };
-            }
-            if (column.key === 'image') {
-                return {
-                    ...column,
-                    render: (image: any) => (
-                        <Image src={image?.base64} width="25%"/>
-                    ),
-                };
+            switch (column.key) {
+                case 'actions':
+                    return {
+                        ...column,
+                        render: (text: any, record: any) => renderActionsDropdown(column.actionList, record)
+                    };
+                case 'date':
+                    return {
+                        ...column,
+                        render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                        sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                    };
+                case 'image':
+                    return {
+                        ...column,
+                        render: (image: any) => (
+                            <Image src={image?.base64} width="25%"/>
+                        ),
+                    };
+                case 'no':
+                    return {
+                        ...column,
+                        render: (_: any, __: any, index: number) => index + 1,
+                    }
+                default:
+                    return {
+                        ...column,
+                        sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                    };
             }
             return column;
         });

@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export class ContentActionsConstant {
     static readonly ADD_CAROUSEL: string = "add_carousel";
     static readonly EDIT_CAROUSEL: string = "edit_carousel";
@@ -28,23 +26,23 @@ export const HISTORY_TIMELINE_ACTIONS_CONSTANTS = [
 ]
 
 export const CAROUSEL_TABLE_HEADER_CONSTANTS = [
-    {key: "no", title: "No", dataIndex: "no", width: "5%", render: (_: any, __: any, index: number) => index + 1},
+    {key: "no", title: "No", dataIndex: "no", width: "5%"},
     {key: "image", title: "Image", dataIndex: "image", width: "85%", },
     {key: "actions", title: "Actions", actionList: CAROUSEL_ACTIONS_CONSTANTS}
 ]
 
 export const CONTENT_TABLE_HEADER_CONSTANTS = [
-    {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%", render: (_: any, __: any, index: number) => index + 1},
+    {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%"},
     {key: "title", title: "Content title", dataIndex: "title", width: "25%"},
     {key: "description", title: "Content description", dataIndex: "description", width: "60%"},
     {key: "actions", title: "Actions", actionList: CONTENT_ACTIONS_CONSTANTS}
 ]
 
 export const HISTORY_TIMELINE_TABLE_HEADER_CONSTANTS = [
-    {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%", render: (_: any, __: any, index: number) => index + 1},
+    {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%"},
     {key: "title", title: "Timeline title", dataIndex: "title", width: "25%"},
     {key: "description", title: "Timeline description", dataIndex: "description", width: "45%"},
-    {key: "date", title: "Timeline date", dataIndex: "date", width: "15%",   render: (text: any) => dayjs(text).format('DD-MM-YYYY'),},
+    {key: "date", title: "Timeline date", dataIndex: "date", width: "15%"},
     {key: "actions", title: "Actions", actionList: HISTORY_TIMELINE_ACTIONS_CONSTANTS}
 ]
 
