@@ -2,8 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import PageLayout from '@/app/page';
-import {Breadcrumb} from "antd";
-import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin, Form} from "antd";
+import {Button, Col, Dropdown, Input, Row, Table, Tag, DatePicker, Spin} from "antd";
 import {
     ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS,
     ANNOUNCEMENT_MANAGEMENT_TABLE_ACTIONS_CONSTANTS
@@ -13,7 +12,7 @@ import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal";
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
 import moment from 'moment';
-
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const AnnouncementManagementPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -24,7 +23,6 @@ const AnnouncementManagementPage = () => {
     const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
     const {RangePicker} = DatePicker;
 
 
@@ -98,8 +96,6 @@ const AnnouncementManagementPage = () => {
         setFilteredData(filtered);
     };
 
-
-
     const defineMenuItem = (record: any) => {
         return ANNOUNCEMENT_MANAGEMENT_TABLE_ACTIONS_CONSTANTS.map((item) => {
             if (record.visibility && item.key === 'unhide_announcement') {
@@ -133,7 +129,6 @@ const AnnouncementManagementPage = () => {
             return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Invisible</Tag>
     }
 
-
     const updateVisibility = async (id: string, visibility: boolean) => {
         try {
             await AnnouncementService.updateAnnouncementVisibility(id, visibility);
@@ -145,25 +140,32 @@ const AnnouncementManagementPage = () => {
     }
 
     const TABLE_HEADER = ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS.map((column) => {
-        if (column.key === 'visibility') {
-            return {
-                ...column,
-                render: (visibility: boolean) => renderVisibility(visibility),
-            };
+        switch (column.key) {
+            case 'actions':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderActionsDropdown(record)
+                };
+            case 'created_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                };
+            case 'visibility':
+                return {
+                    ...column,
+                    render: (visibility: boolean) => renderVisibility(visibility),
+                    onFilter: (value: any, record: any) => record.visibility === value,
+                };
+            default:
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
         }
-
-        if (column.key === 'actions') {
-            return {
-                ...column,
-                render: (text: any, record: any) => renderActionsDropdown(record)
-            };
-        }
-
-        return column;
     });
 
-    // @ts-ignore
-    // @ts-ignore
     return (
         <Spin spinning={loading}>
             <AddAnnouncementModal
