@@ -9,6 +9,7 @@ export class ApiConstant{
     static readonly ANNOUNCEMENT_PREFIX = this.HOST_PREFIX + "announcement" + this.SUFFIX;
     static readonly CONTENT_PREFIX = this.HOST_PREFIX + "content" + this.SUFFIX;
     static readonly AUTH_PREFIX = this.HOST_PREFIX + "auth" + this.SUFFIX;
+    static readonly PRODUCT_PREFIX = this.HOST_PREFIX + "product" + this.SUFFIX;
 
     /* category api */
     static readonly CREATE_CATEGORY = this.CATEGORY_PREFIX + "create-category";
@@ -20,6 +21,7 @@ export class ApiConstant{
     static readonly CREATE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-specification";
     static readonly CREATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-subspecification";
     static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
+    static readonly FIND_ALL_ACTIVE_CATEGORIES = this.CATEGORY_PREFIX + "find-all-active-categories";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
     static readonly FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-base-specification-with-same-subcat-by-id";
     static readonly FIND_ALL_SUBCATEGORY_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-subcategory-specification-with-same-subcat-by-id";
@@ -56,6 +58,7 @@ export class ApiConstant{
     static readonly DELETE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-specification";
     static readonly DELETE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "delete-subcategory-subspecification";
     static readonly FIND_NAME_BY_ID = this.CATEGORY_PREFIX + "find-name-by-id";
+    static readonly GET_PRODUCT_SPECIFICATION_BY_SUBCAT_ID = this.CATEGORY_PREFIX + "get-product-specification-by-subcat-id";
 
     /* announcement api */
     static readonly FIND_ALL_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "find-all-announcement";
@@ -86,4 +89,12 @@ export class ApiConstant{
     static readonly GET_INACTIVE_SUPPLIERS = this.AUTH_PREFIX + "inactive-suppliers";
     static readonly GET_ACTIVE_SUPPLIERS = this.AUTH_PREFIX + "active-suppliers";
     static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "review";
+
+    /* product api */
+    static readonly CREATE_PRODUCT = this.PRODUCT_PREFIX + "create-product";
+    static readonly GET_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "get-product-by-id";
+    static readonly GET_PRODUCT_BY_FILTER = this.PRODUCT_PREFIX + "get-product-by-filter";
+    static readonly UPDATE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "update-product-by-id";
+    static readonly UPDATE_PRODUCT_IS_ACTIVE = this.PRODUCT_PREFIX + "update-product-is-active";
+    static readonly DELETE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "delete-product-by-id";
 }
