@@ -55,7 +55,7 @@ export default function LoginPage() {
     };
 
     return (
-        <PageLayout>
+        <PageLayout showTitle={false}>
             <Row align="middle" justify="space-evenly" style={{height: '100vh'}}>
                 <Col>
                     <Image

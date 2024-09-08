@@ -73,7 +73,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <PageLayout>
+        <PageLayout showTitle={false}>
             <Row align="middle" justify="space-evenly" style={{height: '100vh', width: '100vw'}}>
                 <Col>
                     <Image
