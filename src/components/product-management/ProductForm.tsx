@@ -25,7 +25,7 @@ type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file as Blob);
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = () => reject(new Error("File reading failed"));
     })
@@ -107,7 +107,6 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         }
     }
     useEffect(() => {
-
         if (productId) {
             fetchProductByProductId().then()
         }
@@ -184,9 +183,10 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         }
     }
 
-    const getSpecificationValue = (specId: string) => {
+    const getSpecificationValue = (specId: string, prefix?: string, suffix?: string) => {
+        if (!isView) return "";
         const spec = productData.specification?.find((spec: any) => spec.spec_id === specId);
-        return (spec?.spec_desc !== undefined && spec.spec_desc !== "") ? spec.spec_desc : "-";
+        return (spec?.spec_desc !== undefined && spec.spec_desc !== "") ? prefix + " " + spec.spec_desc + " " + suffix : "-";
     };
 
     const renderSpecificationForm = (specifications: any, catType: string) => {
@@ -207,9 +207,10 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                            required: spec.is_required,
                                            message: `${spec.subcat_spec_name} is required`,
                                        },]}>
+
                                 {!spec.subspecification && (isView && !isEdit ?
-                                    <div>{getSpecificationValue(spec._id)}</div> :
-                                    <Input/>)
+                                    <div>{getSpecificationValue(spec._id, spec.prefix, spec.suffix)}</div> :
+                                    <Input prefix={spec.prefix} suffix={spec.suffix}/>)
                                 }
                             </Form.Item>
 
@@ -220,11 +221,11 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         );
     }
 
-    const getSubspecificationValue = (parentId: string, subspecId: string) => {
+    const getSubspecificationValue = (parentId: string, subspecId: string, prefix?: string, suffix?: string) => {
+        if (!isView) return "";
         const subspec = productData.specification?.find((spec: any) => spec.spec_id === parentId)?.subspecification
             ?.find((subspec: any) => subspec.subspec_id === subspecId);
-
-        return (subspec?.subspec_desc !== undefined && subspec.subspec_desc !== "") ? subspec.subspec_desc : "-";
+        return (subspec?.subspec_desc !== undefined && subspec.subspec_desc !== "") ? prefix + " " + subspec.subspec_desc + " " + suffix : "-";
     };
 
     const renderSubspecificationsForm = (subspecifications: any[], parentIndex: string) => {
@@ -244,8 +245,8 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                        message: `${subspec.subcat_subspec_name} is required`,
                                    },]}>
                             {isView && !isEdit ?
-                                <div>{getSubspecificationValue(parentIndex, subspec._id)}</div> :
-                                <Input/>}
+                                <div>{getSubspecificationValue(parentIndex, subspec._id, subspec.prefix, subspec.suffix)}</div> :
+                                <Input prefix={subspec.prefix} suffix={subspec.suffix}/>}
                         </Form.Item>
                     </div>
                 ))}
@@ -257,7 +258,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         <Form form={form} className={"w-full"}>
             <Row>
                 <Col span={12} align={"middle"}>
-                    <Form.Item name={"product_img"} key={"product_img"} className={"mt-8"}>
+                    <Form.Item name="product_img" key={"product_img"} className={"mt-8"}>
                         {(!isEdit && isView) ?
                             <Layout className={"max-w-96 bg-gray-300"}>
                                 {productData.product_img?.file.preview ?
@@ -305,7 +306,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    labelAlign={"left"}
                                    labelCol={{span: 12}}
                                    className={"ml-8 mb-4"}
-                                   name={'product_name'}
+                                   name='product_name'
                                    rules={[{
                                        required: true,
                                        message: `Product Name is required`,
@@ -316,7 +317,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    labelAlign={"left"}
                                    labelCol={{span: 12}}
                                    className={"ml-8 mb-4"}
-                                   name={'model_no'}
+                                   name='model_no'
                                    rules={[{
                                        required: true,
                                        message: `Model No. is required`,
@@ -327,7 +328,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    labelAlign={"left"}
                                    labelCol={{span: 12}}
                                    className={"ml-8 mb-4"}
-                                   name={'category'}
+                                   name='category'
                                    rules={[{
                                        required: true,
                                        message: `Category is required`,
@@ -342,7 +343,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    labelAlign={"left"}
                                    labelCol={{span: 12}}
                                    className={"ml-8 mb-4"}
-                                   name={'subcat_id'}
+                                   name='subcat_id'
                                    rules={[{
                                        required: true,
                                        message: `Subcategory is required`,
