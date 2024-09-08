@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export const SUPPLIERS_TAB_CONSTANTS = [
     {
         label: 'Pending',
