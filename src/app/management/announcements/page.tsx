@@ -167,17 +167,16 @@ const AnnouncementManagementPage = () => {
     });
 
     return (
-        <Spin spinning={loading}>
-            <AddAnnouncementModal
-                visible={isAddModalVisible}
-                onClose={unshowAddModal}
-            />
-            <EditAnnouncementModal
-                visible={isEditModalVisible}
-                onClose={unshowEditModal}
-                data={selectedRecord}
-            />
             <PageLayout title={"Announcement Management"}>
+                <AddAnnouncementModal
+                    visible={isAddModalVisible}
+                    onClose={unshowAddModal}
+                />
+                <EditAnnouncementModal
+                    visible={isEditModalVisible}
+                    onClose={unshowEditModal}
+                    data={selectedRecord}
+                />
                 <div>
                     <Row style={{justifyContent: "space-between", marginBottom: 16}}>
                         <Col style={{display: "flex", gap: "8px"}} span={16}>
@@ -209,7 +208,6 @@ const AnnouncementManagementPage = () => {
                     />
                 </div>
             </PageLayout>
-        </Spin>
     );
 };
 
