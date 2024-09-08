@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import { Modal, Form, Input, Button, Select } from 'antd';
-import AnnouncementService from "@/services/announcement.service";
+import RoleService from "@/services/role.service";
+import { HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS } from "@/constants/header.constants";
 
 const { Option } = Select;
 
-const EditAdminModal = ({ visible, onClose, data} : any) => {
+const EditRoleModal = ({ visible, onClose, data} : any) => {
     const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState({...data});
 
@@ -17,10 +18,10 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
         try {
             const values = await form.validateFields();
 
-            const data = {...values, updated_by: "Admin"};
+            const data = {...values, updated_by: "Superadmin"};
 
             try {
-                await AnnouncementService.updateAnnouncement(originalData._id, data);
+                await RoleService.updateRole(originalData._id, data)
             } catch (error) {
                 console.error(error)
                 throw error;
@@ -39,7 +40,7 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Edit Admin</h3>}
+            title={<h3 style={{textAlign:'center'}}>Edit Role</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -55,37 +56,26 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    name="username"
-                    label="Admin username"
-                    rules={[{ required: true, message: 'Please enter the admin username' }]}
+                    name="role_name"
+                    label="Role name"
+                    rules={[{ required: true, message: 'Please enter the role name' }]}
                 >
-                    <Input placeholder="Admin username" />
+                    <Input placeholder="Role name" />
                 </Form.Item>
                 <Form.Item
-                    name="email_address"
-                    label="Admin email"
-                    rules={[{ required: true, message: 'Please enter the admin email' }]}
+                    label="Permission module"
+                    name="modules"
+                    rules={[{ required: true, message: 'Please select at least one module' }]}
                 >
-                    <Input placeholder="Admin email" />
-                </Form.Item>
-                <Form.Item
-                    name="role"
-                    label="Role"
-                    rules={[{ required: true, message: 'Please select a role' }]}
-                >
-                    <Select placeholder="Please select a role">
-                        <Option value="admin">Admin</Option>
-                        <Option value="editor">Editor</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="status"
-                    label="Status"
-                    rules={[{ required: true, message: 'Please select a status' }]}
-                >
-                    <Select placeholder="Please select a status">
-                        <Option value="active">Active</Option>
-                        <Option value="inactive">Inactive</Option>
+                    <Select
+                        mode="multiple"
+                        placeholder="Select modules"
+                    >
+                        {HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS.map(({ key, label }) => (
+                            <Option key={key} value={key}>
+                                {label}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
             </Form>
@@ -93,4 +83,4 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
     );
 };
 
-export default EditAdminModal;
+export default EditRoleModal;

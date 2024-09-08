@@ -9,6 +9,7 @@ export class ApiConstant{
     static readonly ANNOUNCEMENT_PREFIX = this.HOST_PREFIX + "announcement" + this.SUFFIX;
     static readonly CONTENT_PREFIX = this.HOST_PREFIX + "content" + this.SUFFIX;
     static readonly AUTH_PREFIX = this.HOST_PREFIX + "auth" + this.SUFFIX;
+    static readonly ROLE_PREFIX = this.HOST_PREFIX + "role" + this.SUFFIX;
 
     /* category api */
     static readonly CREATE_CATEGORY = this.CATEGORY_PREFIX + "create-category";
@@ -90,4 +91,9 @@ export class ApiConstant{
     static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "approve";
     static readonly REJECT_SUPPLIERS = this.AUTH_PREFIX + "reject";
     static readonly GET_ADMINS = this.AUTH_PREFIX + "admins";
+
+    /*role api */
+    static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"
+    static readonly CREATE_ROLE = this.ROLE_PREFIX + "create-role"
+    static readonly UPDATE_ROLE = this.ROLE_PREFIX + "update-role"
 }

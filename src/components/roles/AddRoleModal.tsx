@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
-import AnnouncementService from "@/services/announcement.service";
+import RoleService from "@/services/role.service";
+import { HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS } from '@/constants/header.constants';
 
 const { Option } = Select;
 
-interface AdminModalProps {
+interface RoleModalProps {
     visible: boolean;
     onClose: () => void;
 }
 
-const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
+const AddRoleModal: React.FC<RoleModalProps> = ({ visible, onClose }) => {
     const [form] = Form.useForm();
 
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            const data = {...values, created_by: "Admin", updated_by: "Admin"};
+            const data = {...values, created_by: "Superadmin", last_updated_by: "Superadmin"};
             try {
-                await AnnouncementService.createAnnouncement(data);
+                await RoleService.createRole(data);
             } catch (error) {
                 console.error(error)
                 throw error;
@@ -36,7 +37,7 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Create Admin</h3>}
+            title={<h3 style={{textAlign:'center'}}>Create Role</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -52,37 +53,26 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    name="username"
-                    label="Admin username"
-                    rules={[{ required: true, message: 'Please enter the admin username' }]}
+                    name="role_name"
+                    label="Role name"
+                    rules={[{ required: true, message: 'Please enter the role name' }]}
                 >
-                    <Input placeholder="Admin username" />
+                    <Input placeholder="Role name" />
                 </Form.Item>
                 <Form.Item
-                    name="email_address"
-                    label="Admin email"
-                    rules={[{ required: true, message: 'Please enter the admin email' }]}
+                    label="Permission module"
+                    name="modules"
+                    rules={[{ required: true, message: 'Please select at least one module' }]}
                 >
-                    <Input placeholder="Admin email" />
-                </Form.Item>
-                <Form.Item
-                    name="role"
-                    label="Role"
-                    rules={[{ required: true, message: 'Please select a role' }]}
-                   >
-                    <Select placeholder="Please select a role">
-                        <Option value="admin">Admin</Option>
-                        <Option value="editor">Editor</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="status"
-                    label="Status"
-                    rules={[{ required: true, message: 'Please select a status' }]}
-                >
-                    <Select placeholder="Please select a status">
-                        <Option value="active">Active</Option>
-                        <Option value="inactive">Inactive</Option>
+                    <Select
+                        mode="multiple"
+                        placeholder="Select modules"
+                    >
+                        {HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS.map(({ key, label }) => (
+                            <Option key={key} value={key}>
+                                {label}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
             </Form>
@@ -90,4 +80,4 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
     );
 };
 
-export default AddAdminModal;
+export default AddRoleModal;
