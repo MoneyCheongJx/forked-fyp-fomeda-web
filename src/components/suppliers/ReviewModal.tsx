@@ -46,12 +46,12 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
         setConfirmationModalVisible(false);
     };
 
-    const handleConfirmationModelSubmit = async (type: "approve" | "reject") => {
+    const handleConfirmationModelSubmit = async (type: "approve" | "reject", reason?: string) => {
         try {
             if (type === "approve") {
                 await AuthenticationService.approveSuppliers(data?.user_id, {});
             } else if (type === "reject") {
-                // await callApi();
+                await AuthenticationService.rejectSuppliers(data?.user_id, {reason})
             }
             handleConfirmationModelClose();
             handleOnClose();

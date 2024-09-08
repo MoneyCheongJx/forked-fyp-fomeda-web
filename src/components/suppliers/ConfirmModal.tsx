@@ -9,12 +9,26 @@ const {Title, Paragraph, Text} = Typography;
 interface ConfirmModalProps {
     type: 'approve' | 'reject' | undefined;
     isOpen: boolean;
-    onSubmit: (data: any) => void;
+    onSubmit: (type: 'approve' | 'reject', reason?: string) => void;
     onCancel: () => void;
 }
 
 const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCancel}) => {
     const [form] = Form.useForm();
+
+    const handleSubmit = async () => {
+        if (type === 'approve'){
+            onSubmit(type);
+        } else if (type === 'reject') {
+            try {
+                const values = await form.validateFields();
+                onSubmit(type, values.reason);
+            } catch (error) {
+                console.error('Validation Failed:', error);
+                return Promise.reject();
+            }
+        }
+    };
 
     React.useEffect(() => {
         if (isOpen) {
@@ -49,11 +63,11 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
                 width: "50%",
                 okText: "Confirm",
                 cancelText: "Cancel",
-                onOk: () => onSubmit(type),
+                onOk: handleSubmit,
                 onCancel: onCancel,
             });
         }
-    }, [isOpen, onCancel, onSubmit, type])
+    }, [isOpen, onCancel, onSubmit, type, form])
     return null;
 };
 
