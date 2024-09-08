@@ -25,6 +25,26 @@ export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
+    const checkEmailDuplicate = async (email: string) => {
+        try {
+            const response = await AuthenticationService.checkEmailDuplicate(email);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const checkUsernameDuplicate = async (username: string) => {
+        try {
+            const response = await AuthenticationService.checkUsernameDuplicate(username);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         console.log('Success:', values);
         setIsLoading(true);
@@ -89,8 +109,19 @@ export default function RegisterPage() {
                                 name="email_address"
                                 rules={[
                                     {required: true, message: 'Please input your email address'},
-                                    {type: "email", message: 'Please enter a valid email address'}
-                                    // validator to check duplicate email
+                                    {type: "email", message: 'Please enter a valid email address'},
+                                    {
+                                        validator: async (_, value) => {
+                                            if (!value) {
+                                                return Promise.resolve();
+                                            }
+                                            const isDuplicate = await checkEmailDuplicate(value);
+                                            if (isDuplicate) {
+                                                return Promise.reject(new Error('The email is already in use'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
                                 ]}
                                 hasFeedback
                             >
@@ -103,6 +134,18 @@ export default function RegisterPage() {
                                 rules={[
                                     {required: true, message: 'Please input to confirm email address'},
                                     {type: "email", message: 'Please enter a valid email address'},
+                                    {
+                                        validator: async (_, value) => {
+                                            if (!value) {
+                                                return Promise.resolve();
+                                            }
+                                            const isDuplicate = await checkEmailDuplicate(value);
+                                            if (isDuplicate) {
+                                                return Promise.reject(new Error('The email is already in use'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
                                     ({getFieldValue}) => ({
                                         validator(_, value) {
                                             if (!value || getFieldValue('email_address') === value) {
@@ -158,8 +201,19 @@ export default function RegisterPage() {
                                     {
                                         pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
                                         message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'
-                                    }
-                                    // Validate if username is valid
+                                    },
+                                    {
+                                        validator: async (_, value) => {
+                                            if (!value) {
+                                                return Promise.resolve();
+                                            }
+                                            const isDuplicate = await checkUsernameDuplicate(value);
+                                            if (isDuplicate) {
+                                                return Promise.reject(new Error('The username is already in use'));
+                                            }
+                                            return Promise.resolve();
+                                        },
+                                    },
                                 ]}
                             >
                                 <Input placeholder="Username"/>

@@ -82,8 +82,12 @@ export class ApiConstant{
     static readonly LOGIN = this.AUTH_PREFIX + "login";
     static readonly LOGOUT = this.AUTH_PREFIX + "logout";
     static readonly REGISTER = this.AUTH_PREFIX + "register";
+    static readonly CHECK_EMAIL_DUPLCIATE = this.AUTH_PREFIX + "check-email";
+    static readonly CHECK_USERNAME_DUPLICATE = this.AUTH_PREFIX + "check-username";
     static readonly GET_DETAILS = this.AUTH_PREFIX + "get-details";
     static readonly GET_INACTIVE_SUPPLIERS = this.AUTH_PREFIX + "inactive-suppliers";
     static readonly GET_ACTIVE_SUPPLIERS = this.AUTH_PREFIX + "active-suppliers";
-    static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "review";
+    static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "approve";
+    static readonly REJECT_SUPPLIERS = this.AUTH_PREFIX + "reject";
+    static readonly GET_ADMINS = this.AUTH_PREFIX + "admins";
 }
