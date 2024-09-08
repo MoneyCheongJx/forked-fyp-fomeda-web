@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import {Modal, Typography} from "antd";
+import {Modal, Typography, Input } from "antd";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const {Title, Paragraph, Text, Link} = Typography;
@@ -28,10 +28,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({data, type, isOpen, onSubmit
     React.useEffect(() => {
         if (isOpen) {
             Modal.confirm({
-                title: <h3>Confirmation</h3>,
+                title:
+                    <div style={{textAlign: 'center'}}>
+                        <h3>{type === 'activate' ? 'Activate Role' : 'Deactivate Role'}</h3>
+                    </div>,
                 content: (
                     <div>
-                        <Paragraph>Are you sure you want to {type} the following role?</Paragraph>
+                        <Paragraph>Are you sure you want to <Text strong>{type}</Text> the following role?</Paragraph>
                         <Paragraph>
                             <div>
                                 <Text strong>Role name: </Text>
@@ -46,15 +49,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({data, type, isOpen, onSubmit
                         </Paragraph>
                     </div>
                 ),
-                className: "confirmation-modal",
-                centered:
-                    true,
-                width:
-                    "35%",
-                okText:
-                    "Confirm",
-                cancelText:
-                    "Cancel",
+                icon: null,
+                centered: true,
+                closable: true,
+                width: "50%",
+                okText: "Confirm",
+                cancelText: "Cancel",
                 onOk:
                     () => onSubmit(data?._id, checkType(type)),
                 onCancel: onCancel,
