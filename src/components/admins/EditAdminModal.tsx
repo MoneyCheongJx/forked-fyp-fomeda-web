@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import { Modal, Form, Input, Button, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Modal, Form, Input, Button, Select } from 'antd';
 import AnnouncementService from "@/services/announcement.service";
 
+const { Option } = Select;
 
-const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
+const EditAdminModal = ({ visible, onClose, data} : any) => {
     const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState({...data});
 
@@ -39,7 +39,7 @@ const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Edit Announcement</h3>}
+            title={<h3 style={{textAlign:'center'}}>Edit Admin</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -55,31 +55,42 @@ const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    name="title"
-                    label="Announcement title"
-                    rules={[{ required: true, message: 'Please enter the announcement title' }]}
+                    name="username"
+                    label="Admin username"
+                    rules={[{ required: true, message: 'Please enter the admin username' }]}
                 >
-                    <Input placeholder="Announcement title" />
+                    <Input placeholder="Admin username" />
                 </Form.Item>
                 <Form.Item
-                    name="description"
-                    label="Announcement description"
-                    rules={[{ required: true, message: 'Please enter the announcement description' }]}
+                    name="email_address"
+                    label="Admin email"
+                    rules={[{ required: true, message: 'Please enter the admin email' }]}
                 >
-                    <Input.TextArea autoSize={{ minRows: 4, maxRows: 8}} placeholder="Announcement description" />
+                    <Input placeholder="Admin email" />
                 </Form.Item>
                 <Form.Item
-                    name="file_uploaded"
-                    valuePropName="fileList"
-                    getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+                    name="role"
+                    label="Role"
+                    rules={[{ required: true, message: 'Please select a role' }]}
                 >
-                    <Upload name="file" beforeUpload={() => false} listType="picture" maxCount={3}>
-                        <Button icon={<UploadOutlined />}>Upload Image (Max: 3)</Button>
-                    </Upload>
+                    <Select placeholder="Please select a role">
+                        <Option value="admin">Admin</Option>
+                        <Option value="editor">Editor</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name="status"
+                    label="Status"
+                    rules={[{ required: true, message: 'Please select a status' }]}
+                >
+                    <Select placeholder="Please select a status">
+                        <Option value="active">Active</Option>
+                        <Option value="inactive">Inactive</Option>
+                    </Select>
                 </Form.Item>
             </Form>
         </Modal>
     );
 };
 
-export default EditAnnouncementModal;
+export default EditAdminModal;

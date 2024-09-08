@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Button, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import AnnouncementService from "@/services/announcement.service";
+import React from 'react';
+import { Modal, Form, Input, Button, Select } from 'antd';
+import AuthenticationService from "@/services/authentication.service";
+import {ADMINS_STATUS_OPTIONS} from "@/constants/admins.constant";
 
-interface AnnouncementModalProps {
+const { Option } = Select;
+
+interface AdminModalProps {
     visible: boolean;
     onClose: () => void;
 }
 
-const AddAnnouncementModal: React.FC<AnnouncementModalProps> = ({ visible, onClose }) => {
+const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
     const [form] = Form.useForm();
+
+    const checkEmailDuplicate = async (email: string) => {
+        try {
+            const response = await AuthenticationService.checkEmailDuplicate(email);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const checkUsernameDuplicate = async (username: string) => {
+        try {
+            const response = await AuthenticationService.checkUsernameDuplicate(username);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            const data = {...values, created_by: "Admin", updated_by: "Admin"};
+            const data = {...values, type: "admin", created_by: "Superadmin", updated_by: "Superadmin"};
             try {
-                await AnnouncementService.createAnnouncement(data);
+                await AuthenticationService.register(data);
             } catch (error) {
                 console.error(error)
                 throw error;
@@ -35,7 +57,7 @@ const AddAnnouncementModal: React.FC<AnnouncementModalProps> = ({ visible, onClo
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Add Announcement</h3>}
+            title={<h3 style={{textAlign:'center'}}>Create Admin</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -51,31 +73,90 @@ const AddAnnouncementModal: React.FC<AnnouncementModalProps> = ({ visible, onClo
         >
             <Form form={form} layout="vertical">
                 <Form.Item
-                    name="title"
-                    label="Announcement title"
-                    rules={[{ required: true, message: 'Please enter the announcement title' }]}
+                    name="fullname"
+                    label="Admin fullname"
+                    rules={[{ required: true, message: 'Please enter the admin fullname' }]}
+                    hasFeedback
                 >
-                    <Input placeholder="Announcement title" />
+                    <Input placeholder="Admin fullname" />
                 </Form.Item>
                 <Form.Item
-                    name="description"
-                    label="Announcement description"
-                    rules={[{ required: true, message: 'Please enter the announcement description' }]}
+                    name="username"
+                    label="Admin username"
+                    rules={[
+                        {required: true, message: 'Please enter the admin username'},
+                        {min: 6, max: 20, message: 'The username must be between 6 and 20 characters'},
+                        {whitespace: true, message: 'The username cannot be whitespaces only'},
+                        {
+                            pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+                            message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'
+                        },
+                        {
+                            validator: async (_, value) => {
+                                if (!value) {
+                                    return Promise.resolve();
+                                }
+                                const isDuplicate = await checkUsernameDuplicate(value);
+                                if (isDuplicate) {
+                                    return Promise.reject(new Error('The username is already in use'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                    ]}
+                    hasFeedback
                 >
-                    <Input.TextArea autoSize={{ minRows: 4, maxRows: 8}} placeholder="Announcement description" />
+                    <Input placeholder="Admin username" />
                 </Form.Item>
                 <Form.Item
-                    name="file_uploaded"
-                    valuePropName="fileList"
-                    getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+                    name="email_address"
+                    label="Admin email"
+                    rules={[
+                        { required: true, message: 'Please enter the admin email' },
+                        { type: "email", message: 'Please enter a valid email address'},
+                        {
+                            validator: async (_, value) => {
+                                if (!value) {
+                                    return Promise.resolve();
+                                }
+                                const isDuplicate = await checkEmailDuplicate(value);
+                                if (isDuplicate) {
+                                    return Promise.reject(new Error('The email is already in use'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                    ]}
+                    hasFeedback
                 >
-                    <Upload name="file" accept=".jpg,.jpeg,.png" beforeUpload={() => false} listType="picture" maxCount={3} multiple={true}>
-                        <Button icon={<UploadOutlined />}>Upload Image (Max: 3)</Button>
-                    </Upload>
+                    <Input placeholder="Admin email" />
+                </Form.Item>
+                <Form.Item
+                    name="role"
+                    label="Role"
+                    rules={[{ required: true, message: 'Please select a role' }]}
+                   >
+                    <Select placeholder="Please select a role">
+                        <Option value="admin">Admin</Option>
+                        <Option value="editor">Editor</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name="is_active"
+                    label="Status"
+                    rules={[{ required: true, message: 'Please select a status' }]}
+                >
+                    <Select placeholder="Please select a status">
+                        {ADMINS_STATUS_OPTIONS.map(option => (
+                            <Option key={String(option.value)} value={option.value}>
+                                {option.label}
+                            </Option>
+                        ))}
+                    </Select>
                 </Form.Item>
             </Form>
         </Modal>
     );
 };
 
-export default AddAnnouncementModal;
+export default AddAdminModal;
