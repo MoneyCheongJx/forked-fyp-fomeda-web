@@ -94,6 +94,7 @@ export class ApiConstant{
 
     /*role api */
     static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"
+    static readonly GET_ACTIVE_ROLES = this.ROLE_PREFIX + "get-active-roles"
     static readonly CREATE_ROLE = this.ROLE_PREFIX + "create-role"
     static readonly UPDATE_ROLE = this.ROLE_PREFIX + "update-role"
 }

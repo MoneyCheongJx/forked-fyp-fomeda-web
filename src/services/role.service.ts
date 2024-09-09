@@ -15,6 +15,19 @@ export default class RoleService {
         }
     }
 
+    static getActiveRoles = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.GET_ACTIVE_ROLES,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
     static createRole = async (roleModel: RoleModel) => {
         try {
             const response = await HttpService.post(
