@@ -7,14 +7,26 @@ import { useState, useEffect } from 'react';
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
 import AuthenticationService from "@/services/authentication.service";
+import { jwtDecode } from "jwt-decode"
+import { useAuth } from '../context/auth-context';
 
 const {Title, Link} = Typography;
+
+interface CustomJwtPayload {
+    sub: string;
+    role: string;
+    modules?: string[];
+    fullname?: string;
+    username?: string;
+    email_address?: string;
+    is_active?: string;
+    type?: string;
+}
 
 type FieldType = {
     username?: string;
     password?: string;
 };
-
 
 export default function LoginPage() {
     const router = useRouter();
@@ -23,6 +35,7 @@ export default function LoginPage() {
         username: "",
         password: "",
     })
+    const { setUserData } = useAuth();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsLoading(true);
@@ -35,6 +48,21 @@ export default function LoginPage() {
                 });
                 const sessionId = res?.sessionId
                 sessionStorage.setItem('session', sessionId);
+
+                const token = res?.token
+                localStorage.setItem('token', token);
+                const decodedToken = jwtDecode<CustomJwtPayload>(token);
+
+                const userData = {
+                    username: decodedToken?.username,
+                    fullname: decodedToken?.fullname,
+                    email_address: decodedToken?.email_address,
+                    is_active: decodedToken?.is_active,
+                    type: decodedToken?.type,
+                    modules: decodedToken?.modules,
+                }
+                console.log('userData', userData)
+                setUserData(userData);
                 router.push('/content');
             });
         } catch (error) {

@@ -27,6 +27,19 @@ export default class RoleService {
         }
     }
 
+    static getModules = async (id: string) => {
+        const param = {id}
+        try {
+            const response = await HttpService.get(
+                ApiConstant.GET_MODULES,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     static createRole = async (roleModel: RoleModel) => {
         try {
@@ -55,4 +68,6 @@ export default class RoleService {
             throw error;
         }
     }
+    
+    
 }

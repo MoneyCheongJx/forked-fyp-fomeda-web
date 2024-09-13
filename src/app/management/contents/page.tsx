@@ -16,23 +16,33 @@ import EditModal from "@/components/content/EditModal";
 import DeleteModal from "@/components/content/DeleteModal.";
 import {PlusOutlined} from "@ant-design/icons";
 import {DateTimeUtils} from "@/utils/date-time.utils";
+import { useAuth } from "@/app/(auth)/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 const ContentManagementPage = () => {
     const [carouselData, setCarouselData] = useState<any[]>([]);
     const [contentData, setContentData] = useState<any[]>([]);
     const [historyData, setHistoryData] = useState<any[]>([]);
     const [selectedRecord, setSelectedRecord] = useState<any>([]);
-
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState<any>({});
+    const { userData, redirecting } = useAuth();
+    const router = useRouter();
 
     useEffect(() => {
-        fetchCarouselData();
-        fetchContentData();
-        fetchHistoryData();
-    }, []);
+        if (redirecting) {
+            return;
+        }
+        if (!userData || !userData.modules?.includes('content_management')) {
+            router.push('/content');
+        } else {
+            fetchCarouselData();
+            fetchContentData();
+            fetchHistoryData();
+        }
+    }, [userData, router]);
 
     const fetchCarouselData = async () => {
         try {
@@ -180,6 +190,10 @@ const ContentManagementPage = () => {
             }
             return column;
         });
+    }
+
+    if (!userData || !userData.modules?.includes('content_management')) {
+        return null;
     }
 
     return (

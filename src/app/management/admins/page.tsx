@@ -10,6 +10,8 @@ import {DateTimeUtils} from "@/utils/date-time.utils";
 import PageLayout from "@/app/page";
 import AddAdminModal from "@/components/admins/AddAdminModal";
 import EditAdminModal from "@/components/admins/EditAdminModal";
+import { useAuth } from "@/app/(auth)/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 const AdminManagementPage = () => {
     const [loading, setLoading] = useState(false);
@@ -20,7 +22,8 @@ const AdminManagementPage = () => {
     const [isAddModalVisible, setAddModalVisible] = useState(false);
     const [isEditModalVisible, setEditModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const {RangePicker} = DatePicker;
+    const { userData, redirecting } = useAuth();
+    const router = useRouter();
 
     const showEditModal = () => {
         setEditModalVisible(true);
@@ -55,8 +58,15 @@ const AdminManagementPage = () => {
     }
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (redirecting) {
+            return;
+        }
+        if (!userData || !userData.modules?.includes('administrator_management')) {
+            router.push('/content');
+        } else {
+            fetchData();
+        }
+    }, [userData, router]);
 
     useEffect(() => {
         filterData();
@@ -98,6 +108,10 @@ const AdminManagementPage = () => {
                 };
         }
     });
+
+    if (!userData || !userData.modules?.includes('administrator_management')) {
+        return null;
+    }
 
     return (
         <PageLayout title={"Admins Management"}>

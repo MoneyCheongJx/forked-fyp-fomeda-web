@@ -13,20 +13,12 @@ import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
-
-interface UserData {
-    user_id?: string;
-    fullname?: string;
-    username?: string;
-    email_address?: string;
-    is_active?: string;
-    type?: string;
-}
+import { useAuth } from '../../app/(auth)/context/auth-context';
 
 const NavigationBar = () => {
-    const [userData, setUserData] = useState<UserData | null>(null);
     const router = useRouter();
     const pathname = usePathname();
+    const { userData, resetUserData, setRedirecting } = useAuth();
 
     const handleLogout = async () => {
         try {
@@ -34,14 +26,17 @@ const NavigationBar = () => {
 
             if (sessionId) {
                 await AuthenticationService.logout({session_id: sessionId}).then(res => {
+                    setRedirecting(true);
+                    router.push('/login');
+
                     sessionStorage.clear();
+                    resetUserData();
 
                     NotificationService.success(
                         "Logout Successful",
                         "You have successfully logged out."
                     )
 
-                    router.push('/login');
                 });
             }
         } catch (error) {
@@ -60,23 +55,6 @@ const NavigationBar = () => {
             ),
     }));
 
-    // Check session storage on component mount
-    useEffect(() => {
-        const fetchData = async () => {
-            const sessionId = sessionStorage.getItem('session')
-            if (sessionId) {
-                try {
-                    await AuthenticationService.getDetails(sessionId).then(res => {
-                        setUserData(res);
-                    });
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        }
-        fetchData();
-    }, []);
-
     return (
         <Header className="header-box">
             <Image
@@ -93,12 +71,16 @@ const NavigationBar = () => {
                     }
 
                     if (item.hasChild) {
+                        if (!userData || userData?.modules?.length === 0) {
+                            return null;
+                        }
+
                         return (
                             <Dropdown
                                 key={item.key}
                                 trigger={['hover']}
                                 menu={{
-                                    items: item.children.map((item: any) => ({
+                                    items: item.children.filter((item: { key: string; }) => userData?.modules?.includes(item.key)).map((item: any) => ({
                                         key: item.key,
                                         label: (
                                             <Link href={item.link}>
@@ -153,36 +135,6 @@ const NavigationBar = () => {
                     </Row>
                 }
             </Row>
-
-            {/*<Row style={{alignItems: "center"}}>*/}
-            {/*    {userData ? (*/}
-            {/*        <>*/}
-            {/*            <Divider className="divider" type="vertical"/>*/}
-            {/*            <Dropdown menu={{items: MANAGEMENT_DROPDOWN_LIST}}>*/}
-            {/*                <Button type="text" className="nav-button" icon={<DownOutlined/>} iconPosition="end">*/}
-            {/*                    Management*/}
-            {/*                </Button>*/}
-            {/*            </Dropdown>*/}
-            {/*            <Avatar icon={<UserOutlined/>} className="nav-avatar"/>*/}
-            {/*            <Dropdown menu={{items: PROFILE_DROPDOWN_LIST}}>*/}
-            {/*                <Button type="text" className="nav-button" icon={<DownOutlined/>} iconPosition="end">*/}
-            {/*                    {userData.username}*/}
-            {/*                </Button>*/}
-            {/*            </Dropdown>*/}
-            {/*        </>*/}
-            {/*    ) : (*/}
-            {/*        <>*/}
-            {/*            <Divider className="divider" type="vertical"/>*/}
-            {/*            <Row>*/}
-            {/*                <Button type="text" className="nav-button" onClick={*/}
-            {/*                    () => router.push('/login')*/}
-            {/*                }>*/}
-            {/*                    Login*/}
-            {/*                </Button>*/}
-            {/*            </Row>*/}
-            {/*        </>*/}
-            {/*    )}*/}
-            {/*</Row>*/}
         </Header>
     );
 };

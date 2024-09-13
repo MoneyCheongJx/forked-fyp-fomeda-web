@@ -13,6 +13,8 @@ import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
 import moment from 'moment';
 import {DateTimeUtils} from "@/utils/date-time.utils";
+import { useAuth } from "@/app/(auth)/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 const AnnouncementManagementPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -24,7 +26,8 @@ const AnnouncementManagementPage = () => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [searchText, setSearchText] = useState('');
     const {RangePicker} = DatePicker;
-
+    const { userData, redirecting } = useAuth();
+    const router = useRouter();
 
     const fetchData = async () => {
         try {
@@ -40,8 +43,15 @@ const AnnouncementManagementPage = () => {
     }
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (redirecting) {
+            return;
+        }
+        if (!userData || !userData.modules?.includes('announcement_management')) {
+            router.push('/content');
+        } else {
+            fetchData();
+        }
+    }, [userData, router]);
 
     const showAddModal = () => {
         setAddModalVisible(true);
@@ -165,6 +175,10 @@ const AnnouncementManagementPage = () => {
                 };
         }
     });
+
+    if (!userData || !userData.modules?.includes('announcement_management')) {
+        return null;
+    }
 
     return (
             <PageLayout title={"Announcement Management"}>

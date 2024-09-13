@@ -13,6 +13,8 @@ import PageLayout from "@/app/page";
 import AddRoleModal from "@/components/roles/AddRoleModal";
 import EditRoleModal from "@/components/roles/EditRoleModal";
 import ConfirmModal from "@/components/roles/ConfirmModal";
+import { useAuth } from "@/app/(auth)/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 type ConfirmType = 'activate' | 'deactivate';
 
@@ -24,6 +26,8 @@ const RoleManagementPage = () => {
     const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
     const [confirmType, setConfirmType] = useState<ConfirmType | undefined>(undefined);
     const [selectedRecord, setSelectedRecord] = useState(null);
+    const { userData, redirecting } = useAuth();
+    const router = useRouter();
 
     const showEditModal = () => {
         setEditModalVisible(true);
@@ -66,8 +70,15 @@ const RoleManagementPage = () => {
     }
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        if (redirecting) {
+            return;
+        }
+        if (!userData || !userData.modules?.includes('role_management')) {
+            router.push('/content');
+        } else {
+            fetchData();
+        }
+    }, [userData, router]);
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_role') {
@@ -155,6 +166,10 @@ const RoleManagementPage = () => {
                 };
         }
     });
+
+    if (!userData || !userData.modules?.includes('role_management')) {
+        return null;
+    }
 
     return (
         <PageLayout title={"Roles Management"}>

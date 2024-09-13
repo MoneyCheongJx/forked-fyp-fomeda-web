@@ -1,15 +1,19 @@
 "use client"
 
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import PageLayout from '@/app/page';
 import { Spin, Segmented } from "antd";
 import {SUPPLIERS_TAB_CONSTANTS} from "@/constants/suppliers.constant";
 import PendingTabContent from "@/components/suppliers/PendingTabContent";
 import HistoryTabContent from "@/components/suppliers/HistoryTabContent";
+import { useAuth } from "@/app/(auth)/context/auth-context";
+import { useRouter } from 'next/navigation';
 
 const SupplierManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string>('pending');
+    const { userData, redirecting } = useAuth();
+    const router = useRouter();
 
     const handleChange = (value: string) => {
         setSelected(value);
@@ -26,6 +30,19 @@ const SupplierManagementPage = () => {
             );
         }
     };
+
+    useEffect(() => {
+        if (redirecting) {
+            return;
+        }
+        if (!userData || !userData.modules?.includes('administrator_management')) {
+            router.push('/content');
+        }
+    }, [userData, router]);
+
+    if (!userData || !userData.modules?.includes('administrator_management')) {
+        return null;
+    }
 
     return (
         <Spin spinning={loading}>
