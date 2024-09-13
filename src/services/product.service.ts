@@ -31,10 +31,37 @@ export default class ProductService {
         }
     }
 
+    static readonly getProductVerificationDetailsById = async (id: string): Promise<ProductModel> => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.GET_PRODUCT_VERIFICATION_DETAILS_BY_ID,
+                param,
+            );
+            return response;
+        } catch (error){
+            console.error(error);
+            throw error;
+        }
+    }
+
     static readonly getProductByFilter = async (filterModel: ProductFilterModel): Promise<ProductModel[]> => {
         try {
             const response = await HttpService.post(
                 ApiConstant.GET_PRODUCT_BY_FILTER,
+                filterModel,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly getProductVerificationDetailsByFilter = async (filterModel: ProductFilterModel): Promise<ProductModel[]> => {
+        try {
+            const response = await HttpService.post(
+                ApiConstant.GET_PRODUCT_VERIFICATION_DETAILS_BY_FILTER,
                 filterModel,
             )
             return response;
@@ -72,6 +99,21 @@ export default class ProductService {
            console.error(error);
            throw error;
        }
+    }
+
+    static readonly updateProductVerificationDetailsById = async (id: string, productDto: ProductModel): Promise<boolean> => {
+        try {
+            const param = {id}
+            const response = await HttpService.put(
+                ApiConstant.UPDATE_PRODUCT_VERIFICATION_DETAILS_BY_ID,
+                productDto,
+                param,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 
     static readonly deleteProductById = async (id: string): Promise<boolean> => {

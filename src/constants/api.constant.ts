@@ -21,6 +21,7 @@ export class ApiConstant{
     static readonly CREATE_SUBCATEGORY_SPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-specification";
     static readonly CREATE_SUBCATEGORY_SUBSPECIFICATION = this.CATEGORY_PREFIX + "create-subcategory-subspecification";
     static readonly FIND_ALL_CATEGORY = this.CATEGORY_PREFIX + "find-all-category";
+    static readonly FIND_ONE_SUBCATEGORY_BY_ID = this.CATEGORY_PREFIX + "find-one-subcategory-by-id";
     static readonly FIND_ALL_ACTIVE_CATEGORIES = this.CATEGORY_PREFIX + "find-all-active-categories";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
     static readonly FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-base-specification-with-same-subcat-by-id";
@@ -94,7 +95,10 @@ export class ApiConstant{
     static readonly CREATE_PRODUCT = this.PRODUCT_PREFIX + "create-product";
     static readonly GET_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "get-product-by-id";
     static readonly GET_PRODUCT_BY_FILTER = this.PRODUCT_PREFIX + "get-product-by-filter";
+    static readonly GET_PRODUCT_VERIFICATION_DETAILS_BY_FILTER = this.PRODUCT_PREFIX + "get-product-verification-details-by-filter";
+    static readonly GET_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "get-product-verification-details-by-id";
     static readonly UPDATE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "update-product-by-id";
     static readonly UPDATE_PRODUCT_IS_ACTIVE = this.PRODUCT_PREFIX + "update-product-is-active";
+    static readonly UPDATE_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "update-product-verification-details-by-id";
     static readonly DELETE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "delete-product-by-id";
 }

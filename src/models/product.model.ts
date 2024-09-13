@@ -9,9 +9,14 @@ export class ProductModel {
     product_img?: any;
     status?: string;
     last_updated_on?: string;
-    approved_by?: string;
-    approved_on?: string;
+    reviewed_by?: string;
+    admin_username?: string;
+    owner_username?: string;
+    reviewed_on?: string;
     is_active?: boolean;
     rating?: number;
     specification?: Array<any>;
+    rating_score?: any[]
+    rejected_reason?: string;
+    total_score?: number;
 }

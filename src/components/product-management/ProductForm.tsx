@@ -159,7 +159,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         form.setFieldValue("status", ProductConstant.PENDING);
         try {
             const productValues = form.getFieldsValue();
-            const updateSpec = getUpdatedFields(productValues.specification, productData.specification);
+            const updateSpec = isEdit ? getUpdatedFields(productValues.specification, productData.specification) : productValues.specification;
 
             const payload = {
                 ...productValues,

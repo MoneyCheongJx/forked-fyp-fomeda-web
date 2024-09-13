@@ -68,6 +68,12 @@ export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
     {key: "delete", label: "Delete Specification", link: ""},
 ]
 
+export const SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS = [
+    {key: "rating", title: "Rating", dataIndex: "rating", width: "50%"},
+    {key: "min_score", title: "Minimum Score", dataIndex: "min_score", width: "25%"},
+    {key: "max_score", title: "Maximum Score", dataIndex: "max_score", width: "25%"},
+]
+
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
     {key: "subcat_spec_name", title: "General Information", dataIndex: "subcat_spec_name", width: "40%"},
     {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},

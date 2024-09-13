@@ -16,15 +16,14 @@ const CustomSelect = ({options, placeholder, optionsPlaceholder, onChange, value
 
     useEffect(() => {
         setFilteredOptions(options);
-        console.log(options)
     }, [options]);
 
 
-    const handleSearch = (value) => {
+    const handleSearch = (value: any) => {
         const trimmedValue = value.trim().toLowerCase();
-        const filtered = options.map(option => {
+        const filtered = options.map((option: any) => {
             const includesParent = option.label.toLowerCase().includes(trimmedValue)
-            const filteredChildren = option.options?.filter(child =>
+            const filteredChildren = option.options?.filter((child: any) =>
                 child.label.toLowerCase().includes(trimmedValue)
             ) || [];
 
@@ -99,7 +98,7 @@ const CustomSelect = ({options, placeholder, optionsPlaceholder, onChange, value
     //     }
     // };
 
-    const dropdownRender = (menu) => (
+    const dropdownRender = (menu: any) => (
         <>
             {showSearch &&
                 <>
@@ -114,7 +113,7 @@ const CustomSelect = ({options, placeholder, optionsPlaceholder, onChange, value
         </>
     )
 
-    const tagRender = (props) => {
+    const tagRender = (props: any) => {
         const {label} = props
         return (
             <Row>

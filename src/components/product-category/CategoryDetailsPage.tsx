@@ -1,8 +1,8 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
-import {SPECIFICATIONS_TABLE_CONSTANTS} from "@/constants/category.constant";
-import {Button, Col, Dropdown, Modal, Row, Table, Tag, Typography} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
+import {SPECIFICATIONS_TABLE_CONSTANTS, SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS} from "@/constants/category.constant";
+import {Button, Col, Dropdown, Form, Input, InputNumber, Modal, Row, Table, Tag, Typography} from "antd";
+import {CheckOutlined, CloseOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import {useRouter} from "next/navigation";
@@ -16,9 +16,12 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const router = useRouter();
 
     const isCategory = !id.includes('SCAT');
+    const [ratingForm] = Form.useForm();
     const [detailsData, setDetailsData] = useState<any>({})
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState<any>([]);
+    const [ratingScore, setRatingScore] = useState<any[]>([]);
+    const [isEditRating, setIsEditRating] = useState(false);
 
     const defineActionList = (action: any, record: any) => {
         return action.map((item: any) => {
@@ -68,7 +71,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const handleActionsOnClick = async (key: string, record: any) => {
-        const { _id, subcat_subspec_name } = record;
+        const {_id, subcat_subspec_name} = record;
         const isSubspecification = Boolean(subcat_subspec_name);
         const actionType = isSubspecification ? 'subspec' : 'spec';
 
@@ -85,12 +88,51 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         }
     };
 
+    const handleSaveRatingScoreOnClick = async () => {
+        try{
+            const ratingValues = ratingForm.getFieldsValue();
+            const updateScore = ratingScore.map((score: any) => ({
+                ...score,
+                max_score: parseInt(ratingValues[`${score.rating}_max_score`]),
+                min_score: parseInt(ratingValues[`${score.rating}_min_score`]),
+            }));
+
+            setRatingScore(updateScore);
+            await CategoryService.updateSubcategory(id, {rating_score: updateScore});
+            setIsEditRating(false);
+        } catch(error){
+            console.error(error);
+            throw error;
+        }
+    }
 
     const renderActions = (action_list: any, record: any) => (
         <Dropdown menu={{items: defineActionList(action_list, record)}} disabled={record.is_origin === false}>
             <Button>Actions</Button>
         </Dropdown>
     );
+
+    const renderScore = (record: any, key: string) => (
+        <>
+            {isEditRating ?
+                <Form form={ratingForm}>
+                    <Form.Item name={`${record.rating}_${key}`}
+                               initialValue={record[key]}
+                               className={"mb-0"}>
+                        <Input />
+                    </Form.Item>
+                </Form> :
+                <div>{record[key]}</div>
+            }
+        </>
+    )
+
+    const ratingTableFooter = () => (
+        <Row className={"justify-end space-x-3"}>
+            <Button onClick={() => setIsEditRating(false)}>Cancel</Button>
+            <Button onClick={handleSaveRatingScoreOnClick} type={"primary"}>Saved</Button>
+        </Row>
+    )
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
         switch (column.key) {
@@ -121,6 +163,12 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
                     sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
+            case 'min_score':
+            case 'max_score':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => renderScore(record, column.key)
+                };
             default:
                 return {
                     ...column,
@@ -132,7 +180,9 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const getDetailsData = async () => {
         try {
             const nameResponse = await CategoryService.findNameById(id);
+            const ratingScoreResponse = await CategoryService.findOneSubcategoryById(id)
             setName(nameResponse);
+            setRatingScore(ratingScoreResponse?.rating_score)
             let response
             if (isCategory) {
                 response = await CategoryService.findCategoryBaseSpecificationByCatId(id);
@@ -172,6 +222,21 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                     </Col> : <></>
                 }
             </Row>
+
+            <Row className="mb-2 justify-between">
+                <h3>RatingScore</h3>
+                <Button type="primary" icon={<EditOutlined/>}
+                        onClick={() => setIsEditRating(true)}
+                        disabled={isEditRating}>
+                    Edit Rating Score
+                </Button>
+            </Row>
+            <Table columns={defineTableHeader(SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS)}
+                   dataSource={ratingScore.map((rating => ({...rating, key: rating.rating})))}
+                   showSorterTooltip={false}
+                   pagination={false}
+                   className={"mb-12"}
+                   footer={isEditRating? ratingTableFooter : undefined}/>
 
             {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">

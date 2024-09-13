@@ -219,6 +219,10 @@ a:hover {
     color: #ffffff !important;
 }
 
+.ant-segmented-item:active .ant-segmented-item-selected{
+    color: #ffffff !important
+}
+
 .ant-segmented-item {
     padding: 2px 16px;
 }
@@ -241,3 +245,18 @@ a:hover {
 .ant-rate-star-half {
     color: var(--ant-primary-color) !important;
 }
+
+/* form style */
+.ant-form-item-label-left:not(.ant-form-item-required) > label::after {
+    content: "" ;
+}
+
+.ant-form-item-required::before {
+    content: "" !important;
+}
+
+.ant-form-item-required::after {
+    content: "*" !important;
+    color: red !important;
+}
+
