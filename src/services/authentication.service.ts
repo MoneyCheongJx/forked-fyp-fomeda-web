@@ -151,4 +151,19 @@ export default class AuthenticationService {
             throw error;
         }
     }
+    
+    static updateAdmin = async (userId: string, authenticationModel: AuthenticationModel) => {
+        const param = {userId};
+        try {
+            const response = await HttpService.patch(
+                ApiConstant.UPDATE_ADMIN,
+                authenticationModel,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }

@@ -91,6 +91,7 @@ export class ApiConstant{
     static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "approve";
     static readonly REJECT_SUPPLIERS = this.AUTH_PREFIX + "reject";
     static readonly GET_ADMINS = this.AUTH_PREFIX + "admins";
+    static readonly UPDATE_ADMIN = this.AUTH_PREFIX + "update-admin"
 
     /*role api */
     static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"

@@ -85,7 +85,7 @@ const AdminManagementPage = () => {
                         <Button onClick={() => handleOnClick(text, record)}>Edit</Button>
                     )
                 };
-            case 'registered_on':
+            case 'created_on':
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),

@@ -1,8 +1,8 @@
 export const ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
     {
-        key: "name",
+        key: "fullname",
         title: "Admin name",
-        dataIndex: "name",
+        dataIndex: "fullname",
         width: "20%",
     },
     {

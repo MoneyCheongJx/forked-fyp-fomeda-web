@@ -1,26 +1,68 @@
 import React, {useEffect, useState} from "react";
-import { Modal, Form, Input, Button, Select } from 'antd';
-import AnnouncementService from "@/services/announcement.service";
+import {Modal, Form, Input, Button, Select} from 'antd';
+import RoleService from "@/services/role.service";
+import AuthenticationService from "@/services/authentication.service";
+import { ADMINS_STATUS_OPTIONS } from "@/constants/admins.constant";
 
-const { Option } = Select;
+const {Option} = Select;
 
-const EditAdminModal = ({ visible, onClose, data} : any) => {
+const EditAdminModal = ({visible, onClose, data}: any) => {
     const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState({...data});
+    const [roles, setRoles] = useState<any[]>([]); // Adjust the type as needed
 
     useEffect(() => {
         setOriginalData({...data});
         form.setFieldsValue({...data});
-    }, [data, form]);
+        if (visible) {
+            fetchRoles();
+            if (data) {
+                form.setFieldsValue({
+                    ...data,
+                    role_id: data?.role_id,
+                });
+            }
+        }
+    }, [visible, data, form]);
+
+    const fetchRoles = async () => {
+        try {
+            const response = await RoleService.getActiveRoles();
+            setRoles(response);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const checkEmailDuplicate = async (email: string) => {
+        try {
+            const response = await AuthenticationService.checkEmailDuplicate(email);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const checkUsernameDuplicate = async (username: string) => {
+        try {
+            const response = await AuthenticationService.checkUsernameDuplicate(username);
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
 
-            const data = {...values, updated_by: "Admin"};
+            const data = {...values, updated_by: "Super admin"};
 
             try {
-                await AnnouncementService.updateAnnouncement(originalData._id, data);
+                await AuthenticationService.updateAdmin(originalData?.user_id, data);
             } catch (error) {
                 console.error(error)
                 throw error;
@@ -39,7 +81,7 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Edit Admin</h3>}
+            title={<h3 style={{textAlign: 'center'}}>Edit Admin</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -55,37 +97,88 @@ const EditAdminModal = ({ visible, onClose, data} : any) => {
         >
             <Form form={form} layout="vertical">
                 <Form.Item
+                    name="fullname"
+                    label="Admin fullname"
+                    rules={[{required: true, message: 'Please enter the admin fullname'}]}
+                    hasFeedback
+                >
+                    <Input placeholder="Admin fullname"/>
+                </Form.Item>
+                <Form.Item
                     name="username"
                     label="Admin username"
-                    rules={[{ required: true, message: 'Please enter the admin username' }]}
+                    rules={[
+                        {required: true, message: 'Please enter the admin username'},
+                        {min: 6, max: 20, message: 'The username must be between 6 and 20 characters'},
+                        {whitespace: true, message: 'The username cannot be whitespaces only'},
+                        {
+                            pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+                            message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'
+                        },
+                        {
+                            validator: async (_, value) => {
+                                if (!value || value === originalData?.username) {
+                                    return Promise.resolve();
+                                }
+                                const isDuplicate = await checkUsernameDuplicate(value);
+                                if (isDuplicate) {
+                                    return Promise.reject(new Error('The username is already in use'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                    ]}
+                    hasFeedback
                 >
-                    <Input placeholder="Admin username" />
+                    <Input placeholder="Admin username"/>
                 </Form.Item>
                 <Form.Item
                     name="email_address"
                     label="Admin email"
-                    rules={[{ required: true, message: 'Please enter the admin email' }]}
+                    rules={[
+                        {required: true, message: 'Please enter the admin email'},
+                        {type: "email", message: 'Please enter a valid email address'},
+                        {
+                            validator: async (_, value) => {
+                                if (!value || value === originalData?.email_address) {
+                                    return Promise.resolve();
+                                }
+                                const isDuplicate = await checkEmailDuplicate(value);
+                                if (isDuplicate) {
+                                    return Promise.reject(new Error('The email is already in use'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                    ]}
+                    hasFeedback
                 >
-                    <Input placeholder="Admin email" />
+                    <Input placeholder="Admin email"/>
                 </Form.Item>
                 <Form.Item
-                    name="role"
+                    name="role_id"
                     label="Role"
-                    rules={[{ required: true, message: 'Please select a role' }]}
+                    rules={[{required: true, message: 'Please select a role'}]}
                 >
                     <Select placeholder="Please select a role">
-                        <Option value="admin">Admin</Option>
-                        <Option value="editor">Editor</Option>
+                        {roles.map((role: any) => (
+                            <Option key={role._id} value={role._id}>
+                                {role?.role_name}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
                 <Form.Item
-                    name="status"
+                    name="is_active"
                     label="Status"
-                    rules={[{ required: true, message: 'Please select a status' }]}
+                    rules={[{required: true, message: 'Please select a status'}]}
                 >
-                    <Select placeholder="Please select a status">
-                        <Option value="active">Active</Option>
-                        <Option value="inactive">Inactive</Option>
+                    <Select placeholder="Please select a status" value={originalData?.is_active ? 'active' : 'inactive'}>
+                        {ADMINS_STATUS_OPTIONS.map(option => (
+                            <Option key={String(option.value)} value={option.value}>
+                                {option.label}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
             </Form>

@@ -1,17 +1,35 @@
-import React from 'react';
-import { Modal, Form, Input, Button, Select } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Modal, Form, Input, Button, Select} from 'antd';
 import AuthenticationService from "@/services/authentication.service";
+import RoleService from "@/services/role.service";
 import {ADMINS_STATUS_OPTIONS} from "@/constants/admins.constant";
 
-const { Option } = Select;
+const {Option} = Select;
 
 interface AdminModalProps {
     visible: boolean;
     onClose: () => void;
 }
 
-const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
+const AddAdminModal: React.FC<AdminModalProps> = ({visible, onClose}) => {
     const [form] = Form.useForm();
+    const [roles, setRoles] = useState<any[]>([]); // Adjust the type as needed
+
+    useEffect(() => {
+        if (visible) {
+            fetchRoles();
+        }
+    }, [visible]);
+
+    const fetchRoles = async () => {
+        try {
+            const response = await RoleService.getActiveRoles();
+            setRoles(response);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     const checkEmailDuplicate = async (email: string) => {
         try {
@@ -57,7 +75,7 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
 
     return (
         <Modal
-            title={<h3 style={{textAlign:'center'}}>Create Admin</h3>}
+            title={<h3 style={{textAlign: 'center'}}>Create Admin</h3>}
             open={visible}
             onCancel={handleOnClose}
             onOk={handleOnSubmit}
@@ -75,10 +93,10 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
                 <Form.Item
                     name="fullname"
                     label="Admin fullname"
-                    rules={[{ required: true, message: 'Please enter the admin fullname' }]}
+                    rules={[{required: true, message: 'Please enter the admin fullname'}]}
                     hasFeedback
                 >
-                    <Input placeholder="Admin fullname" />
+                    <Input placeholder="Admin fullname"/>
                 </Form.Item>
                 <Form.Item
                     name="username"
@@ -106,14 +124,14 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
                     ]}
                     hasFeedback
                 >
-                    <Input placeholder="Admin username" />
+                    <Input placeholder="Admin username"/>
                 </Form.Item>
                 <Form.Item
                     name="email_address"
                     label="Admin email"
                     rules={[
-                        { required: true, message: 'Please enter the admin email' },
-                        { type: "email", message: 'Please enter a valid email address'},
+                        {required: true, message: 'Please enter the admin email'},
+                        {type: "email", message: 'Please enter a valid email address'},
                         {
                             validator: async (_, value) => {
                                 if (!value) {
@@ -129,22 +147,27 @@ const AddAdminModal: React.FC<AdminModalProps> = ({ visible, onClose }) => {
                     ]}
                     hasFeedback
                 >
-                    <Input placeholder="Admin email" />
+                    <Input placeholder="Admin email"/>
                 </Form.Item>
                 <Form.Item
-                    name="role"
+                    name="role_id"
                     label="Role"
-                    rules={[{ required: true, message: 'Please select a role' }]}
-                   >
+                    rules={[{required: true, message: 'Please select a role'}]}
+                >
                     <Select placeholder="Please select a role">
-                        <Option value="admin">Admin</Option>
-                        <Option value="editor">Editor</Option>
+                        {roles.map((role: any) => {
+                            return (
+                                <Option key={role._id} value={role._id}>
+                                    {role?.role_name}
+                                </Option>
+                            );
+                        })}
                     </Select>
                 </Form.Item>
                 <Form.Item
                     name="is_active"
                     label="Status"
-                    rules={[{ required: true, message: 'Please select a status' }]}
+                    rules={[{required: true, message: 'Please select a status'}]}
                 >
                     <Select placeholder="Please select a status">
                         {ADMINS_STATUS_OPTIONS.map(option => (
