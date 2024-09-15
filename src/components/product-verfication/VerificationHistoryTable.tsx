@@ -75,8 +75,15 @@ const VerificationHistoryTable = ({filterData}: any) => {
     };
 
     return (
-        <Table className="mt-4" columns={PRODUCT_PENDING_TABLE_HEADER} showSorterTooltip={false}
-               dataSource={historyList} rowKey="_id"/>
+        <Table className="mt-4"
+               columns={PRODUCT_PENDING_TABLE_HEADER}
+               showSorterTooltip={false}
+               dataSource={historyList} rowKey="_id"
+               pagination={{
+                   defaultPageSize: 10,
+                   showSizeChanger: true,
+                   pageSizeOptions: [10, 20, 50, 100],
+               }}/>
     )
 }
 

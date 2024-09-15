@@ -11,7 +11,7 @@ import {ProductModel} from "@/models/product.model";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import {usePathname, useRouter} from "next/navigation";
 import CustomSelect from "@/components/common/CustomSelect";
-import ProductConfirmationContent from "@/components/product-management/ProductConfirmationContent";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import CategoryService from "@/services/category.service";
 
 const ProductPendingPage = () => {
@@ -28,7 +28,7 @@ const ProductPendingPage = () => {
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ProductConfirmationContent action={key} record={record}/>,
+                content: <ProductConfirmationContent action={key} record={record} details={"product"}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -110,7 +110,7 @@ const ProductPendingPage = () => {
         fetchAllCategoryAndSubcategory().then();
     }, []);
 
-    const handleSelectedCategory = (values) => {
+    const handleSelectedCategory = (values: any) => {
         setSelectedCategory(values);
     }
 

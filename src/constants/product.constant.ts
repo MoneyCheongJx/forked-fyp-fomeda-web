@@ -2,6 +2,8 @@ export class ProductConstant {
     static readonly APPROVED = "APPROVED";
     static readonly PENDING = "PENDING";
     static readonly REJECTED = "REJECTED";
+    static readonly REJECT_ACTION = "reject";
+    static readonly APPROVE_ACTION = "approve";
 }
 
 export const PRODUCT_VERIFICATION_TAB_CONSTANT = [

@@ -82,20 +82,18 @@ a:hover {
 
 /* button style */
 .ant-btn-primary,
-.ant-btn-primary:focus {
+.ant-btn-primary:not(.ant-btn-dangerous):focus {
     background-color: var(--ant-primary-color);
-    border-color: var(--ant-primary-color);
 }
 
-.ant-btn-primary:not([disabled]):hover {
+.ant-btn-primary:not(.ant-btn-dangerous):not([disabled]):hover {
     background-color: var(--ant-primary-color-hover) !important;
-    border-color: var(--ant-primary-color-hover) !important;
 }
 
-.ant-btn-primary:not([disabled]):active {
+.ant-btn-primary:not(.ant-btn-dangerous):not([disabled]):active {
     background-color: var(--ant-primary-color-active);
-    border-color: var(--ant-primary-color-active);
 }
+
 
 .ant-btn-primary.ant-btn-background-ghost {
     color: var(--ant-primary-color);

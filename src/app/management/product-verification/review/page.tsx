@@ -1,7 +1,7 @@
 "use client"
 
 import PageLayout from "@/app/page";
-import {Button, Col, Form, Image, Input, Layout, Rate, Row, Table, Tooltip} from "antd";
+import {Button, Col, Form, Image, Layout, Modal, Rate, Row, Table, Tooltip} from "antd";
 import {useRouter, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import ProductService from "@/services/product.service";
@@ -10,6 +10,10 @@ import {InfoCircleOutlined, PictureOutlined} from "@ant-design/icons";
 import {ProductConstant, VERIFICATION_DETAILS_TABLE_CONSTANTS} from "@/constants/product.constant";
 import {StringUtils} from "@/utils/string.utils";
 import TextArea from "antd/es/input/TextArea";
+import CustomInput from "@/components/common/CustomInput";
+import MessageService from "@/services/message.service";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
+import NotificationService from "@/services/notification.service";
 
 const ProductVerificationDetailsPage = () => {
     const router = useRouter();
@@ -63,7 +67,7 @@ const ProductVerificationDetailsPage = () => {
     const calculateStarRating = () => {
         const scores = productData?.rating_score;
         const matchRating = scores?.find((score) => totalScore <= score.max_score && totalScore >= score.min_score)
-        setStarRating(matchRating.rating);
+        setStarRating(matchRating?.rating ?? 0);
     }
 
     const handleValuesChange = (changedValues: any, allValues: any) => {
@@ -71,8 +75,37 @@ const ProductVerificationDetailsPage = () => {
     };
 
     const onUpdate = async (status: string) => {
-        const formData = form.getFieldsValue();
+        if (status === ProductConstant.REJECTED &&
+            (!form.getFieldValue("rejected_reason") ||
+                form.getFieldValue("rejected_reason").trim() === "")) {
+            MessageService.error("Reject Reason is required to reject application.")
+            return;
+        }
 
+        if (status === ProductConstant.APPROVED) {
+            try {
+                await form.validateFields();
+            } catch (error) {
+                MessageService.error("Please fill in all required fields.");
+                return;
+            }
+        }
+
+        const statusAction = status === ProductConstant.REJECTED ? ProductConstant.REJECT_ACTION : ProductConstant.APPROVE_ACTION;
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <ProductConfirmationContent action={statusAction} record={productData}
+                                                 details={"product application"}/>,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => onSubmit(status),
+        })
+    }
+
+    const onSubmit = async (status: string) => {
+        const formData = form.getFieldsValue();
         const filteredData = {
             ...formData,
             rating: starRating,
@@ -81,11 +114,19 @@ const ProductVerificationDetailsPage = () => {
             specification: filterSpecifications(formData.specification || []),
         };
 
-        try{
+        const displayStatus = StringUtils.formatTitleCase(status)
+        try {
             await ProductService.updateProductVerificationDetailsById(id!, filteredData);
-            router.back()
+            router.back();
+            NotificationService.success(
+                `${displayStatus} Application`,
+                `${productData?.product_name} Application is ${displayStatus} successfully.`
+            )
         } catch (error) {
-            console.log(error);
+            NotificationService.error(
+                `${displayStatus} Application`,
+                `${productData?.product_name} Application failed to ${status === ProductConstant.REJECTED ? "reject" : "approve"}`
+            )
             throw error;
         }
     }
@@ -151,12 +192,17 @@ const ProductVerificationDetailsPage = () => {
             return <></>
         }
 
+        const specName = record.subspec_name || record.spec_name;
+        let maxScore = 0;
         const ratingScores = record.rating_score || [];
-        const tooltipDesc = ratingScores.map((rating: any, index: number) => (
-            <div key={index}>
-                {record.subspec_name || record.spec_name} {StringUtils.formatLowerCase(rating.action, "_")} {record.prefix} {rating.value} {record.suffix} = {rating.score} mark(s);
-            </div>
-        ));
+        const tooltipDesc = ratingScores.map((rating: any, index: number) => {
+            if (rating.score > maxScore) maxScore = rating.score;
+            return (
+                <div key={index}>
+                    {specName} {StringUtils.formatLowerCase(rating.action, "_")} {record.prefix} {rating.value} {record.suffix} = {rating.score} mark(s);
+                </div>
+            )
+        });
 
         return (
             <Row>
@@ -173,8 +219,16 @@ const ProductVerificationDetailsPage = () => {
                         name={record.subspec_id ? ['specification', record.spec_id, 'subspecification', record.subspec_id, 'score'] : ['specification', record.spec_id, 'score']}
                         initialValue={record.score}
                         type={"number"}
-                        className={"mb-0"}>
-                        <Input disabled={ratingScores.length <= 0}/>
+                        className={"mb-0"}
+                        rules={[{
+                            validator: (_: any, value: number) => {
+                                if (value > maxScore)
+                                    return Promise.reject(new Error(`${specName} core cannot exceed ${maxScore}`))
+                                return Promise.resolve();
+                            }
+                        }]}>
+                        <CustomInput type={"numeric"}
+                                     disabled={ratingScores.length <= 0}/>
                     </Form.Item>
                 </Col>
                 <Col>
@@ -248,13 +302,17 @@ const ProductVerificationDetailsPage = () => {
                            name={"rejected_reason"}>
                     <Col span={16}>
                         <TextArea rows={5}/>
+                        <div className={"text-yellow-500"}><i><InfoCircleOutlined/> This field is required to reject
+                            this application.</i></div>
                     </Col>
                 </Form.Item>
             </Form>
             <Row className={"justify-end space-x-3 my-4"}>
                 <Button type={"default"} size={"large"} onClick={() => router.back()}>Cancel</Button>
-                <Button type={"primary"} size={"large"} onClick={() => onUpdate(ProductConstant.REJECTED)} danger>Rejected</Button>
-                <Button type={"primary"} size={"large"} onClick={() => onUpdate(ProductConstant.APPROVED)}>Approve</Button>
+                <Button type={"primary"} size={"large"} onClick={() => onUpdate(ProductConstant.REJECTED)}
+                        danger>Rejected</Button>
+                <Button type={"primary"} size={"large"}
+                        onClick={() => onUpdate(ProductConstant.APPROVED)}>Approve</Button>
             </Row>
         </PageLayout>
     );

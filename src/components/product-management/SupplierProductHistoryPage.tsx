@@ -1,8 +1,6 @@
-import {Button, Col, Dropdown, Form, Input, Modal, Rate, Row, Select, Table, Tag, Typography} from "antd";
+import {Button, Col, Dropdown, Form, Input, Modal, Rate, Row, Table, Tag, Typography} from "antd";
 import {
     PRODUCT_HISTORY_LIST_TABLE_HEADER, SUPPLIER_HISTORY_LIST_ACTION_CONSTANT,
-    SUPPLIER_PRODUCT_LIST_ACTION_CONSTANT,
-    SUPPLIER_PRODUCT_LIST_TABLE_HEADER
 } from "@/constants/suppliers.constant";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
@@ -13,7 +11,7 @@ import {ProductConstant} from "@/constants/product.constant";
 import {usePathname, useRouter} from "next/navigation";
 import CustomSelect from "@/components/common/CustomSelect";
 import CategoryService from "@/services/category.service";
-import ProductConfirmationContent from "@/components/product-management/ProductConfirmationContent";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 
 const SupplierProductHistoryPage = () => {
     const router = useRouter();
@@ -29,7 +27,7 @@ const SupplierProductHistoryPage = () => {
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ProductConfirmationContent action={key} record={record}/>,
+                content: <ProductConfirmationContent action={key} record={record} details={"product"}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -117,7 +115,7 @@ const SupplierProductHistoryPage = () => {
         fetchAllCategoryAndSubcategory().then();
     }, []);
 
-    const handleSelectedCategory = (values) => {
+    const handleSelectedCategory = (values: any) => {
         setSelectedCategory(values);
     }
 

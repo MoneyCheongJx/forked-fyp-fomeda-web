@@ -1,5 +1,5 @@
-import {Button, Col, Dropdown, Form, Input, Modal, Rate, Row, Select, Table, Tag, Typography} from "antd";
-import {PlusOutlined, SearchOutlined, StarFilled} from "@ant-design/icons";
+import {Button, Col, Dropdown, Form, Input, Modal, Rate, Row, Table, Tag, Typography} from "antd";
+import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {
     SUPPLIER_PRODUCT_LIST_ACTION_CONSTANT,
     SUPPLIER_PRODUCT_LIST_TABLE_HEADER
@@ -10,7 +10,7 @@ import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
 import {ProductFilterModel} from "@/models/product-filter.model";
 import {ProductConstant} from "@/constants/product.constant";
-import ProductConfirmationContent from "@/components/product-management/ProductConfirmationContent";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import CategoryService from "@/services/category.service";
 import CustomSelect from "@/components/common/CustomSelect";
 
@@ -29,7 +29,7 @@ const SupplierProductPage = () => {
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
-                content: <ProductConfirmationContent action={key} record={record}/>,
+                content: <ProductConfirmationContent action={key} record={record} details={"product"}/>,
                 className: "confirmation-modal",
                 centered: true,
                 width: "35%",
@@ -120,7 +120,7 @@ const SupplierProductPage = () => {
         fetchAllCategoryAndSubcategory().then();
     }, []);
 
-    const handleSelectedCategory = (values) => {
+    const handleSelectedCategory = (values: any) => {
         setSelectedCategory(values);
     }
 
