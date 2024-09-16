@@ -11,11 +11,12 @@ const VerificationPendingTable = ({filterData}: any) => {
     const router = useRouter();
     const pathname = usePathname();
     const [pendingList, setPendingList] = useState<ProductModel[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const getTableData = async () => {
         try {
-            console.log(filterData)
-            filterData.status = ProductConstant.PENDING;
+            setLoading(true)
+            filterData.status = [ProductConstant.PENDING];
             const response = await ProductService.getProductVerificationDetailsByFilter(filterData);
             setPendingList(response);
         } catch (error) {
@@ -25,11 +26,11 @@ const VerificationPendingTable = ({filterData}: any) => {
     }
 
     useEffect(() => {
-        getTableData().then()
+        getTableData().then(() => setLoading(false))
     }, []);
 
     useEffect(() => {
-        getTableData().then()
+        getTableData().then(() => setLoading(false))
     }, [filterData]);
 
     const PRODUCT_PENDING_TABLE_HEADER = VERIFICATION_PENDING_LIST_TABLE_HEADER.map((column) => {
@@ -60,6 +61,7 @@ const VerificationPendingTable = ({filterData}: any) => {
                showSorterTooltip={false}
                dataSource={pendingList}
                rowKey="_id"
+               loading={loading}
                pagination={{
                    defaultPageSize: 10,
                    showSizeChanger: true,

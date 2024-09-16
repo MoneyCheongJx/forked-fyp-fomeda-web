@@ -13,11 +13,12 @@ const VerificationHistoryTable = ({filterData}: any) => {
     const router = useRouter();
     const pathname = usePathname();
     const [historyList, setHistoryList] = useState<ProductModel[]>([]);
+    const [loading, setLoading] = useState(false);
 
     const getTableData = async () => {
         try {
-            console.log(filterData)
-            filterData.status = null;
+            setLoading(true)
+            filterData.status = [ProductConstant.REJECTED, ProductConstant.APPROVED];
             const response = await ProductService.getProductVerificationDetailsByFilter(filterData);
             setHistoryList(response);
         } catch (error) {
@@ -27,11 +28,11 @@ const VerificationHistoryTable = ({filterData}: any) => {
     }
 
     useEffect(() => {
-        getTableData().then()
+        getTableData().then(() => setLoading(false))
     }, []);
 
     useEffect(() => {
-        getTableData().then()
+        getTableData().then(() => setLoading(false))
     }, [filterData]);
 
     const PRODUCT_PENDING_TABLE_HEADER = VERIFICATION_HISTORY_LIST_TABLE_HEADER.map((column) => {
@@ -78,7 +79,9 @@ const VerificationHistoryTable = ({filterData}: any) => {
         <Table className="mt-4"
                columns={PRODUCT_PENDING_TABLE_HEADER}
                showSorterTooltip={false}
-               dataSource={historyList} rowKey="_id"
+               dataSource={historyList}
+               rowKey="_id"
+               loading={loading}
                pagination={{
                    defaultPageSize: 10,
                    showSizeChanger: true,

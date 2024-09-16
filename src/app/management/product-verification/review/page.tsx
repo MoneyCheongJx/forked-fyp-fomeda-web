@@ -24,10 +24,12 @@ const ProductVerificationDetailsPage = () => {
     const [productData, setProductData] = useState<ProductModel>();
     const [starRating, setStarRating] = useState(0);
     const [totalScore, setTotalScore] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getVerificationProductDetails = async () => {
             try {
+                setLoading(true);
                 const response = await ProductService.getProductVerificationDetailsById(id!);
                 if (response) {
                     setProductData(response);
@@ -39,7 +41,7 @@ const ProductVerificationDetailsPage = () => {
             }
         }
 
-        getVerificationProductDetails().then();
+        getVerificationProductDetails().then(() => setLoading(false));
     }, [id]);
 
     useEffect(() => {
@@ -271,6 +273,7 @@ const ProductVerificationDetailsPage = () => {
                                    })}
                                pagination={false}
                                showSorterTooltip={false}
+                               loading={loading}
                                expandable={{
                                    expandedRowKeys: productData?.specification
                                        ?.filter(spec => spec.spec_type === item.type)

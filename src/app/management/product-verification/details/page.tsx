@@ -1,7 +1,7 @@
 "use client"
 
 import PageLayout from "@/app/page";
-import {Col, Form, Image, Layout, Rate, Table} from "antd";
+import {Col, Form, Image, Layout, Rate, Skeleton, Table} from "antd";
 import {useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import ProductService from "@/services/product.service";
@@ -15,10 +15,12 @@ const ProductVerificationDetailsPage = () => {
     const id = query.get("id");
 
     const [productData, setProductData] = useState<ProductModel>();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getVerificationProductDetails = async () => {
             try {
+                setLoading(true);
                 const response = await ProductService.getProductVerificationDetailsById(id!);
                 if (response) {
                     setProductData(response);
@@ -29,7 +31,7 @@ const ProductVerificationDetailsPage = () => {
             }
         }
 
-        getVerificationProductDetails().then();
+        getVerificationProductDetails().then(() => setLoading(false));
     }, [id]);
 
 
@@ -95,6 +97,7 @@ const ProductVerificationDetailsPage = () => {
                                })}
                            pagination={false}
                            showSorterTooltip={false}
+                           loading={loading}
                            expandable={{
                                expandedRowKeys: productData?.specification
                                    ?.filter(spec => spec.spec_type === item.type)

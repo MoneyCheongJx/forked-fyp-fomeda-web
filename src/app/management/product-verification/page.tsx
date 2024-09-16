@@ -16,10 +16,13 @@ const ProductVerificationPage = () => {
     const [filterForm] = Form.useForm();
     const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
-    const [filterData, setFilterData] = useState({}); // Manage filter state
+    const [filterData, setFilterData] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleSegmentedChange = (value: any) => {
         setSegmentedTab(value);
+        setFilterData({})
+        filterForm.resetFields();
     };
 
     const handleSearch = async () => {
@@ -33,17 +36,20 @@ const ProductVerificationPage = () => {
 
     const fetchAllCategoryAndSubcategory = async () => {
         try {
+            setLoading(true);
             const response = await CategoryService.findAllActiveCategories();
             if (response) {
                 const catOptions = response.map((cat: any) => {
                     const subcatOptions = cat.children?.map((subcat: any) => ({
-                        label: subcat.subcat_name,
+                        title: subcat.subcat_name,
                         value: subcat._id,
+                        key: subcat._id,
                     }));
                     return {
-                        label: cat.cat_name,
-                        title: cat._id,
-                        options: subcatOptions,
+                        title: cat.cat_name,
+                        value: cat._id,
+                        key: cat._id,
+                        children: subcatOptions,
                     }
                 })
                 setCategoryOptions(catOptions);
@@ -54,7 +60,7 @@ const ProductVerificationPage = () => {
         }
     }
     useEffect(() => {
-        fetchAllCategoryAndSubcategory().then();
+        fetchAllCategoryAndSubcategory().then(() => setLoading(false));
     }, []);
 
     const handleSelectedCategory = (values: any) => {
@@ -77,7 +83,8 @@ const ProductVerificationPage = () => {
                                               optionsPlaceholder={"Search Category..."}
                                               onChange={handleSelectedCategory}
                                               values={selectedCategory}
-                                              size={"large"}/>
+                                              size={"large"}
+                                              loading={loading}/>
                             </Form.Item>
                             <Button type="primary" onClick={handleSearch} size={"large"}>Search</Button>
                             <Button type="default" onClick={handleReset} size={"large"}>Reset</Button>
