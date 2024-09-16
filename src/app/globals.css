@@ -258,3 +258,22 @@ a:hover {
     color: red !important;
 }
 
+/* checkbox style*/
+.ant-checkbox-checked .ant-checkbox-inner:not(.ant-checkbox-disabled){
+    background-color: var(--ant-primary-color) ;
+    border-color: var(--ant-primary-color);
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner::after{
+    background-color: var(--ant-primary-color) ;
+}
+
+/* tree select style */
+.ant-select-tree-checkbox-checked .ant-select-tree-checkbox-inner:not(.ant-select-tree-checkbox-disabled){
+    background-color: var(--ant-primary-color) ;
+    border-color: var(--ant-primary-color);
+}
+
+.ant-select-tree-checkbox-indeterminate .ant-select-tree-checkbox-inner::after {
+    background-color: var(--ant-primary-color) !important;
+}
