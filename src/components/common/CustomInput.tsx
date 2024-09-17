@@ -11,21 +11,25 @@ const CustomInput = ({value, type = "alphanumeric", onChange, ...props}: CustomI
     const handleChange = (e: any) => {
         const inputValue = e.target.value
         let isValidValue;
-        switch (type) {
-            case "numeric":
-                isValidValue = RegexConstant.REGEX_NUMERIC.test(inputValue);
-                break;
-            case"alphabet":
-                isValidValue = RegexConstant.REGEX_ALPHABET.test(inputValue);
-                break;
-            case"alphanumeric":
-                isValidValue = RegexConstant.REGEX_ALPHANUMERIC.test(inputValue);
-                break;
-            default:
-                isValidValue = true;
+        if (inputValue === "") {
+            isValidValue = true;
+        } else {
+            switch (type) {
+                case "numeric":
+                    isValidValue = RegexConstant.REGEX_NUMERIC.test(inputValue);
+                    break;
+                case "alphabet":
+                    isValidValue = RegexConstant.REGEX_ALPHABET.test(inputValue);
+                    break;
+                case "alphanumeric":
+                    isValidValue = RegexConstant.REGEX_ALPHANUMERIC.test(inputValue);
+                    break;
+                default:
+                    isValidValue = true;
+            }
         }
 
-        if(onChange && isValidValue) onChange(inputValue);
+        if (onChange && isValidValue) onChange(inputValue);
     }
 
     return <Input value={value} onChange={handleChange} {...props} />
