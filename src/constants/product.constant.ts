@@ -4,6 +4,9 @@ export class ProductConstant {
     static readonly REJECTED = "REJECTED";
     static readonly REJECT_ACTION = "reject";
     static readonly APPROVE_ACTION = "approve";
+    static readonly ALPHABET = "ALPHABET";
+    static readonly ALPHANUMERIC = "ALPHANUMERIC";
+    static readonly NUMERIC = "NUMERIC";
 }
 
 export const PRODUCT_VERIFICATION_TAB_CONSTANT = [

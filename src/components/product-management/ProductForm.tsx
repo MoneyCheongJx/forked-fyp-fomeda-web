@@ -1,19 +1,18 @@
 "use client";
 
-import {Button, Card, Col, Form, GetProp, Image, Input, Layout, Row, Select, Upload, UploadProps} from "antd";
+import {Button, Card, Col, Form, GetProp, Image, Input, Layout, Row, Select, Spin, Upload, UploadProps} from "antd";
 import {useEffect, useState} from "react";
 import "../../styles/product.component.css";
-import {
-    DeleteOutlined,
-    EditOutlined,
-    InboxOutlined,
-    PictureOutlined,
-} from "@ant-design/icons";
+import {CloseOutlined, DeleteOutlined, EditOutlined, InboxOutlined, PictureOutlined,} from "@ant-design/icons";
 import CategoryService from "@/services/category.service";
 import {CategoryConstant} from "@/constants/category.constant";
 import ProductService from "@/services/product.service";
 import {useRouter} from "next/navigation";
 import {ProductConstant} from "@/constants/product.constant";
+import {RegexConstant} from "@/constants/regex.constant";
+import {StringUtils} from "@/utils/string.utils";
+import MessageService from "@/services/message.service";
+import NotificationService from "@/services/notification.service";
 
 class ProductFormProps {
     type?: "add" | "view";
@@ -30,6 +29,11 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = () => reject(new Error("File reading failed"));
     })
 
+const regexMapping: any = {
+    [ProductConstant.ALPHABET]: RegexConstant.REGEX_ALPHABET,
+    [ProductConstant.NUMERIC]: RegexConstant.REGEX_NUMERIC,
+}
+
 const ProductForm = ({type, productId}: ProductFormProps) => {
     const router = useRouter();
 
@@ -43,9 +47,12 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
     const [subcatId, setSubcatId] = useState("");
     const [productData, setProductData] = useState<any>({});
     const [isEdit, setIsEdit] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [loadingCategory, setLoadingCategory] = useState(false);
 
     const fetchSpecificationField = async () => {
         try {
+            setLoading(true);
             const response = await CategoryService.getProductSpecificationBySubcatId(subcatId)
             if (response) {
                 setSpecificationFields(response);
@@ -56,14 +63,14 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         }
     }
     useEffect(() => {
-
         if (subcatId !== "") {
-            fetchSpecificationField().then();
+            fetchSpecificationField().then(() => setLoading(false));
         }
     }, [subcatId]);
 
     const fetchAllCategoryAndSubcategory = async () => {
         try {
+            setLoadingCategory(true);
             const response = await CategoryService.findAllActiveCategories();
             if (response) {
                 let allSubcatOptions: any[] = [];
@@ -89,12 +96,13 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
     }
     useEffect(() => {
         if (!isView) {
-            fetchAllCategoryAndSubcategory().then();
+            fetchAllCategoryAndSubcategory().then(() => setLoadingCategory(false));
         }
     }, [type]);
 
     const fetchProductByProductId = async () => {
         try {
+            setLoading(true)
             const response = await ProductService.getProductById(productId!)
             if (response) {
                 setProductData(response)
@@ -108,12 +116,13 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
     }
     useEffect(() => {
         if (productId) {
-            fetchProductByProductId().then()
+            fetchProductByProductId().then(() => setLoading(false))
         }
     }, [productId]);
 
     const onCategoryChange = (value: any) => {
         form.setFieldValue("cat_id", undefined);
+        form.setFieldValue("subcat_id", undefined);
         setSubcatId("")
         setFilteredSubcatOptions(subcategoryOptions.filter(subcat => subcat.cat_id === value));
     }
@@ -158,6 +167,13 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
     const onSubmitProduct = async () => {
         form.setFieldValue("status", ProductConstant.PENDING);
         try {
+            await form.validateFields();
+        } catch (error) {
+            MessageService.error("Please fill in all required fields")
+            throw error;
+        }
+
+        try {
             const productValues = form.getFieldsValue();
             const updateSpec = isEdit ? getUpdatedFields(productValues.specification, productData.specification) : productValues.specification;
 
@@ -178,15 +194,25 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                 router.back();
             }
         } catch (error) {
-            console.error(error);
+            isEdit ?
+                NotificationService.error("Update Product", `${productData.product_name} failed to update.`) :
+                NotificationService.error("Create Product", `Application of ${productData.product_name} failed to submit.`);
             throw error;
+        } finally {
+            isEdit ?
+                NotificationService.success("Update Product", `${productData.product_name} updated successfully`) :
+                NotificationService.success("Create Product", `Application of ${productData.product_name} submitted successfully.`);
         }
     }
 
     const getSpecificationValue = (specId: string, prefix?: string, suffix?: string) => {
         if (!isView) return "";
         const spec = productData.specification?.find((spec: any) => spec.spec_id === specId);
-        return (spec?.spec_desc !== undefined && spec.spec_desc !== "") ? prefix + " " + spec.spec_desc + " " + suffix : "-";
+        if (!isEdit) {
+            return (spec?.spec_desc !== undefined && spec.spec_desc !== "") ? [prefix, spec.spec_desc, suffix].join(" ").trim() : "-";
+        }
+
+        return spec?.spec_desc || "";
     };
 
     const renderSpecificationForm = (specifications: any, catType: string) => {
@@ -203,10 +229,15 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                        className={"ml-8 mb-4"}
                                        name={[spec._id, 'spec_desc']}
                                        initialValue={getSpecificationValue(spec._id)}
-                                       rules={[{
-                                           required: spec.is_required,
-                                           message: `${spec.subcat_spec_name} is required`,
-                                       },]}>
+                                       rules={[
+                                           {
+                                               required: spec.is_required && (isEdit || !isView),
+                                               message: `${spec.subcat_spec_name} is required`,
+                                           },
+                                           {
+                                               pattern: regexMapping[spec.field_type],
+                                               message: `Only ${StringUtils.formatLowerCase(spec.field_type)} is allowed`
+                                           }]}>
 
                                 {!spec.subspecification && (isView && !isEdit ?
                                     <div>{getSpecificationValue(spec._id, spec.prefix, spec.suffix)}</div> :
@@ -225,7 +256,11 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         if (!isView) return "";
         const subspec = productData.specification?.find((spec: any) => spec.spec_id === parentId)?.subspecification
             ?.find((subspec: any) => subspec.subspec_id === subspecId);
-        return (subspec?.subspec_desc !== undefined && subspec.subspec_desc !== "") ? prefix + " " + subspec.subspec_desc + " " + suffix : "-";
+        if (!isEdit) {
+            return (subspec?.subspec_desc !== undefined && subspec.subspec_desc !== "") ? [prefix, subspec.subspec_desc, suffix].join(" ").trim() : "-";
+        }
+
+        return subspec?.subspec_desc || "";
     };
 
     const renderSubspecificationsForm = (subspecifications: any[], parentIndex: string) => {
@@ -240,10 +275,16 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    className={"ml-16 mb-4"}
                                    name={[subIndex, 'subspec_desc']}
                                    initialValue={getSubspecificationValue(parentIndex, subspec._id)}
-                                   rules={[{
-                                       required: subspec.is_required,
-                                       message: `${subspec.subcat_subspec_name} is required`,
-                                   },]}>
+                                   rules={[
+                                       {
+                                           required: subspec.is_required && (isEdit || !isView),
+                                           message: `${subspec.subcat_subspec_name} is required`,
+                                       },
+                                       {
+                                           pattern: regexMapping[subspec.field_type],
+                                           message: `Only ${StringUtils.formatLowerCase(subspec.field_type)} is allowed`
+                                       }
+                                   ]}>
                             {isView && !isEdit ?
                                 <div>{getSubspecificationValue(parentIndex, subspec._id, subspec.prefix, subspec.suffix)}</div> :
                                 <Input prefix={subspec.prefix} suffix={subspec.suffix}/>}
@@ -299,8 +340,13 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                 </Col>
                 <Col span={12} className={"mb-12"}>
                     <Card bordered={false}>
-                        <Button type={"primary"} icon={<EditOutlined/>} className={"ml-auto flex items-center"}
-                                disabled={isEdit} onClick={() => setIsEdit(true)}>Edit Product</Button>
+                        {isView &&
+                            <Button type={"primary"} icon={<EditOutlined/>} className={"ml-auto flex items-center"}
+                                    disabled={isEdit} onClick={() => {
+                                setIsEdit(true);
+                                form.resetFields();
+                            }}>Edit Product</Button>
+                        }
                         <h5 className={"my-3.5"}>General Information</h5>
                         <Form.Item label={<h5>Product Name</h5>}
                                    labelAlign={"left"}
@@ -308,7 +354,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    className={"ml-8 mb-4"}
                                    name='product_name'
                                    rules={[{
-                                       required: true,
+                                       required: !isEdit && !isView,
                                        message: `Product Name is required`,
                                    },]}>
                             {isView ? <div>{productData.product_name}</div> : <Input/>}
@@ -319,7 +365,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    className={"ml-8 mb-4"}
                                    name='model_no'
                                    rules={[{
-                                       required: true,
+                                       required: !isEdit && !isView,
                                        message: `Model No. is required`,
                                    },]}>
                             {isView ? <div>{productData.model_no}</div> : <Input/>}
@@ -330,13 +376,17 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    className={"ml-8 mb-4"}
                                    name='category'
                                    rules={[{
-                                       required: true,
+                                       required: !isEdit && !isView,
                                        message: `Category is required`,
                                    },]}>
                             {isView ?
                                 <div>{productData.cat_name}</div> :
-                                <Select options={categoryOptions} onChange={(value) => onCategoryChange(value)}
-                                        defaultActiveFirstOption={true}/>
+                                <Select options={categoryOptions}
+                                        onChange={(value) => onCategoryChange(value)}
+                                        defaultActiveFirstOption={true}
+                                        allowClear={true}
+                                        removeIcon={<CloseOutlined/>}
+                                        loading={loadingCategory}/>
                             }
                         </Form.Item>
                         <Form.Item label={<h5>Subcategory</h5>}
@@ -345,18 +395,28 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                    className={"ml-8 mb-4"}
                                    name='subcat_id'
                                    rules={[{
-                                       required: true,
+                                       required: !isEdit && !isView,
                                        message: `Subcategory is required`,
                                    },]}>
                             {isView ?
                                 <div>{productData.subcat_name}</div> :
                                 <Select options={filteredSubcatOptions}
+                                        disabled={filteredSubcatOptions.length === 0}
                                         defaultValue={filteredSubcatOptions.length > 0 ? undefined : filteredSubcatOptions[0]?.value}
-                                        onChange={(value) => setSubcatId(value)}/>
+                                        onChange={(value) => setSubcatId(value ?? "")}
+                                        allowClear={true}
+                                        removeIcon={<CloseOutlined/>}
+                                        loading={loadingCategory}/>
                             }
                         </Form.Item>
 
-                        {subcatId !== "" && <>
+                        {subcatId !== "" && loading &&
+                            <div className={"flex justify-center"}>
+                                <Spin/>
+                            </div>
+                        }
+
+                        {subcatId !== "" && !loading && <>
                             {renderSpecificationForm(specificationFields, CategoryConstant.INFORMATION)}
                             <h5 className={"mb-3.5 mt-8"}>Certification</h5>
                             {renderSpecificationForm(specificationFields, CategoryConstant.CERTIFICATION)}
