@@ -14,6 +14,7 @@ import CategoryService from "@/services/category.service";
 import {SubspecificationModel} from "@/models/subspecification.model";
 import NotificationService from "@/services/notification.service";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import MessageService from "@/services/message.service";
 
 const initialSpecificationFormData: SpecificationModel = {
     cat_id: '',
@@ -22,12 +23,12 @@ const initialSpecificationFormData: SpecificationModel = {
     cat_type: '',
     created_by: 'Admin',
     last_updated_by: 'Admin',
-    allow_input: false,
-    is_required: true,
+    allow_input: true,
+    is_required: false,
     prefix: '',
     suffix: '',
     field_type: 'NUMERIC',
-    is_score_contributed: true,
+    is_score_contributed: false,
     rating_score: [],
 };
 
@@ -37,12 +38,12 @@ const initialSubspecificationFormData: SubspecificationModel = {
     subcat_subspec_name: '',
     created_by: 'Admin',
     last_updated_by: 'Admin',
-    allow_input: false,
-    is_required: true,
+    allow_input: true,
+    is_required: false,
     prefix: '',
     suffix: '',
     field_type: 'NUMERIC',
-    is_score_contributed: true,
+    is_score_contributed: false,
     rating_score: [],
 };
 
@@ -129,39 +130,43 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
         }
     };
 
-    const handleOnModelOpen = () => {
-        const data = isSpecification ? specificationFormData : subspecificationFormData;
+    const handleOnModelOpen = async () => {
+        try {
+            await form.validateFields();
+            const data = isSpecification ? specificationFormData : subspecificationFormData;
+            const commonFields = {
+                allow_input: specificationFormData.allow_input,
+                is_required: specificationFormData.is_required,
+                prefix: specificationFormData.prefix,
+                suffix: specificationFormData.suffix,
+                field_type: specificationFormData.field_type,
+                is_score_contributed: specificationFormData.is_score_contributed,
+                rating_score: form.getFieldsValue().rating_score,
+                cat_type: specificationType,
+            };
+            let submitData = {...data, ...commonFields,};
 
-        const commonFields = {
-            allow_input: specificationFormData.allow_input,
-            is_required: specificationFormData.is_required,
-            prefix: specificationFormData.prefix,
-            suffix: specificationFormData.suffix,
-            field_type: specificationFormData.field_type,
-            is_score_contributed: specificationFormData.is_score_contributed,
-            rating_score: form.getFieldsValue().rating_score,
-            cat_type: specificationType,
-        };
-
-        let submitData = {...data, ...commonFields,};
-
-        if (isSpecification) {
-            submitData = {
-                ...submitData,
-                cat_id: catId,
-                subcat_id: catId,
+            if (isSpecification) {
+                submitData = {
+                    ...submitData,
+                    cat_id: catId,
+                    subcat_id: catId,
+                }
             }
-        }
 
-        Modal.confirm({
-            title: <h3>Confirmation</h3>,
-            content: <ConfirmationContent action={"Add"} record={submitData}/>,
-            className: "confirmation-modal",
-            centered: true,
-            width: "35%",
-            okText: "Confirm",
-            onOk: () => handleFormSubmit(submitData),
-        });
+            Modal.confirm({
+                title: <h3>Confirmation</h3>,
+                content: <ConfirmationContent action={"Add"} record={submitData}/>,
+                className: "confirmation-modal",
+                centered: true,
+                width: "35%",
+                okText: "Confirm",
+                onOk: () => handleFormSubmit(submitData),
+            });
+        } catch (error) {
+            MessageService.error("Please Filled in the required field.")
+            throw error;
+        }
     }
 
     const handleFormSubmit = async (submitData: any) => {
@@ -285,55 +290,60 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
                 [],
                 specificationFormData.allow_input)}
 
-            {renderFormItem("Required Field",
-                (e) => setSpecificationFormData((prevState: any) => ({
-                    ...prevState,
-                    is_required: e.target.value,
-                })),
-                "radio",
-                "is_required",
-                [],
-                specificationFormData.is_required)}
+            {specificationFormData.allow_input &&
+                renderFormItem("Required Field",
+                    (e) => setSpecificationFormData((prevState: any) => ({
+                        ...prevState,
+                        is_required: e.target.value,
+                    })),
+                    "radio",
+                    "is_required",
+                    [],
+                    specificationFormData.is_required)}
 
-            {renderFormItem("Prefix",
-                (e) => setSpecificationFormData((prevState: any) => ({
-                    ...prevState,
-                    prefix: e.target.value,
-                })),
-                "input",
-                "prefix")}
+            {specificationFormData.allow_input &&
+                renderFormItem("Prefix",
+                    (e) => setSpecificationFormData((prevState: any) => ({
+                        ...prevState,
+                        prefix: e.target.value,
+                    })),
+                    "input",
+                    "prefix")}
 
-            {renderFormItem("Suffix",
-                (e) => setSpecificationFormData((prevState: any) => ({
-                    ...prevState,
-                    suffix: e.target.value,
-                })),
-                "input",
-                "suffix")}
+            {specificationFormData.allow_input &&
+                renderFormItem("Suffix",
+                    (e) => setSpecificationFormData((prevState: any) => ({
+                        ...prevState,
+                        suffix: e.target.value,
+                    })),
+                    "input",
+                    "suffix")}
 
-            {renderFormItem("Field Type",
-                (e) => setSpecificationFormData((prevState: any) => ({
-                    ...prevState,
-                    field_type: e,
-                })),
-                "select",
-                "field_type",
-                [],
-                fieldTypeOptions[0]?.value,
-                false,
-                fieldTypeOptions)}
+            {specificationFormData.allow_input &&
+                renderFormItem("Field Type",
+                    (e) => setSpecificationFormData((prevState: any) => ({
+                        ...prevState,
+                        field_type: e,
+                    })),
+                    "select",
+                    "field_type",
+                    [],
+                    fieldTypeOptions[0]?.value,
+                    false,
+                    fieldTypeOptions)}
 
-            {renderFormItem("Contributed To Score",
-                (e) => setSpecificationFormData((prevState: any) => ({
-                    ...prevState,
-                    is_score_contributed: e.target.value,
-                })),
-                "radio",
-                "is_score_contributed",
-                [],
-                specificationFormData.is_score_contributed)}
+            {specificationFormData.allow_input &&
+                renderFormItem("Contributed To Score",
+                    (e) => setSpecificationFormData((prevState: any) => ({
+                        ...prevState,
+                        is_score_contributed: e.target.value,
+                    })),
+                    "radio",
+                    "is_score_contributed",
+                    [],
+                    specificationFormData.is_score_contributed)}
 
-            {specificationFormData.is_score_contributed ?
+            {specificationFormData.is_score_contributed && specificationFormData.allow_input ?
                 <Form.Item label={<h5>Rating Score</h5>}
                            labelCol={{span: 6}}
                            labelAlign="left"

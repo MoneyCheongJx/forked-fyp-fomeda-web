@@ -1,11 +1,12 @@
 import CategoryService from "@/services/category.service";
 import React, {useEffect, useState} from "react";
 import {SPECIFICATIONS_TABLE_CONSTANTS, SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS} from "@/constants/category.constant";
-import {Button, Col, Dropdown, Form, Input, InputNumber, Modal, Row, Table, Tag, Typography} from "antd";
-import {CheckOutlined, CloseOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Col, Dropdown, Form, Modal, Row, Table, Tag, Typography} from "antd";
+import {EditOutlined, PlusOutlined} from "@ant-design/icons";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import {useRouter} from "next/navigation";
+import CustomInput from "@/components/common/CustomInput";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -89,7 +90,8 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const handleSaveRatingScoreOnClick = async () => {
-        try{
+        try {
+            await ratingForm.validateFields();
             const ratingValues = ratingForm.getFieldsValue();
             const updateScore = ratingScore.map((score: any) => ({
                 ...score,
@@ -100,10 +102,31 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             setRatingScore(updateScore);
             await CategoryService.updateSubcategory(id, {rating_score: updateScore});
             setIsEditRating(false);
-        } catch(error){
+        } catch (error) {
             console.error(error);
             throw error;
         }
+    }
+
+    const validateScore = async (key: any, record: any) => {
+        const values = ratingForm.getFieldsValue();
+        const currentMinScore = parseInt(values[`${record.rating}_min_score`], 10);
+        const currentMaxScore = parseInt(values[`${record.rating}_max_score`], 10);
+
+        if (key === 'max_score' && currentMaxScore < currentMinScore) {
+            return Promise.reject(new Error('Max score must be greater than or equal to Min score'));
+        }
+
+        const previousRating = ratingScore.find(r => r.rating === record.rating - 1);
+        if (previousRating) {
+            const prevMaxScore = parseInt(values[`${previousRating.rating}_max_score`], 10);
+
+            if (key === 'min_score' && currentMinScore !== prevMaxScore + 1) {
+                return Promise.reject(new Error(`Min score must be exactly ${prevMaxScore + 1}`));
+            }
+        }
+
+        return Promise.resolve();
     }
 
     const renderActions = (action_list: any, record: any) => (
@@ -118,8 +141,12 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                 <Form form={ratingForm}>
                     <Form.Item name={`${record.rating}_${key}`}
                                initialValue={record[key]}
-                               className={"mb-0"}>
-                        <Input />
+                               className={"mb-0"}
+                               rules={[
+                                   {required: true, message: `Score should not be empty`},
+                                   {validator: async (_, value) => validateScore(key, record),},
+                               ]}>
+                        <CustomInput type={"numeric"}/>
                     </Form.Item>
                 </Form> :
                 <div>{record[key]}</div>
@@ -236,7 +263,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                    showSorterTooltip={false}
                    pagination={false}
                    className={"mb-12"}
-                   footer={isEditRating? ratingTableFooter : undefined}/>
+                   footer={isEditRating ? ratingTableFooter : undefined}/>
 
             {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">

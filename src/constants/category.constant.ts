@@ -15,6 +15,11 @@ export class CategoryConstant {
     static readonly BASE_SUBSPECIFICATION_PREFIX = "BSSPEC";
     static readonly GENERAL_SPECIFICATION_PREFIX = "GSPEC";
     static readonly GENERAL_SUBSPECIFICATION_PREFIX = "GSSPEC";
+    static readonly HAVE_VALUE = "HAVE_VALUE";
+    static readonly MORE_THAN = "MORE_THAN";
+    static readonly LESS_THAN = "LESS_THAN";
+    static readonly EQUAL_TO = "EQUAL_TO";
+    static readonly CONTAINS = "CONTAINS";
 }
 
 export const CATEGORY_TAB_CONSTANTS = [
@@ -167,6 +172,7 @@ export const SCORE_CONTRIBUTION_ACTION_OPTIONS = [
     {key: "LESS_THAN", label: "Less Than", type: ["NUMERIC"]},
     {key: "EQUAL_TO", label: "Equal To", type: ["NUMERIC"]},
     {key: "CONTAINS", label: "Contains", type: ["ALPHABET", "ALPHANUMERIC"]},
+    {key: "HAVE_VALUE", label: "Have Value", type: ["NUMERIC", "ALPHABET", "ALPHANUMERIC"]},
 ]
 
 
