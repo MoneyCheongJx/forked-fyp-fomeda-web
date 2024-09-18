@@ -1,0 +1,10 @@
+
+.product-drag .ant-upload-drag{
+    width: 100% !important;
+    max-width: 400px !important;
+    height: auto !important;
+}
+
+.product-drag .ant-upload-drag:hover{
+    border-color: var(--ant-primary-color-active) !important;
+}

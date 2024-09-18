@@ -166,7 +166,7 @@ const CategoryTab = () => {
             case 'last_updated_on':
                 return {
                     ...column,
-                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key], DateTimeUtils.CATEGORY_DATE_FORMAT),
                     sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             default:

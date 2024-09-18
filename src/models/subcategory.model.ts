@@ -9,4 +9,5 @@ export class SubcategoryModel {
     last_updated_on?: string;
     is_active?: boolean;
     actions?: string;
+    rating_score?: any[];
 }

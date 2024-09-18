@@ -15,6 +15,11 @@ export class CategoryConstant {
     static readonly BASE_SUBSPECIFICATION_PREFIX = "BSSPEC";
     static readonly GENERAL_SPECIFICATION_PREFIX = "GSPEC";
     static readonly GENERAL_SUBSPECIFICATION_PREFIX = "GSSPEC";
+    static readonly HAVE_VALUE = "HAVE_VALUE";
+    static readonly MORE_THAN = "MORE_THAN";
+    static readonly LESS_THAN = "LESS_THAN";
+    static readonly EQUAL_TO = "EQUAL_TO";
+    static readonly CONTAINS = "CONTAINS";
 }
 
 export const CATEGORY_TAB_CONSTANTS = [
@@ -66,6 +71,12 @@ export const PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS = [
     {key: "deactivate", label: "Deactivate Specification", link: ""},
     {key: "activate", label: "Activate Specification"},
     {key: "delete", label: "Delete Specification", link: ""},
+]
+
+export const SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS = [
+    {key: "rating", title: "Rating", dataIndex: "rating", width: "50%"},
+    {key: "min_score", title: "Minimum Score", dataIndex: "min_score", width: "25%"},
+    {key: "max_score", title: "Maximum Score", dataIndex: "max_score", width: "25%"},
 ]
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
@@ -161,6 +172,7 @@ export const SCORE_CONTRIBUTION_ACTION_OPTIONS = [
     {key: "LESS_THAN", label: "Less Than", type: ["NUMERIC"]},
     {key: "EQUAL_TO", label: "Equal To", type: ["NUMERIC"]},
     {key: "CONTAINS", label: "Contains", type: ["ALPHABET", "ALPHANUMERIC"]},
+    {key: "HAVE_VALUE", label: "Have Value", type: ["NUMERIC", "ALPHABET", "ALPHANUMERIC"]},
 ]
 
 

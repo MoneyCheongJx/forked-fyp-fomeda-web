@@ -11,4 +11,11 @@ export class StringUtils {
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
     }
+
+    static formatLowerCase(str: string, separator = " "): string {
+        if (!str) return ""
+        return str.toLowerCase()
+            .split(separator)
+            .join(" ");
+    }
 }

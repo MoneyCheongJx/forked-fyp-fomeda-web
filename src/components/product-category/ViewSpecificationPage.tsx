@@ -12,6 +12,7 @@ import CategoryService from "@/services/category.service";
 import {EditOutlined} from "@ant-design/icons";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import NotificationService from "@/services/notification.service";
+import MessageService from "@/services/message.service";
 
 const ViewSpecificationPage = ({specId}: any) => {
     const [form] = Form.useForm();
@@ -72,21 +73,27 @@ const ViewSpecificationPage = ({specId}: any) => {
     }, []);
 
 
-    const handleOnModelOpen = () => {
-        const data = form.getFieldsValue();
-        Modal.confirm({
-            title: <h3>Confirmation</h3>,
-            content: <ConfirmationContent action={"Edit"} record={{
-                cat_type: specificationType,
-                subcat_spec_name: data.subcat_spec_name ?? specificationOptions[0].label,
-                subcat_subspec_name: data.subcat_subspec_name,
-            }}/>,
-            className: "confirmation-modal",
-            centered: true,
-            width: "35%",
-            okText: "Confirm",
-            onOk: () => handleFormSubmit(data),
-        });
+    const handleOnModelOpen = async () => {
+        try {
+            await form.validateFields();
+            const data = form.getFieldsValue();
+            Modal.confirm({
+                title: <h3>Confirmation</h3>,
+                content: <ConfirmationContent action={"Edit"} record={{
+                    cat_type: specificationType,
+                    subcat_spec_name: data.subcat_spec_name ?? specificationOptions[0].label,
+                    subcat_subspec_name: data.subcat_subspec_name,
+                }}/>,
+                className: "confirmation-modal",
+                centered: true,
+                width: "35%",
+                okText: "Confirm",
+                onOk: () => handleFormSubmit(data),
+            });
+        } catch (error) {
+            MessageService.error("Please Filled in the required field.")
+            throw error;
+        }
     }
 
     const updateSpecificationDataMapping: any = {
@@ -102,6 +109,7 @@ const ViewSpecificationPage = ({specId}: any) => {
         const prefix = Object.keys(updateSpecificationDataMapping).find((prefix) =>
             specId.includes(prefix)
         );
+
         if (prefix) {
             try {
                 await updateSpecificationDataMapping[prefix](specId, data);
@@ -160,7 +168,8 @@ const ViewSpecificationPage = ({specId}: any) => {
         }
 
         return (
-            <Form.Item label={<h5>{label}</h5>} labelCol={{span: 6}} labelAlign="left" name={name} rules={isEdit? rules : []}>
+            <Form.Item label={<h5>{label}</h5>} labelCol={{span: 6}} labelAlign="left" name={name}
+                       rules={isEdit ? rules : []}>
                 {isEdit ? inputElement : <div>{displayValue}</div>}
             </Form.Item>
         );

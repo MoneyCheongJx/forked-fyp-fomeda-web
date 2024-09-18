@@ -79,6 +79,32 @@ export default class CategoryService {
         }
     }
 
+    static readonly findOneSubcategoryById = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_ONE_SUBCATEGORY_BY_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly findAllActiveCategories = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.FIND_ALL_ACTIVE_CATEGORIES
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     static readonly updateCategory = async (id: string, categoryModel: CategoryModel) => {
         try {
             const param = {id}
@@ -635,6 +661,20 @@ export default class CategoryService {
             return response;
         } catch (error) {
             console.log(error)
+            throw error;
+        }
+    }
+
+    static readonly getProductSpecificationBySubcatId = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.GET_PRODUCT_SPECIFICATION_BY_SUBCAT_ID,
+                param,
+            );
+            return response;
+        } catch (error){
+            console.error(error);
             throw error;
         }
     }
