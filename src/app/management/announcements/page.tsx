@@ -48,19 +48,16 @@ const AnnouncementManagementPage = () => {
 
     useEffect(() => {
         const token = Cookies.get('token');
-        if (token) {
-            setUserData(jwtDecode<CustomJwtPayload>(token));
+        if (!token) router.push('/content');
+        else {
+            const data = jwtDecode<CustomJwtPayload>(token);
+            setUserData(data);
+            if (!data.modules?.includes('announcement_management'))
+                router.push('/content')
         }
 
-
-        if (redirecting) {
-            return;
-        }
-        if (!userData || !userData.modules?.includes('announcement_management')) {
-            router.push('/content');
-        } else {
-            fetchData();
-        }
+        if (redirecting) return;
+        else fetchData();
     }, [router]);
 
     const showAddModal = () => {
