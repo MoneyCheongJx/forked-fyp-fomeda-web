@@ -3,6 +3,9 @@ import {Modal, Form, Input, Button, Select} from 'antd';
 import RoleService from "@/services/role.service";
 import AuthenticationService from "@/services/authentication.service";
 import { ADMINS_STATUS_OPTIONS } from "@/constants/admins.constant";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const {Option} = Select;
 
@@ -59,7 +62,19 @@ const EditAdminModal = ({visible, onClose, data}: any) => {
         try {
             const values = await form.validateFields();
 
-            const data = {...values, updated_by: "Super admin"};
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+
+            const data = {...values, last_updated_by: username};
 
             try {
                 await AuthenticationService.updateAdmin(originalData?.user_id, data);

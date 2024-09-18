@@ -102,6 +102,7 @@ const AdminManagementPage = () => {
                     )
                 };
             case 'created_on':
+            case 'last_updated_on':
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),

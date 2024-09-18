@@ -3,6 +3,9 @@ import {Modal, Form, Input, Button, Select} from 'antd';
 import AuthenticationService from "@/services/authentication.service";
 import RoleService from "@/services/role.service";
 import {ADMINS_STATUS_OPTIONS} from "@/constants/admins.constant";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const {Option} = Select;
 
@@ -54,7 +57,20 @@ const AddAdminModal: React.FC<AdminModalProps> = ({visible, onClose}) => {
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            const data = {...values, type: "admin", created_by: "Superadmin", updated_by: "Superadmin"};
+
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+
+            const data = {...values, type: "admin", created_by: username, last_updated_by: username};
             try {
                 await AuthenticationService.register(data);
             } catch (error) {

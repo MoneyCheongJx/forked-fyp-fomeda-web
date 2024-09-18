@@ -3,7 +3,7 @@ export const ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
         key: "fullname",
         title: "Admin name",
         dataIndex: "fullname",
-        width: "20%",
+        width: "15%",
     },
     {
         key: "email_address",
@@ -12,14 +12,32 @@ export const ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
     },
     {
         key: "created_on",
-        title: "Created date",
+        title: "Created on",
         dataIndex: "created_on",
-        width: "15%",
+        width: "12.5%",
+    },
+    {
+        key: "created_by",
+        title: "Created by",
+        dataIndex: "created_by",
+        width: "12.5%",
+    },
+    {
+        key: "last_updated_on",
+        title: "Last updated on",
+        dataIndex: "last_updated_on",
+        width: "12.5%",
+    },
+    {
+        key: "last_updated_by",
+        title: "Last updated by",
+        dataIndex: "last_updated_by",
+        width: "12.5%",
     },
     {
         key: "actions",
         title: "Actions",
-        width: "15%",
+        width: "10%",
     }
 ]
 
