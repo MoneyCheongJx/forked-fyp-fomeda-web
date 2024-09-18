@@ -17,7 +17,6 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
 
     useEffect(() => {
         if (data) {
-            // ensure date are dayjs objects before setFieldsValue
             const formData = {
                 ...data,
                 date: data.date ? dayjs(data.date) : null,
@@ -41,17 +40,16 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
                 size: newFileList[0].percent,
                 type: newFileList[0].type,
                 uid: newFileList[0].uid,
-                thumbUrl: newFileList[0].thumbUrl,
-                base64: await getBase64(newFileList[0].originFileObj)
+                base64: await getBase64(newFileList[0].originFileObj),
+                thumbUrl: newFileList[0].thumbUrl
             }
             form.setFieldsValue({image: image});
         }
     };
 
     const handleRemove = async (file: any) => {
-        const newFileList = fileList.filter(f => f.uid !== file.uid);
-        setFileList(newFileList);
-        form.setFieldsValue({image: newFileList});
+        setFileList([]);
+        form.resetFields(['image']);
     };
 
     const handlePreview = async (file: any) => {

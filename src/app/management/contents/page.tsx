@@ -112,10 +112,23 @@ const ContentManagementPage = () => {
     };
 
     const handleSubmit = async (data: any, type: any) => {
+
+        let userData;
+        const token = Cookies.get('token');
+        if (token) {
+            try {
+                userData = jwtDecode<CustomJwtPayload>(token);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        const username = userData?.username ?? "UndefinedAdmin";
+
         const payload = {
             ...data,
-            "created_by": "admin",
-            "last_updated_by": "admin123"
+            ...(type.startsWith('add_') ? { created_by: username } : {}),
+            last_updated_by: username
         }
 
         const action = servicesMapping[type];
@@ -173,6 +186,8 @@ const ContentManagementPage = () => {
                         ...column,
                         render: (text: any, record: any) => renderActionsDropdown(column.actionList, record)
                     };
+                case 'created_on':
+                case 'last_updated_on':
                 case 'date':
                     return {
                         ...column,

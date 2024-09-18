@@ -27,22 +27,34 @@ export const HISTORY_TIMELINE_ACTIONS_CONSTANTS = [
 
 export const CAROUSEL_TABLE_HEADER_CONSTANTS = [
     {key: "no", title: "No", dataIndex: "no", width: "5%"},
-    {key: "image", title: "Image", dataIndex: "image", width: "85%", },
+    {key: "image", title: "Image", dataIndex: "image", width: "85%" }, //45
+    // {key: "created_by", title: "Created by", dataIndex: "created_by",},
+    // {key: "created_on", title: "Created on", dataIndex: "created_on",},
+    // {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by",},
+    // {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on",},
     {key: "actions", title: "Actions", actionList: CAROUSEL_ACTIONS_CONSTANTS}
 ]
 
 export const CONTENT_TABLE_HEADER_CONSTANTS = [
     {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%"},
-    {key: "title", title: "Content title", dataIndex: "title", width: "25%"},
-    {key: "description", title: "Content description", dataIndex: "description", width: "60%"},
+    {key: "title", title: "Content title", dataIndex: "title", width: "25%"}, //15
+    {key: "description", title: "Content description", dataIndex: "description", width: "60%"}, //30
+    // {key: "created_by", title: "Created by", dataIndex: "created_by",},
+    // {key: "created_on", title: "Created on", dataIndex: "created_on",},
+    // {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by",},
+    // {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on",},
     {key: "actions", title: "Actions", actionList: CONTENT_ACTIONS_CONSTANTS}
 ]
 
 export const HISTORY_TIMELINE_TABLE_HEADER_CONSTANTS = [
     {key: "no", title: "No", dataIndex: "subcat_spec_name", width: "5%"},
     {key: "title", title: "Timeline title", dataIndex: "title", width: "25%"},
-    {key: "description", title: "Timeline description", dataIndex: "description", width: "45%"},
-    {key: "date", title: "Timeline date", dataIndex: "date", width: "15%"},
+    {key: "description", title: "Timeline description", dataIndex: "description", width: "40%"},
+    {key: "date", title: "Timeline date", dataIndex: "date", width: "20%"},
+    // {key: "created_by", title: "Created by", dataIndex: "created_by",},
+    // {key: "created_on", title: "Created on", dataIndex: "created_on",},
+    // {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by",},
+    // {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on",},
     {key: "actions", title: "Actions", actionList: HISTORY_TIMELINE_ACTIONS_CONSTANTS}
 ]
 

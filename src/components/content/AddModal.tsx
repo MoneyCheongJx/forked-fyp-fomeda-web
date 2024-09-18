@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Form, Input, Modal, DatePicker, Upload, Button, Image} from "antd";
 import {UploadOutlined} from '@ant-design/icons';
 import {UploadFile, UploadChangeParam} from 'antd/es/upload/interface';
@@ -13,6 +13,13 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const dateFormat = 'DD-MM-YYYY';
+
+    useEffect(() => {
+        if (isOpen) {
+            setFileList([]);
+            form.resetFields();
+        }
+    }, [isOpen]);
 
     const getBase64 = (file: any) =>
         new Promise((resolve, reject) => {
@@ -43,8 +50,8 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
                 size: newFileList[0].percent,
                 type: newFileList[0].type,
                 uid: newFileList[0].uid,
-                thumbUrl: newFileList[0].thumbUrl,
-                base64: await getBase64(newFileList[0].originFileObj)
+                base64: await getBase64(newFileList[0].originFileObj),
+                thumbUrl: newFileList[0].thumbUrl
             }
             form.setFieldsValue({image: image});
         }
@@ -53,7 +60,6 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
     const handleRemove = async (file: any) => {
         const newFileList = fileList.filter(f => f.uid !== file.uid);
         setFileList(newFileList);
-        console.log('fileList', fileList)
         form.setFieldsValue({image: newFileList});
     };
 
