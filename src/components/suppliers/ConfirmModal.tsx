@@ -13,11 +13,11 @@ interface ConfirmModalProps {
     onCancel: () => void;
 }
 
-const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCancel}) => {
+const ConfirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCancel}) => {
     const [form] = Form.useForm();
 
     const handleSubmit = async () => {
-        if (type === 'approve'){
+        if (type === 'approve') {
             onSubmit(type);
         } else if (type === 'reject') {
             try {
@@ -28,6 +28,7 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
                 return Promise.reject();
             }
         }
+        form.resetFields();
     };
 
     const handleCancel = () => {
@@ -35,44 +36,33 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
         onCancel();
     };
 
-    React.useEffect(() => {
-        if (isOpen) {
-            Modal.confirm({
-                title: (
-                    <div style={{textAlign: 'center'}}>
-                        <h3>{type === 'approve' ? 'Approval Confirmation' : 'Rejection Confirmation'}</h3>
-                    </div>
-                ),
-                content: (
-                    <div>
-                        {type === 'approve' ? (
-                            <Paragraph>Are you confirm to approve this <Text strong>registration</Text> ? </Paragraph>
-                        ) : (
-                            <Form form={form} layout="vertical">
-                                <Form.Item
-                                    key={"reason"}
-                                    name={"reason"}
-                                    label={"Reason"}
-                                    rules={[{required: true, message: `Please enter the rejection reason`}]}
-                                >
-                                    <TextArea autoSize={{minRows: 4, maxRows: 8}} placeholder={"Rejection reason"}/>
-                                </Form.Item>
-                            </Form>
-                        )}
-                    </div>
-                ),
-                icon: null,
-                centered: true,
-                closable: true,
-                width: "50%",
-                okText: "Confirm",
-                cancelText: "Cancel",
-                onOk: handleSubmit,
-                onCancel: handleCancel,
-            });
-        }
-    }, [isOpen, onCancel, onSubmit, type, form])
-    return null;
+    return (
+        <Modal
+            title={type === 'approve' ? <h3 style={{textAlign: 'center'}}>Approval Confirmation</h3> :
+                <h3 style={{textAlign: 'center'}}>Rejection Confirmation</h3>}
+            open={isOpen}
+            centered
+            onOk={handleSubmit}
+            onCancel={handleCancel}
+            width={800}
+            okText="Confirm"
+            cancelText="Cancel"
+        >
+            {type === 'approve' ? (
+                <Paragraph>Are you sure you want to approve this <Text strong>registration</Text>?</Paragraph>
+            ) : (
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        name="reason"
+                        label="Reason"
+                        rules={[{required: true, message: 'Please enter the rejection reason'}]}
+                    >
+                        <TextArea autoSize={{minRows: 4, maxRows: 8}} placeholder="Rejection reason"/>
+                    </Form.Item>
+                </Form>
+            )}
+        </Modal>
+    );
 };
 
-export default confirmModal;
+export default ConfirmModal;
