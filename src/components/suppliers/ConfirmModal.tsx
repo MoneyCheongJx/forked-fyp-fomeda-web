@@ -30,6 +30,11 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
         }
     };
 
+    const handleCancel = () => {
+        form.resetFields();
+        onCancel();
+    };
+
     React.useEffect(() => {
         if (isOpen) {
             Modal.confirm({
@@ -52,7 +57,6 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
                                 >
                                     <TextArea autoSize={{minRows: 4, maxRows: 8}} placeholder={"Rejection reason"}/>
                                 </Form.Item>
-
                             </Form>
                         )}
                     </div>
@@ -64,7 +68,7 @@ const confirmModal: React.FC<ConfirmModalProps> = ({type, isOpen, onSubmit, onCa
                 okText: "Confirm",
                 cancelText: "Cancel",
                 onOk: handleSubmit,
-                onCancel: onCancel,
+                onCancel: handleCancel,
             });
         }
     }, [isOpen, onCancel, onSubmit, type, form])

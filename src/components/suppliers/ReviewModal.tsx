@@ -4,7 +4,10 @@ import AuthenticationService from "@/services/authentication.service";
 import {Descriptions} from 'antd';
 import {SUPPLIERS_REVIEW_MODAL_LABEL_MAPPING} from "@/constants/suppliers.constant";
 import ConfirmModal from "@/components/suppliers/ConfirmModal";
-import moment from 'moment';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
+import { DateTimeUtils } from '@/utils/date-time.utils';
 
 interface DescriptionsItemType {
     key: string;
@@ -31,7 +34,7 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
         return Object.entries(data).filter(([key]) => !excludedProperties.includes(key)).map(([key, value]) => ({
             key: key,
             label: SUPPLIERS_REVIEW_MODAL_LABEL_MAPPING[key],
-            children: key === "registered_on" ? moment(value).format('DD-MM-YYYY') : value,
+            children: key === "registered_on" ? DateTimeUtils.formatDate(new Date(value)) : value,
             span: spanProperties.includes(key) ? 3 : 1
         }));
     }
@@ -48,10 +51,23 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
 
     const handleConfirmationModelSubmit = async (type: "approve" | "reject", reason?: string) => {
         try {
+
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+
             if (type === "approve") {
-                await AuthenticationService.approveSuppliers(data?.user_id, {});
+                await AuthenticationService.approveSuppliers(data?.user_id, {approved_by: username});
             } else if (type === "reject") {
-                await AuthenticationService.rejectSuppliers(data?.user_id, {reason})
+                await AuthenticationService.rejectSuppliers(data?.user_id, {rejected_by: username, reason})
             }
             handleConfirmationModelClose();
             handleOnClose();
