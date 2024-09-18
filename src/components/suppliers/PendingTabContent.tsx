@@ -6,7 +6,6 @@ import {SUPPLIERS_PENDING_TAB_TABLE_HEADER_CONSTANTS} from "@/constants/supplier
 import AuthenticationService from "@/services/authentication.service";
 import {SearchOutlined} from "@ant-design/icons";
 import ReviewModal from "@/components/suppliers/ReviewModal";
-import moment, {Moment} from 'moment';
 import { DateTimeUtils } from "@/utils/date-time.utils";
 
 interface PendingTabContentProps {
@@ -18,7 +17,7 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
     const [filteredData, setFilteredData] = useState<any>([]);
     const [searchName, setSearchName] = useState('');
     const [searchCompany, setSearchCompany] = useState('');
-    const [dateRange, setDateRange] = useState<[Moment | null, Moment | null] | null>([null, null]);
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null] | null>([null, null]);
     const [isReviewModalVisible, setReviewModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const {RangePicker} = DatePicker;
@@ -49,11 +48,10 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
             const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
             const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
 
-            const registerDate = moment(supplier.registered_on).format('YYYY-MM-DD');
+            const registerDate = new Date(supplier.registered_on);
             const [start, end] = dateRange || [null, null];
-            ;
-            const matchesDate = start && end ? moment(registerDate)?.isBetween(start?.format('YYYY-MM-DD'), end?.format('YYYY-MM-DD'), null, '[]') : true;
-
+            const matchesDate = start && end ? registerDate >= start && registerDate <= end : true;
+            
             return matchesName && matchesCompany && matchesDate;
         })
         setFilteredData(filtered);

@@ -11,7 +11,6 @@ import AnnouncementService from "@/services/announcement.service";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal";
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
-import moment from 'moment';
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import Cookies from 'js-cookie';
 import { jwtDecode } from "jwt-decode";
@@ -105,9 +104,8 @@ const AnnouncementManagementPage = () => {
 
         const filtered = data.filter(item => {
             const matchesText = regex.test(item.title);
-            const created_on_date = moment(item.created_on).format('YYYY-MM-DD')
-
-            const matchesDate = start && end ? moment(created_on_date)?.isBetween(start?.format('YYYY-MM-DD'), end?.format('YYYY-MM-DD'), null, '[]') : true;
+            const createdOnDate = new Date(item.created_on);
+            const matchesDate = start && end ? createdOnDate >= start && createdOnDate <= end : true;
             return matchesText && matchesDate;
         });
         setFilteredData(filtered);
