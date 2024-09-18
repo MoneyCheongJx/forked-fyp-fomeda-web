@@ -107,7 +107,7 @@ const HistoryTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
                             onChange={(e) => setSearchCompany(e.target.value)}
                             prefix={<SearchOutlined/>}
                             size="large"
-                            style={{width: '49%'}}
+                            style={{width: '39%'}}
                         />
                         <RangePicker onChange={(dates: any) => setDateRange(dates)}/>
                     </Col>

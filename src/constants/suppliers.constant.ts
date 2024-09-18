@@ -58,14 +58,20 @@ export const SUPPLIERS_HISTORY_TAB_TABLE_HEADER_CONSTANTS = [
     },
     {
         key: "approved_on",
-        title: "Approval date",
+        title: "Approved on",
         dataIndex: "approved_on",
+        width: "15%",
+    },
+    {
+        key: "approved_by",
+        title: "Approved by",
+        dataIndex: "approved_by",
         width: "15%",
     },
     {
         key: "actions",
         title: "Actions",
-        width: "15%",
+        width: "10%",
     }
 ]
 
