@@ -7,21 +7,9 @@ import { useState, useEffect } from 'react';
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
 import AuthenticationService from "@/services/authentication.service";
-import { jwtDecode } from "jwt-decode"
-import { useAuth } from '../context/auth-context';
+import Cookies from 'js-cookie';
 
 const {Title, Link} = Typography;
-
-interface CustomJwtPayload {
-    sub: string;
-    role: string;
-    modules?: string[];
-    fullname?: string;
-    username?: string;
-    email_address?: string;
-    is_active?: string;
-    type?: string;
-}
 
 type FieldType = {
     username?: string;
@@ -31,11 +19,6 @@ type FieldType = {
 export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [user, setUser] = useState({
-        username: "",
-        password: "",
-    })
-    const { setUserData } = useAuth();
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         setIsLoading(true);
@@ -47,22 +30,11 @@ export default function LoginPage() {
                     duration: 3,
                 });
                 const sessionId = res?.sessionId
-                sessionStorage.setItem('session', sessionId);
+                const userData = res?.token
 
-                const token = res?.token
-                localStorage.setItem('token', token);
-                const decodedToken = jwtDecode<CustomJwtPayload>(token);
+                Cookies.set('session', JSON.stringify(sessionId), { expires: 1 / 24 });
+                Cookies.set('token', JSON.stringify(userData), { expires: 1 / 12  });
 
-                const userData = {
-                    username: decodedToken?.username,
-                    fullname: decodedToken?.fullname,
-                    email_address: decodedToken?.email_address,
-                    is_active: decodedToken?.is_active,
-                    type: decodedToken?.type,
-                    modules: decodedToken?.modules,
-                }
-                console.log('userData', userData)
-                setUserData(userData);
                 router.push('/content');
             });
         } catch (error) {

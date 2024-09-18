@@ -13,8 +13,11 @@ import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
 import moment from 'moment';
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import { useAuth } from "@/app/(auth)/context/auth-context";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 import { useRouter } from 'next/navigation';
+import { useAuth } from "@/app/(auth)/context/auth-context";
 
 const AnnouncementManagementPage = () => {
     const [data, setData] = useState<any[]>([]);
@@ -25,8 +28,9 @@ const AnnouncementManagementPage = () => {
     const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [searchText, setSearchText] = useState('');
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { redirecting } = useAuth();
     const {RangePicker} = DatePicker;
-    const { userData, redirecting } = useAuth();
     const router = useRouter();
 
     const fetchData = async () => {
@@ -43,6 +47,12 @@ const AnnouncementManagementPage = () => {
     }
 
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            setUserData(jwtDecode<CustomJwtPayload>(token));
+        }
+
+
         if (redirecting) {
             return;
         }
@@ -51,7 +61,7 @@ const AnnouncementManagementPage = () => {
         } else {
             fetchData();
         }
-    }, [userData, router]);
+    }, [router]);
 
     const showAddModal = () => {
         setAddModalVisible(true);

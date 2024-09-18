@@ -2,19 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-interface UserData {
-    fullname?: string;
-    username?: string;
-    email_address?: string;
-    is_active?: string;
-    type?: string;
-    modules?: string[]; // Assuming modules are part of user data
-}
-
 interface AuthContextProps {
-    userData: UserData | null;
-    setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
-    resetUserData: () => void;
     redirecting: boolean;
     setRedirecting: (value: boolean) => void;
 }
@@ -23,16 +11,10 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [userData, setUserData] = useState<UserData | null>(null);
     const [redirecting, setRedirecting] = useState(false);
 
-    const resetUserData = () => {
-        setUserData(null);
-        setRedirecting(false);
-    };
-
     return (
-        <AuthContext.Provider value={{ userData, setUserData, resetUserData, redirecting, setRedirecting}}>
+        <AuthContext.Provider value={{redirecting, setRedirecting}}>
             {children}
         </AuthContext.Provider>
     );

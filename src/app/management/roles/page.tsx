@@ -15,6 +15,9 @@ import EditRoleModal from "@/components/roles/EditRoleModal";
 import ConfirmModal from "@/components/roles/ConfirmModal";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model"
 
 type ConfirmType = 'activate' | 'deactivate';
 
@@ -26,7 +29,8 @@ const RoleManagementPage = () => {
     const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
     const [confirmType, setConfirmType] = useState<ConfirmType | undefined>(undefined);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const { userData, redirecting } = useAuth();
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { redirecting } = useAuth();
     const router = useRouter();
 
     const showEditModal = () => {
@@ -70,15 +74,20 @@ const RoleManagementPage = () => {
     }
 
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            setUserData(jwtDecode<CustomJwtPayload>(token));
+        }
+
         if (redirecting) {
             return;
         }
-        if (!userData || !userData.modules?.includes('role_management')) {
+        else if (!userData || !userData.modules?.includes('role_management')) {
             router.push('/content');
         } else {
             fetchData();
         }
-    }, [userData, router]);
+    }, [router]);
 
     const handleActionsOnClick = (key: string, record: any) => {
         if (key === 'edit_role') {

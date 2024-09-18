@@ -18,6 +18,9 @@ import {PlusOutlined} from "@ant-design/icons";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
+import Cookies from 'js-cookie';
 
 const ContentManagementPage = () => {
     const [carouselData, setCarouselData] = useState<any[]>([]);
@@ -28,10 +31,16 @@ const ContentManagementPage = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState<any>({});
-    const { userData, redirecting } = useAuth();
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { redirecting } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            setUserData(jwtDecode<CustomJwtPayload>(token));
+        }
+
         if (redirecting) {
             return;
         }
@@ -42,7 +51,7 @@ const ContentManagementPage = () => {
             fetchContentData();
             fetchHistoryData();
         }
-    }, [userData, router]);
+    }, [router]);
 
     const fetchCarouselData = async () => {
         try {

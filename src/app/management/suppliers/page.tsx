@@ -8,11 +8,15 @@ import PendingTabContent from "@/components/suppliers/PendingTabContent";
 import HistoryTabContent from "@/components/suppliers/HistoryTabContent";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const SupplierManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string>('pending');
-    const { userData, redirecting } = useAuth();
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { redirecting } = useAuth();
     const router = useRouter();
 
     const handleChange = (value: string) => {
@@ -32,15 +36,20 @@ const SupplierManagementPage = () => {
     };
 
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            setUserData(jwtDecode<CustomJwtPayload>(token));
+        }
+
         if (redirecting) {
             return;
         }
-        if (!userData || !userData.modules?.includes('administrator_management')) {
+        else if (!userData || !userData.modules?.includes('supplier_management')) {
             router.push('/content');
         }
-    }, [userData, router]);
+    }, [router]);
 
-    if (!userData || !userData.modules?.includes('administrator_management')) {
+    if (!userData || !userData.modules?.includes('supplier_management')) {
         return null;
     }
 

@@ -14,29 +14,39 @@ import {usePathname, useRouter} from 'next/navigation';
 import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
 import { useAuth } from '../../app/(auth)/context/auth-context';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "../../models/jwt.model"
+import Cookies from 'js-cookie';
 
 const NavigationBar = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const { userData, resetUserData, setRedirecting } = useAuth();
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { setRedirecting } = useAuth();
+
+    useEffect(() => {
+        const userData = Cookies.get('token');
+        if (userData) {
+            setUserData(jwtDecode<CustomJwtPayload>(userData));
+        }
+
+    }, [setUserData]);
 
     const handleLogout = async () => {
         try {
-            const sessionId = sessionStorage.getItem('session');
-
+            const sessionId = Cookies.get('session');
             if (sessionId) {
                 await AuthenticationService.logout({session_id: sessionId}).then(res => {
                     setRedirecting(true);
                     router.push('/login');
 
-                    sessionStorage.clear();
-                    resetUserData();
+                    Cookies.remove('session');
+                    Cookies.remove('token');
 
                     NotificationService.success(
                         "Logout Successful",
                         "You have successfully logged out."
                     )
-
                 });
             }
         } catch (error) {
@@ -97,7 +107,7 @@ const NavigationBar = () => {
                                     iconPosition={"end"}
                                     className={`${pathname.startsWith(item.link) ? "nav-button-selected" : "nav-button"}`}
                                 >
-                                    {item.label}
+                                    {pathname.startsWith(item.link) ? item.children?.filter((header: { link: string; }) => header.link === pathname)[0]?.label : item.label}
                                 </Button>
                             </Dropdown>
                         );
@@ -127,8 +137,10 @@ const NavigationBar = () => {
                     </>
                     :
                     <Row>
-                        <Button type="text" className="nav-button" onClick={
-                            () => router.push('/login')
+                        <Button
+                            type="text"
+                            className={`${pathname === "/login" ? "nav-button-selected" : "nav-button"}`}
+                            onClick={() => router.push('/login')
                         }>
                             Login
                         </Button>

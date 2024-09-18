@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
-import {Button, Col, Row, Table, DatePicker} from "antd";
+import {Button, Col, Row, Table} from "antd";
 import {ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS} from "@/constants/admins.constant";
 import AuthenticationService from "@/services/authentication.service";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
@@ -12,6 +12,9 @@ import AddAdminModal from "@/components/admins/AddAdminModal";
 import EditAdminModal from "@/components/admins/EditAdminModal";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const AdminManagementPage = () => {
     const [loading, setLoading] = useState(false);
@@ -22,7 +25,8 @@ const AdminManagementPage = () => {
     const [isAddModalVisible, setAddModalVisible] = useState(false);
     const [isEditModalVisible, setEditModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const { userData, redirecting } = useAuth();
+    const [userData, setUserData] = useState<CustomJwtPayload>();
+    const { redirecting } = useAuth();
     const router = useRouter();
 
     const showEditModal = () => {
@@ -58,15 +62,20 @@ const AdminManagementPage = () => {
     }
 
     useEffect(() => {
+        const token = Cookies.get('token');
+        if (token) {
+            setUserData(jwtDecode<CustomJwtPayload>(token));
+        }
+
         if (redirecting) {
             return;
         }
-        if (!userData || !userData.modules?.includes('administrator_management')) {
+        else if (!userData || !userData.modules?.includes('administrator_management')) {
             router.push('/content');
         } else {
             fetchData();
         }
-    }, [userData, router]);
+    }, [router]);
 
     useEffect(() => {
         filterData();
