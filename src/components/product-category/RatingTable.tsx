@@ -91,7 +91,7 @@ const RatingTable = ({form, type, isEdit = true, originalData = null}: any) => {
                                                 disabled={fields.length <= 1}/>
                                     </Col>
                                 }
-                                {fields.length <= 1 &&
+                                {fields.length <= 1 && isEdit &&
                                     <div className={"text-yellow-500 italic pl-2"}>
                                         <InfoCircleOutlined/> At least 1 row is required
                                     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import {Button, Card, Col, Form, GetProp, Image, Input, Layout, Row, Select, Spin, Upload, UploadProps} from "antd";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import "../../styles/product.component.css";
 import {CloseOutlined, DeleteOutlined, EditOutlined, InboxOutlined, PictureOutlined,} from "@ant-design/icons";
 import CategoryService from "@/services/category.service";
@@ -339,104 +339,100 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                     </Form.Item>
                 </Col>
                 <Col span={12} className={"mb-12"}>
-                    <Card bordered={false}>
-                        {isView &&
-                            <Button type={"primary"} icon={<EditOutlined/>} className={"ml-auto flex items-center"}
-                                    disabled={isEdit} onClick={() => {
-                                setIsEdit(true);
-                                form.resetFields();
-                            }}>Edit Product</Button>
-                        }
-                        <h5 className={"my-3.5"}>General Information</h5>
-                        <Form.Item label={<h5>Product Name</h5>}
-                                   labelAlign={"left"}
-                                   labelCol={{span: 12}}
-                                   className={"ml-8 mb-4"}
-                                   name='product_name'
-                                   rules={[{
-                                       required: !isEdit && !isView,
-                                       message: `Product Name is required`,
-                                   },]}>
-                            {isView ? <div>{productData.product_name}</div> : <Input/>}
-                        </Form.Item>
-                        <Form.Item label={<h5>Model No.</h5>}
-                                   labelAlign={"left"}
-                                   labelCol={{span: 12}}
-                                   className={"ml-8 mb-4"}
-                                   name='model_no'
-                                   rules={[{
-                                       required: !isEdit && !isView,
-                                       message: `Model No. is required`,
-                                   },]}>
-                            {isView ? <div>{productData.model_no}</div> : <Input/>}
-                        </Form.Item>
-                        <Form.Item label={<h5>Category</h5>}
-                                   labelAlign={"left"}
-                                   labelCol={{span: 12}}
-                                   className={"ml-8 mb-4"}
-                                   name='category'
-                                   rules={[{
-                                       required: !isEdit && !isView,
-                                       message: `Category is required`,
-                                   },]}>
-                            {isView ?
-                                <div>{productData.cat_name}</div> :
-                                <Select options={categoryOptions}
-                                        onChange={(value) => onCategoryChange(value)}
-                                        defaultActiveFirstOption={true}
-                                        allowClear={true}
-                                        removeIcon={<CloseOutlined/>}
-                                        loading={loadingCategory}/>
+                    <Spin spinning={loading}>
+                        <Card bordered={false}>
+                            {isView &&
+                                <Button type={"primary"} icon={<EditOutlined/>} className={"ml-auto flex items-center"}
+                                        disabled={isEdit} onClick={() => {
+                                    setIsEdit(true);
+                                    form.resetFields();
+                                }}>Edit Product</Button>
                             }
-                        </Form.Item>
-                        <Form.Item label={<h5>Subcategory</h5>}
-                                   labelAlign={"left"}
-                                   labelCol={{span: 12}}
-                                   className={"ml-8 mb-4"}
-                                   name='subcat_id'
-                                   rules={[{
-                                       required: !isEdit && !isView,
-                                       message: `Subcategory is required`,
-                                   },]}>
-                            {isView ?
-                                <div>{productData.subcat_name}</div> :
-                                <Select options={filteredSubcatOptions}
-                                        disabled={filteredSubcatOptions.length === 0}
-                                        defaultValue={filteredSubcatOptions.length > 0 ? undefined : filteredSubcatOptions[0]?.value}
-                                        onChange={(value) => setSubcatId(value ?? "")}
-                                        allowClear={true}
-                                        removeIcon={<CloseOutlined/>}
-                                        loading={loadingCategory}/>
+                            <h5 className={"my-3.5"}>General Information</h5>
+                            <Form.Item label={<h5>Product Name</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       name='product_name'
+                                       rules={[{
+                                           required: !isEdit && !isView,
+                                           message: `Product Name is required`,
+                                       },]}>
+                                {isView ? <div>{productData.product_name}</div> : <Input/>}
+                            </Form.Item>
+                            <Form.Item label={<h5>Model No.</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       name='model_no'
+                                       rules={[{
+                                           required: !isEdit && !isView,
+                                           message: `Model No. is required`,
+                                       },]}>
+                                {isView ? <div>{productData.model_no}</div> : <Input/>}
+                            </Form.Item>
+                            <Form.Item label={<h5>Category</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       name='category'
+                                       rules={[{
+                                           required: !isEdit && !isView,
+                                           message: `Category is required`,
+                                       },]}>
+                                {isView ?
+                                    <div>{productData.cat_name}</div> :
+                                    <Select options={categoryOptions}
+                                            onChange={(value) => onCategoryChange(value)}
+                                            defaultActiveFirstOption={true}
+                                            allowClear={true}
+                                            removeIcon={<CloseOutlined/>}
+                                            loading={loadingCategory}/>
+                                }
+                            </Form.Item>
+                            <Form.Item label={<h5>Subcategory</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       name='subcat_id'
+                                       rules={[{
+                                           required: !isEdit && !isView,
+                                           message: `Subcategory is required`,
+                                       },]}>
+                                {isView ?
+                                    <div>{productData.subcat_name}</div> :
+                                    <Select options={filteredSubcatOptions}
+                                            disabled={filteredSubcatOptions.length === 0}
+                                            defaultValue={filteredSubcatOptions.length > 0 ? undefined : filteredSubcatOptions[0]?.value}
+                                            onChange={(value) => setSubcatId(value ?? "")}
+                                            allowClear={true}
+                                            removeIcon={<CloseOutlined/>}
+                                            loading={loadingCategory}/>
+                                }
+                            </Form.Item>
+
+                            {subcatId !== "" && !loading && <>
+                                {renderSpecificationForm(specificationFields, CategoryConstant.INFORMATION)}
+                                <h5 className={"mb-3.5 mt-8"}>Certification</h5>
+                                {renderSpecificationForm(specificationFields, CategoryConstant.CERTIFICATION)}
+                                <h5 className={"mb-3.5 mt-8"}>Warranty</h5>
+                                {renderSpecificationForm(specificationFields, CategoryConstant.WARRANTY)}
+                                <h5 className={"mb-3.5 mt-8"}>Specification</h5>
+                                {renderSpecificationForm(specificationFields, CategoryConstant.SPECIFICATION)}
+                            </>
                             }
-                        </Form.Item>
 
-                        {subcatId !== "" && loading &&
-                            <div className={"flex justify-center"}>
-                                <Spin/>
-                            </div>
-                        }
-
-                        {subcatId !== "" && !loading && <>
-                            {renderSpecificationForm(specificationFields, CategoryConstant.INFORMATION)}
-                            <h5 className={"mb-3.5 mt-8"}>Certification</h5>
-                            {renderSpecificationForm(specificationFields, CategoryConstant.CERTIFICATION)}
-                            <h5 className={"mb-3.5 mt-8"}>Warranty</h5>
-                            {renderSpecificationForm(specificationFields, CategoryConstant.WARRANTY)}
-                            <h5 className={"mb-3.5 mt-8"}>Specification</h5>
-                            {renderSpecificationForm(specificationFields, CategoryConstant.SPECIFICATION)}
-                        </>
-                        }
-
-                        <Form.Item name="status" hidden/>
-                        {(!isView || isEdit) &&
-                            <Row className={"justify-end mt-16"}>
-                                <Button type={"default"} size={"large"} className={"m-2"}
-                                        onClick={onCancelProduct}>Cancel</Button>
-                                <Button type={"primary"} size={"large"} className={"m-2"} onClick={onSubmitProduct}
-                                        disabled={subcatId === ""}>{isEdit ? "Save" : "AddProduct"}</Button>
-                            </Row>
-                        }
-                    </Card>
+                            <Form.Item name="status" hidden/>
+                            {(!isView || isEdit) &&
+                                <Row className={"justify-end mt-16"}>
+                                    <Button type={"default"} size={"large"} className={"m-2"}
+                                            onClick={onCancelProduct}>Cancel</Button>
+                                    <Button type={"primary"} size={"large"} className={"m-2"} onClick={onSubmitProduct}
+                                            disabled={subcatId === ""}>{isEdit ? "Save" : "AddProduct"}</Button>
+                                </Row>
+                            }
+                        </Card>
+                    </Spin>
                 </Col>
             </Row>
         </Form>
