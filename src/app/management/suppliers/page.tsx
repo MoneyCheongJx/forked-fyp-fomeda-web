@@ -55,7 +55,7 @@ const SupplierManagementPage = () => {
     return (
         <Spin spinning={loading}>
             <PageLayout title={"Suppliers Management"}>
-                <div style={{ width: 250, height: 46, padding: 0, margin: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div>
                     <Segmented
                         options={SUPPLIERS_TAB_CONSTANTS}
                         value={selected}
