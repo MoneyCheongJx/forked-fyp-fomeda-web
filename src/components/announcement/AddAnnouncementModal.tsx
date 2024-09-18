@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import AnnouncementService from "@/services/announcement.service";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 interface AnnouncementModalProps {
     visible: boolean;
@@ -14,7 +17,20 @@ const AddAnnouncementModal: React.FC<AnnouncementModalProps> = ({ visible, onClo
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            const data = {...values, created_by: "Admin", updated_by: "Admin"};
+
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+            const data = {...values, created_by: username, updated_by: username};
+
             try {
                 await AnnouncementService.createAnnouncement(data);
             } catch (error) {

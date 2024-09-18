@@ -16,6 +16,11 @@ export const ANNOUNCEMENT_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
         dataIndex: "created_by",
     },
     {
+        key: "updated_by",
+        title: "Updated by",
+        dataIndex: "updated_by",
+    },
+    {
         key: "visibility",
         title: "Visibility",
         dataIndex: "visibility",
