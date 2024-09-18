@@ -8,6 +8,7 @@ import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
 import {PictureOutlined} from "@ant-design/icons";
 import {VERIFICATION_DETAILS_TABLE_CONSTANTS} from "@/constants/product.constant";
+import {CategoryConstant} from "@/constants/category.constant";
 
 
 const ProductVerificationDetailsPage = () => {
@@ -23,6 +24,34 @@ const ProductVerificationDetailsPage = () => {
                 setLoading(true);
                 const response = await ProductService.getProductVerificationDetailsById(id!);
                 if (response) {
+                    const deafultInfo = [
+                        {
+                            spec_name: "Product Name",
+                            spec_desc: response.product_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "product_name"
+                        },
+                        {
+                            spec_name: "Model No.",
+                            spec_desc: response.model_no,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "model_no"
+                        },
+                        {
+                            spec_name: "Category",
+                            spec_desc: response.cat_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "category"
+                        },
+                        {
+                            spec_name: "Subcategory",
+                            spec_desc: response.subcat_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "subcategory"
+                        },
+                    ]
+
+                    response.specification = [...deafultInfo, ...(response.specification ?? [])]
                     setProductData(response);
                 }
             } catch (error) {
@@ -61,7 +90,8 @@ const ProductVerificationDetailsPage = () => {
             case 'score':
                 return {
                     ...column,
-                    render: (text: any, record: any) => <div>{record.subspecification && record.subspecification.length!==0 ? "" : (record.score ?? "-")}</div>,
+                    render: (text: any, record: any) =>
+                        <div>{record.subspecification && record.subspecification.length !== 0 ? "" : (record.score ?? "-")}</div>,
                 };
             default:
                 return {

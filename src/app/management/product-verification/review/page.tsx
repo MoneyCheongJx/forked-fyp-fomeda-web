@@ -14,6 +14,7 @@ import CustomInput from "@/components/common/CustomInput";
 import MessageService from "@/services/message.service";
 import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import NotificationService from "@/services/notification.service";
+import {CategoryConstant} from "@/constants/category.constant";
 
 const ProductVerificationDetailsPage = () => {
     const router = useRouter();
@@ -32,6 +33,34 @@ const ProductVerificationDetailsPage = () => {
                 setLoading(true);
                 const response = await ProductService.getProductVerificationDetailsById(id!);
                 if (response) {
+                    const deafultInfo = [
+                        {
+                            spec_name: "Product Name",
+                            spec_desc: response.product_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "product_name"
+                        },
+                        {
+                            spec_name: "Model No.",
+                            spec_desc: response.model_no,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "model_no"
+                        },
+                        {
+                            spec_name: "Category",
+                            spec_desc: response.cat_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "category"
+                        },
+                        {
+                            spec_name: "Subcategory",
+                            spec_desc: response.subcat_name,
+                            spec_type: CategoryConstant.INFORMATION,
+                            spec_id: "subcategory"
+                        },
+                    ]
+
+                    response.specification = [...deafultInfo, ...(response.specification ?? [])]
                     setProductData(response);
                     calculateTotalScore(form.getFieldValue("specification"))
                 }
