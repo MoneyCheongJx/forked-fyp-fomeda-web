@@ -12,8 +12,13 @@ export const ROLES_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
     },
     {
         key: "last_updated_on",
-        title: "Last modified",
+        title: "Last updated on",
         dataIndex: "last_updated_on",
+    },
+    {
+        key: "last_updated_by",
+        title: "Last updated by",
+        dataIndex: "last_updated_by",
     },
     {
         key: "is_active",

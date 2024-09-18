@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import RoleService from "@/services/role.service";
 import { HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS } from '@/constants/header.constants';
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const { Option } = Select;
 
@@ -16,7 +19,20 @@ const AddRoleModal: React.FC<RoleModalProps> = ({ visible, onClose }) => {
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
-            const data = {...values, created_by: "Superadmin", last_updated_by: "Superadmin"};
+
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+
+            const data = {...values, created_by: username, last_updated_by: username};
             try {
                 await RoleService.createRole(data);
             } catch (error) {

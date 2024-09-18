@@ -2,6 +2,9 @@ import React, {useEffect, useState} from "react";
 import { Modal, Form, Input, Button, Select } from 'antd';
 import RoleService from "@/services/role.service";
 import { HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS } from "@/constants/header.constants";
+import Cookies from 'js-cookie';
+import { jwtDecode } from "jwt-decode";
+import { CustomJwtPayload } from "@/models/jwt.model";
 
 const { Option } = Select;
 
@@ -18,7 +21,19 @@ const EditRoleModal = ({ visible, onClose, data} : any) => {
         try {
             const values = await form.validateFields();
 
-            const data = {...values, updated_by: "Superadmin"};
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            const username = userData?.username ?? "UndefinedAdmin";
+
+            const data = {...values, last_updated_by: username};
 
             try {
                 await RoleService.updateRole(originalData._id, data)
