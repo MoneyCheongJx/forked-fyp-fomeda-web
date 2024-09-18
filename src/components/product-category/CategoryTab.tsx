@@ -198,9 +198,6 @@ const CategoryTab = () => {
         });
     }, [])
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div>
@@ -236,6 +233,7 @@ const CategoryTab = () => {
                     pageSizeOptions: [10, 20, 50, 100],
                 }}
                 showSorterTooltip={false}
+                loading={loading}
             />
             <CategoryUpdateModel
                 isOpen={openUpdateModel}

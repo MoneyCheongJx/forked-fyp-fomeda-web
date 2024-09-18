@@ -1,6 +1,6 @@
 "use client";
 
-import {Button, Form, Input, Modal, Radio, Row, Select} from "antd";
+import {Button, Form, Input, Modal, Radio, Row, Select, Spin} from "antd";
 import {
     CategoryConstant,
     SPECIFICATION_FIELD_TYPE_OPTIONS,
@@ -21,6 +21,7 @@ const ViewSpecificationPage = ({specId}: any) => {
     const [specificationType, setSpecificationType] = useState("");
     const [isEdit, setIsEdit] = useState(false);
     const [specificationOptions, setSpecificationOptions] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
     const isSpecification = !specId.includes(CategoryConstant.SUBSPECIFICATION_PREFIX);
     const SPECIFICATION_TYPE = SPECIFICATION_TYPE_CONSTANT[specificationType];
 
@@ -42,6 +43,7 @@ const ViewSpecificationPage = ({specId}: any) => {
         const prefix = Object.keys(getSpecificationDataMapping)
             .find((prefix) => specId.includes(prefix));
         if (prefix) {
+            setLoading(true)
             const response = await getSpecificationDataMapping[prefix](specId);
             setSpecificationData(response);
             setOriginalSpecificationData(response);
@@ -69,7 +71,7 @@ const ViewSpecificationPage = ({specId}: any) => {
     }
 
     useEffect(() => {
-        getSpecificationData().then();
+        getSpecificationData().then(() => setLoading(false));
     }, []);
 
 
@@ -174,6 +176,14 @@ const ViewSpecificationPage = ({specId}: any) => {
             </Form.Item>
         );
     };
+
+    if (loading) {
+        return (
+            <div className={"flex justify-center"}>
+                <Spin/>
+            </div>
+        )
+    }
 
     return (
         <>

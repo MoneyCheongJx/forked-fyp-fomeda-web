@@ -18,7 +18,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const isCategory = !id.includes('SCAT');
     const [ratingForm] = Form.useForm();
-    const [detailsData, setDetailsData] = useState<any>({})
+    const [detailsData, setDetailsData] = useState<any[]>([])
     const [loading, setLoading] = useState(true);
     const [name, setName] = useState<any>([]);
     const [ratingScore, setRatingScore] = useState<any[]>([]);
@@ -207,16 +207,18 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const getDetailsData = async () => {
         try {
             const nameResponse = await CategoryService.findNameById(id);
-            const ratingScoreResponse = await CategoryService.findOneSubcategoryById(id)
             setName(nameResponse);
-            setRatingScore(ratingScoreResponse?.rating_score)
+            let ratingScoreResponse;
             let response
             if (isCategory) {
+                console.log("run here")
                 response = await CategoryService.findCategoryBaseSpecificationByCatId(id);
             } else {
                 response = await CategoryService.findSubcategorySpecificationByCatId(id)
+                ratingScoreResponse = await CategoryService.findOneSubcategoryById(id);
             }
             setDetailsData(response);
+            setRatingScore(ratingScoreResponse?.rating_score ?? {})
         } catch (error) {
             console.error(error);
             throw error;
@@ -233,10 +235,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         getDetailsData().then();
     }, []);
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div>
             <Row className="mb-3">
@@ -250,20 +248,25 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                 }
             </Row>
 
-            <Row className="mb-2 justify-between">
-                <h3>RatingScore</h3>
-                <Button type="primary" icon={<EditOutlined/>}
-                        onClick={() => setIsEditRating(true)}
-                        disabled={isEditRating}>
-                    Edit Rating Score
-                </Button>
-            </Row>
-            <Table columns={defineTableHeader(SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS)}
-                   dataSource={ratingScore.map((rating => ({...rating, key: rating.rating})))}
-                   showSorterTooltip={false}
-                   pagination={false}
-                   className={"mb-12"}
-                   footer={isEditRating ? ratingTableFooter : undefined}/>
+            {!isCategory &&
+                <>
+                    <Row className="mb-2 justify-between">
+                        <h3>RatingScore</h3>
+                        <Button type="primary" icon={<EditOutlined/>}
+                                onClick={() => setIsEditRating(true)}
+                                disabled={isEditRating}>
+                            Edit Rating Score
+                        </Button>
+                    </Row>
+                    <Table columns={defineTableHeader(SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS)}
+                           dataSource={ratingScore.map((rating => ({...rating, key: rating.rating})))}
+                           showSorterTooltip={false}
+                           pagination={false}
+                           className={"mb-12"}
+                           footer={isEditRating ? ratingTableFooter : undefined}
+                           loading={loading}/>
+                </>
+            }
 
             {SPECIFICATIONS_TABLE_CONSTANTS.map((item: any) => (
                 <div key={item.key} className="mb-8">
@@ -299,6 +302,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                                pageSizeOptions: [10, 20, 50, 100],
                            }}
                            showSorterTooltip={false}
+                           loading={loading}
                     />
                 </div>
             ))}
