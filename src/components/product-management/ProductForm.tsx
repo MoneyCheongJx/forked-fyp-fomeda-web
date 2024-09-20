@@ -54,7 +54,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
     const fetchSpecificationField = async () => {
         try {
             setLoading(true);
-            const response = await CategoryService.getProductSpecificationBySubcatId(subcatId)
+            const response = await CategoryService.findActiveSubcategorySpecificationByCatId(subcatId)
             if (response) {
                 setSpecificationFields(response);
             }
@@ -234,13 +234,13 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                                message: `Only ${StringUtils.formatLowerCase(spec.field_type)} is allowed`
                                            }]}>
 
-                                {!spec.subspecification && (isView && !isEdit ?
+                                {!spec.children && (isView && !isEdit ?
                                     <div>{getSpecificationValue(spec._id, spec.prefix, spec.suffix)}</div> :
                                     <Input prefix={spec.prefix} suffix={spec.suffix}/>)
                                 }
                             </Form.Item>
 
-                            {spec.subspecification && renderSubspecificationsForm(spec.subspecification, spec._id)}
+                            {spec.children && renderSubspecificationsForm(spec.children, spec._id)}
                         </div>
                     ))}
             </Form.List>

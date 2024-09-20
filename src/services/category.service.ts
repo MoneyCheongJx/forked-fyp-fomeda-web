@@ -426,6 +426,20 @@ export default class CategoryService {
         }
     }
 
+    static readonly findActiveSubcategorySpecificationByCatId = async (id: string) => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.FIND_ACTIVE_SUBCATEGORY_SPECIFICATION_BY_CAT_ID,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     static readonly findSubcategorySpecificationById = async (id: string) => {
         try {
             const param = {id}

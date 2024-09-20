@@ -30,6 +30,7 @@ export class ApiConstant{
     static readonly FIND_BASE_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-base-specification-by-cat-id";
     static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-id";
     static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-cat-id";
+    static readonly FIND_ACTIVE_SUBCATEGORY_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-active-subcategory-specification-by-cat-id";
     static readonly FIND_SUBCATEGORY_SUBSPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-subspecification-by-id";
     static readonly FIND_GENERAL_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-general-specification-by-id";
     static readonly FIND_GENERAL_SUBSPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-general-subspecification-by-id";
