@@ -17,7 +17,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'view_product') {
-            router.push(`product/view-product?id=${record._id}`)
+            router.push(`product/view-product?v_id=${record._id}`)
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -34,9 +34,10 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
     const handleActionsOnClick = async (key: string, record: any) => {
         try {
             if (key === "resubmit") {
-                // await ProductService.updateProductById(record._id).then(getTableData);
+                record.verification_id = record._id;
+                await ProductService.createProductVerification(record).then(getTableData).then(() => setLoading(false));
             } else if (key === "delete") {
-                await ProductService.deleteProductById(record._id).then(getTableData);
+                await ProductService.deleteProductVerificationDetailsById(record._id).then(getTableData).then(() => setLoading(false));
             }
         } catch (error) {
             console.error(error);
@@ -64,7 +65,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = null;
-            const response = await ProductService.getProductByFilter(filterData);
+            const response = await ProductService.getProductVerificationListByFilter(filterData);
             setHistoryList(response);
         } catch (error) {
             console.error(error);
@@ -86,7 +87,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
                 return {
                     ...column,
                     render: (text: any, record: any) => (
-                        <Link href={`product/view-product?id=${record._id}`}>{record.product_name}</Link>
+                        <Link href={`product/view-product?v_id=${record._id}`}>{record.product_name}</Link>
                     )
                 }
             case 'status':

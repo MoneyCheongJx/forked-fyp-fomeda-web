@@ -17,6 +17,7 @@ import NotificationService from "@/services/notification.service";
 class ProductFormProps {
     type?: "add" | "view";
     productId?: string;
+    verificationId?: string;
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -34,7 +35,7 @@ const regexMapping: any = {
     [ProductConstant.NUMERIC]: RegexConstant.REGEX_NUMERIC,
 }
 
-const ProductForm = ({type, productId}: ProductFormProps) => {
+const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
     const router = useRouter();
 
     const isView = type === "view";
@@ -103,7 +104,14 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
     const fetchProductByProductId = async () => {
         try {
             setLoading(true)
-            const response = await ProductService.getProductById(productId!)
+            let response;
+            if(productId) {
+                response = await ProductService.getProductDetailsById(productId)
+            }
+            else {
+                response = await ProductService.getProductVerificationDetailsById(verificationId!);
+            }
+
             if (response) {
                 setProductData(response)
                 setSubcatId(response.subcat_id!);
@@ -115,10 +123,10 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         }
     }
     useEffect(() => {
-        if (productId) {
+        if (productId || verificationId) {
             fetchProductByProductId().then(() => setLoading(false))
         }
-    }, [productId]);
+    }, [productId, verificationId]);
 
     const onCategoryChange = (value: any) => {
         form.setFieldValue("cat_id", undefined);
@@ -149,23 +157,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
         }
     }
 
-    const getUpdatedFields = (currentSpecs: any[], originalSpecs: any[]) => {
-        return Object.values(currentSpecs).filter((currentSpec) => {
-            const originalSpec = originalSpecs.find((spec: any) => spec.spec_id === currentSpec.spec_id);
-            if (!originalSpec) return true;
-
-            const isSpecChanged = currentSpec.spec_desc !== originalSpec.spec_desc;
-            const areSubspecsChanged = currentSpec.subspecification?.some((subspec: any, index: number) => {
-                const originalSubspec = originalSpec.subspecification?.[index];
-                return originalSubspec?.subspec_desc !== subspec.subspec_desc;
-            });
-
-            return isSpecChanged || areSubspecsChanged;
-        });
-    };
-
     const onSubmitProduct = async () => {
-        form.setFieldValue("status", ProductConstant.PENDING);
         try {
             await form.validateFields();
         } catch (error) {
@@ -175,33 +167,36 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
 
         try {
             const productValues = form.getFieldsValue();
-            const updateSpec = isEdit ? getUpdatedFields(productValues.specification, productData.specification) : productValues.specification;
+            const specValues = productValues.specification;
 
             const payload = {
-                ...productValues,
-                specification: updateSpec,
+                ...productData,
+                ...(!isView ? productValues : {}),
+                pro_id: productData._id ?? undefined,
+                status: ProductConstant.PENDING,
+                product_img: productValues.product_img,
+                verification_id: verificationId,
+                specification: Object.values(specValues),
             }
 
-            console.log(payload)
-            if (isEdit) {
-                const res = await ProductService.updateProductById(productId!, payload);
-                if (res) {
-                    setIsEdit(false);
-                    fetchProductByProductId().then();
-                }
+            setLoading(true)
+            await ProductService.createProductVerification(payload);
+            if (isEdit && productData.status === ProductConstant.PENDING) {
+                setIsEdit(false);
+                fetchProductByProductId().then(() => setLoading(false));
             } else {
-                await ProductService.createProduct(productValues);
+                setLoading(false)
                 router.back();
             }
+            isEdit ?
+                NotificationService.success("Update Product", `${productData.product_name} updated successfully`) :
+                NotificationService.success("Create Product", `Application of ${productValues.product_name} submitted successfully.`);
         } catch (error) {
+            setLoading(false)
             isEdit ?
                 NotificationService.error("Update Product", `${productData.product_name} failed to update.`) :
                 NotificationService.error("Create Product", `Application of ${productData.product_name} failed to submit.`);
             throw error;
-        } finally {
-            isEdit ?
-                NotificationService.success("Update Product", `${productData.product_name} updated successfully`) :
-                NotificationService.success("Create Product", `Application of ${productData.product_name} submitted successfully.`);
         }
     }
 
@@ -428,7 +423,7 @@ const ProductForm = ({type, productId}: ProductFormProps) => {
                                     <Button type={"default"} size={"large"} className={"m-2"}
                                             onClick={onCancelProduct}>Cancel</Button>
                                     <Button type={"primary"} size={"large"} className={"m-2"} onClick={onSubmitProduct}
-                                            disabled={subcatId === ""}>{isEdit ? "Save" : "AddProduct"}</Button>
+                                            disabled={subcatId === "" || loading}>{isEdit ? "Save" : "AddProduct"}</Button>
                                 </Row>
                             }
                         </Card>

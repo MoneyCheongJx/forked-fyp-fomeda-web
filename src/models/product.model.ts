@@ -1,5 +1,7 @@
 export class ProductModel {
     _id?: string;
+    verification_id?: string;
+    pro_id?: string;
     product_name?: string;
     model_no?: string;
     cat_id?: string;

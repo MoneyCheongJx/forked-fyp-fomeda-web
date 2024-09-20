@@ -17,7 +17,7 @@ const VerificationPendingTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.PENDING];
-            const response = await ProductService.getProductVerificationDetailsByFilter(filterData);
+            const response = await ProductService.getProductVerificationListByFilter(filterData);
             setPendingList(response);
         } catch (error) {
             console.error(error);

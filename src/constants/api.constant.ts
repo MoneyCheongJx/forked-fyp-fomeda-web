@@ -99,19 +99,15 @@ export class ApiConstant{
 
     /* product api */
     static readonly CREATE_PRODUCT = this.PRODUCT_PREFIX + "create-product";
-    static readonly GET_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "get-product-by-id";
-    static readonly GET_PRODUCT_BY_FILTER = this.PRODUCT_PREFIX + "get-product-by-filter";
-    static readonly GET_PRODUCT_VERIFICATION_DETAILS_BY_FILTER = this.PRODUCT_PREFIX + "get-product-verification-details-by-filter";
+    static readonly CREATE_PRODUCT_VERIFICATION = this.PRODUCT_PREFIX + "create-product-verification";
+    static readonly GET_PRODUCT_DETAILS_BY_ID = this.PRODUCT_PREFIX + "get-product-details-by-id";
+    static readonly GET_PRODUCT_LIST_BY_FILTER = this.PRODUCT_PREFIX + "get-product-list-by-filter";
+    static readonly GET_PRODUCT_VERIFICATION_LIST_BY_FILTER = this.PRODUCT_PREFIX + "get-product-verification-list-by-filter";
     static readonly GET_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "get-product-verification-details-by-id";
-    static readonly UPDATE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "update-product-by-id";
+    static readonly UPDATE_PRODUCT_DETAILS_BY_ID = this.PRODUCT_PREFIX + "update-product-details-by-id";
     static readonly UPDATE_PRODUCT_IS_ACTIVE = this.PRODUCT_PREFIX + "update-product-is-active";
     static readonly UPDATE_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "update-product-verification-details-by-id";
+    static readonly UPDATE_PRODUCT_VERIFICATION_REVIEW_BY_ID = this.PRODUCT_PREFIX + "update-product-verification-review-by-id";
     static readonly DELETE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "delete-product-by-id";
-
-    /*role api */
-    static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"
-    static readonly GET_ACTIVE_ROLES = this.ROLE_PREFIX + "get-active-roles"
-    static readonly GET_MODULES = this.ROLE_PREFIX + "get-modules"
-    static readonly CREATE_ROLE = this.ROLE_PREFIX + "create-role"
-    static readonly UPDATE_ROLE = this.ROLE_PREFIX + "update-role"
+    static readonly DELETE_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "delete-product-verification-details-by-id";
 }

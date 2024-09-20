@@ -19,7 +19,7 @@ const VerificationHistoryTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.REJECTED, ProductConstant.APPROVED];
-            const response = await ProductService.getProductVerificationDetailsByFilter(filterData);
+            const response = await ProductService.getProductVerificationListByFilter(filterData);
             setHistoryList(response);
         } catch (error) {
             console.error(error);

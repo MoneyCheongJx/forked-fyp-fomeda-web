@@ -7,7 +7,6 @@ import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
-import {ProductConstant} from "@/constants/product.constant";
 import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import Link from "next/link";
 
@@ -36,11 +35,11 @@ const SupplierProductTable = ({filterData}: any) => {
     const handleActionsOnClick = async (key: string, record: any) => {
         try {
             if (key === "activate") {
-                await ProductService.updateProductIsActive(record._id).then(getTableData);
+                await ProductService.updateProductIsActive(record._id).then(getTableData).then(() => setLoading(false));
             } else if (key === "deactivate") {
-                await ProductService.updateProductIsActive(record._id).then(getTableData);
+                await ProductService.updateProductIsActive(record._id).then(getTableData).then(() => setLoading(false));
             } else if (key === "delete") {
-                await ProductService.deleteProductById(record._id).then(getTableData);
+                await ProductService.deleteProductById(record._id).then(getTableData).then(() => setLoading(false));
             }
         } catch (error) {
             console.error(error);
@@ -66,8 +65,7 @@ const SupplierProductTable = ({filterData}: any) => {
     const getTableData = async () => {
         try {
             setLoading(true);
-            filterData.status = [ProductConstant.APPROVED];
-            const response = await ProductService.getProductByFilter(filterData);
+            const response = await ProductService.getProductListByFilter(filterData);
             setProductList(response);
         } catch (error) {
             console.error(error);

@@ -138,16 +138,17 @@ const ProductVerificationDetailsPage = () => {
     const onSubmit = async (status: string) => {
         const formData = form.getFieldsValue();
         const filteredData = {
+            ...productData,
             ...formData,
             rating: starRating,
             total_score: totalScore,
             status: status,
-            specification: filterSpecifications(formData.specification || []),
+            specification: mergeSpecifications(productData?.specification || [], formData.specification || []),
         };
 
         const displayStatus = StringUtils.formatTitleCase(status)
         try {
-            await ProductService.updateProductVerificationDetailsById(id!, filteredData);
+            await ProductService.updateProductVerificationReviewById(id!, filteredData);
             router.back();
             NotificationService.success(
                 `${displayStatus} Application`,
@@ -162,24 +163,34 @@ const ProductVerificationDetailsPage = () => {
         }
     }
 
-    const filterSpecifications = (specifications: any[]) => {
-        return Object.values(specifications)
-            .map(spec => {
-                if (spec.subspecification) {
-                    const filteredSubspecs: any[] = Object.values(spec.subspecification).filter((subspec: any) => subspec.score !== undefined);
-                    if (filteredSubspecs.length === 0) {
-                        return undefined;
-                    }
+    const mergeSpecifications = (productDataSpecs: any[], formDataSpecs: any[]) => {
+        return Object.values(formDataSpecs).map((formSpec: any) => {
+            const productSpec = productDataSpecs.find((prodSpec: any) => prodSpec.spec_id === formSpec.spec_id);
+            if (productSpec) {
+                const mergedSpec: any = {
+                    spec_id: formSpec.spec_id,
+                    spec_desc: productSpec.spec_desc,
+                    score: formSpec.score,
+                };
 
-                    return {
-                        ...spec,
-                        subspecification: filteredSubspecs,
-                    };
-                } else {
-                    return spec.score !== undefined ? spec : undefined;
+                if (formSpec.subspecification && productSpec.subspecification) {
+                    mergedSpec.subspecification = Object.values(formSpec.subspecification).map((formSubspec: any) => {
+                        const productSubspec = productSpec.subspecification.find((prodSubspec: any) => prodSubspec.subspec_id === formSubspec.subspec_id);
+
+                        if (productSubspec) {
+                            return {
+                                subspec_id: formSubspec.subspec_id,
+                                subspec_desc: productSubspec.subspec_desc,
+                                score: formSubspec.score,
+                            };
+                        }
+                        return null;
+                    }).filter((subspec: any) => subspec !== null);
                 }
-            })
-            .filter(spec => spec !== undefined);
+                return mergedSpec;
+            }
+            return null;
+        }).filter(spec => spec !== null);
     };
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
