@@ -10,6 +10,8 @@ import {DateTimeUtils} from "@/utils/date-time.utils";
 import {useRouter} from "next/navigation";
 import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import Link from "next/link";
+import NotificationService from "@/services/notification.service";
+import {StringUtils} from "@/utils/string.utils";
 
 const SupplierProductPendingTable = ({filterData}: any) => {
     const router = useRouter();
@@ -32,11 +34,22 @@ const SupplierProductPendingTable = ({filterData}: any) => {
         }
     }
 
+    const handleAfterAction = async (key: string, product: string) => {
+        await getTableData().then(() => setLoading(false))
+        NotificationService.success(
+            `${StringUtils.formatTitleCase(key)} Product`,
+            `${StringUtils.formatTitleCase(product)} has been ${key} successfully.` )
+    }
+
     const handleActionsOnClick = async (key: string, record: any) => {
         try {
-            await ProductService.deleteProductVerificationDetailsById(record._id).then(getTableData).then(() => setLoading(false));
+            await ProductService.deleteProductVerificationDetailsById(record._id).then(() => handleAfterAction(key, record.product_name));
         } catch (error) {
             console.error(error);
+            NotificationService.error(
+                `${StringUtils.formatTitleCase(key)} Product`,
+                `${StringUtils.formatTitleCase(record.product_name)} failed to ${key}.`
+            )
         }
     }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import PageLayout from "@/app/page";
-import {Col, Form, Image, Layout, Rate, Skeleton, Table} from "antd";
+import {Col, Form, Image, Layout, Rate, Table} from "antd";
 import {useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import ProductService from "@/services/product.service";

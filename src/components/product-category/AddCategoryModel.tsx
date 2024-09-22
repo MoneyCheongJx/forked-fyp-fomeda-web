@@ -1,6 +1,6 @@
 "use client"
 
-import {Form, Input, Modal, Radio, Select} from "antd";
+import {Button, Form, Input, Modal, Radio, Select} from "antd";
 import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";
@@ -31,6 +31,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
     const [isCategory, setIsCategory] = useState(true);
     const [subcategoryForm] = Form.useForm();
     const [subcategoryFormData, setSubcategoryFormData] = useState(initialSubcategoryForm);
+    const [loading, setLoading] = useState(false);
 
     const handleRadioChange = (e: any) => {
         setIsCategory(e.target.value);
@@ -58,21 +59,23 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
 
 
     const handleAddModelOnOk = async () => {
+        setLoading(true)
         categoryForm.validateFields().then(async () => {
             if (isCategory) {
-                await handleCategoryFormSubmit();
+                await handleCategoryFormSubmit().then(() => onAdd("add", categoryForm.getFieldValue("cat_name")));
                 categoryForm.resetFields();
                 setCategoryFormData(initialCategoryForm);
             } else {
-                await handleSubcategoryFormSubmit();
+                await handleSubcategoryFormSubmit().then(() => onAdd("add", subcategoryForm.getFieldValue("subcat_name")));
                 subcategoryForm.resetFields();
                 setSubcategoryFormData(initialSubcategoryForm);
                 subcategoryFormData.cat_name = selectOptions[0].label;
             }
-            onAdd();
+            setLoading(false);
             onClose();
         }).catch(errorInfo => {
             MessageService.error(errorInfo.message);
+            setLoading(false);
         });
     }
 
@@ -139,7 +142,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
     const validateModelButton = (): boolean => {
         let isValid = false;
 
-        if((isCategory && !categoryFormData.cat_name) ||
+        if ((isCategory && !categoryFormData.cat_name) ||
             (!isCategory && !subcategoryFormData.subcat_name))
             isValid = true;
 
@@ -154,7 +157,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             onOk={handleConfirmationModelOpen}
             okText="Add Category"
             onCancel={handleModalClose}
-            okButtonProps={{ disabled: validateModelButton() }}
+            okButtonProps={{disabled: validateModelButton(), loading: loading}}
         >
             <Form.Item
                 label={<h5>Category Type</h5>}

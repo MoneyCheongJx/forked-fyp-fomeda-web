@@ -12,6 +12,8 @@ import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
+import NotificationService from "@/services/notification.service";
+import {StringUtils} from "@/utils/string.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -55,11 +57,14 @@ const CategoryTab = () => {
             setSelectedRecord(record);
             record.subcat_name ? setIsParent(false) : setIsParent(true);
         } else if (key === 'deactivate') {
-            (record.subcat_name ? deactivateSubcategory(record._id, false) : deactivateCategory(record._id, false)).then(handleOnUpdate);
+            (record.subcat_name ? deactivateSubcategory(record._id, false) : deactivateCategory(record._id, false))
+                .then(() => handleOnUpdate(key, record.subcat_name || record.cat_name));
         } else if (key === 'activate') {
-            (record.subcat_name ? deactivateSubcategory(record._id, true) : deactivateCategory(record._id, true)).then(handleOnUpdate);
+            (record.subcat_name ? deactivateSubcategory(record._id, true) : deactivateCategory(record._id, true))
+                .then(() => handleOnUpdate(key, record.subcat_name || record.cat_name));
         } else {
-            (record.subcat_name ? deleteSubcategory(record._id) : deleteCategory(record._id)).then(handleOnUpdate);
+            (record.subcat_name ? deleteSubcategory(record._id) : deleteCategory(record._id))
+                .then(() => handleOnUpdate(key, record.subcat_name || record.cat_name));
         }
     }
 
@@ -131,7 +136,7 @@ const CategoryTab = () => {
             return {
                 key: item.key,
                 label: (
-                    <Typography onClick={() => handleConfirmationModelOpen(item.key, record)} >
+                    <Typography onClick={() => handleConfirmationModelOpen(item.key, record)}>
                         {item.label}
                     </Typography>
                 ),
@@ -181,21 +186,22 @@ const CategoryTab = () => {
         try {
             const response = await CategoryService.getAllCategory();
             setCategoryData(response);
+            setLoading(false);
         } catch (error) {
             console.error(error);
             throw error;
-        } finally {
-            setLoading(false);
         }
     }
 
-    const handleOnUpdate = async () => {
-        await getAllCategory();
+    const handleOnUpdate = async (key: string, category: string) => {
+        await getAllCategory().then(() => setLoading(false));
+        NotificationService.success(
+            `${StringUtils.formatTitleCase(key)} Category`,
+            `${StringUtils.formatTitleCase(category)} has been ${key} successfully.`)
     }
 
     useEffect(() => {
-        getAllCategory().then(() => {
-        });
+        getAllCategory().then();
     }, [])
 
 

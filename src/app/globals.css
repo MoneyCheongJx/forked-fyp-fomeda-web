@@ -211,14 +211,14 @@ a:hover {
 }
 
 /* segmented style */
-.ant-segmented-thumb,
-.ant-segmented-item-selected {
+.ant-segmented-thumb{
     background-color: var(--ant-primary-color-active) !important;
     color: #ffffff !important;
 }
 
-.ant-segmented-item:active .ant-segmented-item-selected{
-    color: #ffffff !important
+ .ant-segmented-item-selected, .ant-segmented-item:focus{
+    background-color: var(--ant-primary-color-active) !important;
+    color: #ffffff !important;
 }
 
 .ant-segmented-item {

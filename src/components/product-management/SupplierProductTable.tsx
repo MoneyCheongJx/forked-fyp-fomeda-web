@@ -9,6 +9,8 @@ import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
 import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 import Link from "next/link";
+import NotificationService from "@/services/notification.service";
+import {StringUtils} from "@/utils/string.utils";
 
 
 const SupplierProductTable = ({filterData}: any) => {
@@ -32,17 +34,28 @@ const SupplierProductTable = ({filterData}: any) => {
         }
     }
 
+    const handleAfterAction = async (key: string, product: string) => {
+        await getTableData().then(() => setLoading(false))
+        NotificationService.success(
+            `${StringUtils.formatTitleCase(key)} Product`,
+            `${StringUtils.formatTitleCase(product)} has been ${key} successfully.` )
+    }
+
     const handleActionsOnClick = async (key: string, record: any) => {
         try {
             if (key === "activate") {
-                await ProductService.updateProductIsActive(record._id).then(getTableData).then(() => setLoading(false));
+                await ProductService.updateProductIsActive(record._id).then(() => handleAfterAction(key, record.product_name));
             } else if (key === "deactivate") {
-                await ProductService.updateProductIsActive(record._id).then(getTableData).then(() => setLoading(false));
+                await ProductService.updateProductIsActive(record._id).then(() => handleAfterAction(key, record.product_name));
             } else if (key === "delete") {
-                await ProductService.deleteProductById(record._id).then(getTableData).then(() => setLoading(false));
+                await ProductService.deleteProductById(record._id).then(() => handleAfterAction(key, record.product_name));
             }
         } catch (error) {
             console.error(error);
+            NotificationService.error(
+                `${StringUtils.formatTitleCase(key)} Product`,
+                `${StringUtils.formatTitleCase(record.product_name)} failed to ${key}.`
+            )
         }
     }
 

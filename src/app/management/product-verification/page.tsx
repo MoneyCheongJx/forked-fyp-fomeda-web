@@ -76,7 +76,7 @@ const ProductVerificationPage = () => {
                         <Row className="flex space-x-3">
                             <Form.Item<ProductFilterModel> name="search" className={"w-1/3 m-0"}>
                                 <Input prefix={<SearchOutlined/>} placeholder="Product Name / Model Number"
-                                       className="max-w-lg" size={"large"}/>
+                                       size={"large"}/>
                             </Form.Item>
                             <Form.Item<ProductFilterModel> name="cat_ids" className={"w-1/6 m-0"}>
                                 <CustomSelect placeholder="Category" options={categoryOptions} showSearch={true}
