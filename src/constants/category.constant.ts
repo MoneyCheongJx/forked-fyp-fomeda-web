@@ -162,9 +162,9 @@ export const SPECIFICATION_TYPE_CONSTANT: { [key: string]: string } = {
 };
 
 export const SPECIFICATION_FIELD_TYPE_OPTIONS = [
-    {key: "NUMERIC", label: "Numeric",},
     {key: "ALPHANUMERIC", label: "Alphanumeric",},
     {key: "ALPHABET", label: "Alphabet",},
+    {key: "NUMERIC", label: "Numeric",},
 ];
 
 export const SCORE_CONTRIBUTION_ACTION_OPTIONS = [

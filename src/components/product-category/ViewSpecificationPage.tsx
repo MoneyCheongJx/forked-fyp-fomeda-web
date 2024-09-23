@@ -142,20 +142,31 @@ const ViewSpecificationPage = ({specId}: any) => {
     );
 
     const renderFormItem = (
-        label: string,
+        {
+            label,
+            type,
+            name,
+            rules,
+            value,
+            isDisabled,
+            options
+        }: {
+            label: string,
+            type: 'input' | 'select' | 'radio',
+            name?: string,
+            rules?: any[],
+            value?: any,
+            isDisabled?: boolean,
+            options?: any
+        },
         onChange: (e: any, options?: any) => void,
-        type: 'input' | 'select' | 'radio',
-        name?: string,
-        rules?: any[],
-        value?: any,
-        isDisabled?: boolean,
-        options?: any
     ) => {
         let inputElement;
         if (type === 'input') {
             inputElement = <Input name={name} onChange={onChange} disabled={isDisabled}/>;
         } else if (type === 'select') {
-            inputElement = <Select defaultValue={value} onChange={onChange} options={options} disabled={isDisabled}/>;
+            inputElement =
+                <Select defaultValue={value} onChange={onChange} options={options} disabled={isDisabled}/>;
         } else if (type === 'radio') {
             inputElement = renderRadioGroup(onChange, value, isDisabled);
         }
@@ -217,122 +228,143 @@ const ViewSpecificationPage = ({specId}: any) => {
 
                 {!isSpecification ? (
                     <>
-                        {renderFormItem(`${SPECIFICATION_TYPE} Name`,
+                        {renderFormItem({
+                                label: `${SPECIFICATION_TYPE} Name`,
+                                type: "select",
+                                name: "subcat_spec_id",
+                                rules: [
+                                    {required: true, message: `${SPECIFICATION_TYPE} Name is required`}
+                                ],
+                                value: specificationData.subcat_spec_id,
+                                isDisabled: true,
+                                options: specificationOptions,
+                            },
                             (value, option: any) => setSpecificationData((prevState: any) => ({
                                 ...prevState,
                                 subcat_spec_id: value,
                                 subcat_spec_name: option?.label || prevState.subcat_spec_name,
-                            })),
-                            "select",
-                            "subcat_spec_id",
-                            [
-                                {required: true, message: `${SPECIFICATION_TYPE} Name is required`}
-                            ],
-                            specificationData.subcat_spec_id,
-                            true,
-                            specificationOptions)}
+                            })),)
+                        }
 
-                        {renderFormItem("Subspecification Name",
+                        {renderFormItem({
+                                label: "Subspecification Name",
+                                type: "input",
+                                name: "subcat_subspec_name",
+                                rules: [{required: true, message: `Subspecification Name is required`}],
+                                value: specificationData.subcat_subspec_name
+                            },
                             (e) => setSpecificationData((prevState: any) => ({
                                 ...prevState,
                                 subcat_subspec_name: e.target.value,
-                            })),
-                            "input",
-                            "subcat_subspec_name",
-                            [
-                                {required: true, message: `Subspecification Name is required`}
-                            ],
-                            specificationData.subcat_subspec_name)}
+                            })))
+                        }
 
                     </>
                 ) : (
-                    renderFormItem(`${SPECIFICATION_TYPE} Name`,
+                    renderFormItem({
+                            label: `${SPECIFICATION_TYPE} Name`,
+                            type: "input",
+                            name: "subcat_spec_name",
+                            rules: [
+                                {required: true, message: `${SPECIFICATION_TYPE} Name is required`}
+                            ],
+                            value: specificationData.subcat_spec_name,
+                        },
                         (e) => setSpecificationData((prevState: any) => ({
                             ...prevState,
                             subcat_spec_name: e.target.value,
-                        })),
-                        "input",
-                        "subcat_spec_name",
-                        [
-                            {required: true, message: `${SPECIFICATION_TYPE} Name is required`}
-                        ],
-                        specificationData.subcat_spec_name)
+                        })))
                 )}
 
-                {renderFormItem("Allow Input",
+                {renderFormItem({
+                        label: "Allow Input",
+                        type: "radio",
+                        name: "allow_input",
+                        value: specificationData.allow_input,
+                        isDisabled: true,
+                    },
                     (e) => setSpecificationData((prevState: any) => ({
                         ...prevState,
                         allow_input: e.target.value,
-                    })),
-                    "radio",
-                    "allow_input",
-                    [],
-                    specificationData.allow_input,
-                    true)}
+                    })))
+                }
 
-                {renderFormItem("Required Field",
-                    (e) => setSpecificationData((prevState: any) => ({
-                        ...prevState,
-                        is_required: e.target.value,
-                    })),
-                    "radio",
-                    "is_required",
-                    [],
-                    specificationData.is_required,
-                    true)}
+                {specificationData.allow_input &&
+                    <>
+                        {renderFormItem({
+                                label: "Required Field",
+                                type: "radio",
+                                name: "is_required",
+                                value: specificationData.is_required,
+                                isDisabled: true,
+                            },
+                            (e) => setSpecificationData((prevState: any) => ({
+                                ...prevState,
+                                is_required: e.target.value,
+                            })),
+                        )}
 
-                {renderFormItem("Prefix",
-                    (e) => setSpecificationData((prevState: any) => ({
-                        ...prevState,
-                        prefix: e.target.value,
-                    })),
-                    "input",
-                    "prefix",
-                    [],
-                    specificationData.prefix !== "" ? specificationData.prefix : "-")}
+                        {renderFormItem({
+                                label: "Prefix",
+                                type: "input",
+                                name: "prefix",
+                                value: specificationData.prefix !== "" ? specificationData.prefix : "-",
+                            },
+                            (e) => setSpecificationData((prevState: any) => ({
+                                ...prevState,
+                                prefix: e.target.value,
+                            })),
+                        )}
 
-                {renderFormItem("Suffix",
-                    (e) => setSpecificationData((prevState: any) => ({
-                        ...prevState,
-                        suffix: e.target.value,
-                    })),
-                    "input",
-                    "suffix",
-                    [],
-                    specificationData.suffix !== "" ? specificationData.suffix : "-")}
+                        {renderFormItem({
+                                label: "Suffix",
+                                type: "input",
+                                name: "suffix",
+                                value: specificationData.suffix !== "" ? specificationData.suffix : "-",
+                            },
+                            (e) => setSpecificationData((prevState: any) => ({
+                                ...prevState,
+                                suffix: e.target.value,
+                            })),
+                        )}
 
-                {renderFormItem("Field Type",
-                    (e) => setSpecificationData((prevState: any) => ({
-                        ...prevState,
-                        field_type: e,
-                    })),
-                    "select",
-                    "field_type",
-                    [],
-                    specificationData.field_type,
-                    false,
-                    fieldTypeOptions)}
+                        {renderFormItem({
+                                label: "Field Type",
+                                type: "select",
+                                name: "field_type",
+                                value: specificationData.field_type,
+                                options: fieldTypeOptions,
+                            },
+                            (e) => setSpecificationData((prevState: any) => ({
+                                ...prevState,
+                                field_type: e,
+                            })),
+                        )}
 
-                {renderFormItem("Contributed To Score",
-                    (e) => setSpecificationData((prevState: any) => ({
-                        ...prevState,
-                        is_score_contributed: e.target.value,
-                    })),
-                    "radio",
-                    "is_score_contributed",
-                    [],
-                    specificationData.is_score_contributed,
-                    false)}
+                        {renderFormItem({
+                                label: "Contributed To Score",
+                                type: "radio",
+                                name: "is_score_contributed",
+                                value: specificationData.is_score_contributed,
+                                isDisabled: false,
+                            },
+                            (e) => setSpecificationData((prevState: any) => ({
+                                ...prevState,
+                                is_score_contributed: e.target.value,
+                            })),
+                        )}
 
-                {specificationData.is_score_contributed ? (
-                    <Form.Item label={<h5>Rating Score</h5>}
-                               labelCol={{span: 6}}
-                               labelAlign="left"
-                               name="rating_score">
-                        <RatingTable form={form} type={specificationData.field_type} isEdit={isEdit}
-                                     originalData={originalSpecificationData}/>
-                    </Form.Item>
-                ) : <></>}
+                        {specificationData.is_score_contributed ? (
+                            <Form.Item label={<h5>Rating Score</h5>}
+                                       labelCol={{span: 6}}
+                                       labelAlign="left"
+                                       name="rating_score">
+                                <RatingTable form={form} type={specificationData.field_type} isEdit={isEdit}
+                                             originalData={originalSpecificationData}/>
+                            </Form.Item>
+                        ) : <></>}
+                    </>
+                }
 
 
                 {isEdit && (

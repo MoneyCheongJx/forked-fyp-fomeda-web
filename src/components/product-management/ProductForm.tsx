@@ -105,10 +105,9 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         try {
             setLoading(true)
             let response;
-            if(productId) {
+            if (productId) {
                 response = await ProductService.getProductDetailsById(productId)
-            }
-            else {
+            } else {
                 response = await ProductService.getProductVerificationDetailsById(verificationId!);
             }
 
@@ -135,10 +134,15 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         setFilteredSubcatOptions(subcategoryOptions.filter(subcat => subcat.cat_id === value));
     }
 
-    const handleUpload: UploadProps['onChange'] = async (info: any) => {
+    const handleUpload: UploadProps['onChange'] = (info: any) => {
         const {file} = info;
-        if (!file.url && !file.preview) file.preview = await getBase64(file as FileType)
-        setImageUrl(file.preview);
+        if (!file.url && !file.preview) {
+            getBase64(file as FileType).then((preview: any) => {
+                file.preview = preview;
+                setImageUrl(preview);
+            })
+        }
+        else setImageUrl(file.preview);
     };
 
     const handleRemoveImage = (e: any) => {
@@ -236,7 +240,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
 
                                 {!spec.children && (isView && !isEdit ?
                                     <div>{getSpecificationValue(spec._id, spec.prefix, spec.suffix)}</div> :
-                                    <Input prefix={spec.prefix} suffix={spec.suffix}/>)
+                                    <Input prefix={spec.prefix} suffix={spec.suffix} disabled={!spec.allow_input}/>)
                                 }
                             </Form.Item>
 
@@ -288,6 +292,10 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                 ))}
             </Form.List>
         )
+    }
+
+    const renderDisplayInput = (value: string, alt: any) => {
+        return isView ? <div>{value}</div> : alt
     }
 
     return (
@@ -353,7 +361,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            required: !isEdit && !isView,
                                            message: `Product Name is required`,
                                        },]}>
-                                {isView ? <div>{productData.product_name}</div> : <Input/>}
+                                {renderDisplayInput(productData.product_name, <Input/>)}
                             </Form.Item>
                             <Form.Item label={<h5>Model No.</h5>}
                                        labelAlign={"left"}
@@ -364,7 +372,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            required: !isEdit && !isView,
                                            message: `Model No. is required`,
                                        },]}>
-                                {isView ? <div>{productData.model_no}</div> : <Input/>}
+                                {renderDisplayInput(productData.model_no, <Input/>)}
                             </Form.Item>
                             <Form.Item label={<h5>Category</h5>}
                                        labelAlign={"left"}
@@ -375,14 +383,14 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            required: !isEdit && !isView,
                                            message: `Category is required`,
                                        },]}>
-                                {isView ?
-                                    <div>{productData.cat_name}</div> :
+                                {renderDisplayInput(
+                                    productData.cat_name,
                                     <Select options={categoryOptions}
                                             onChange={(value) => onCategoryChange(value)}
                                             defaultActiveFirstOption={true}
                                             allowClear={true}
                                             removeIcon={<CloseOutlined/>}
-                                            loading={loadingCategory}/>
+                                            loading={loadingCategory}/>)
                                 }
                             </Form.Item>
                             <Form.Item label={<h5>Subcategory</h5>}
@@ -394,8 +402,8 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            required: !isEdit && !isView,
                                            message: `Subcategory is required`,
                                        },]}>
-                                {isView ?
-                                    <div>{productData.subcat_name}</div> :
+                                {renderDisplayInput(
+                                    productData.subcat_name,
                                     <Select options={filteredSubcatOptions}
                                             disabled={filteredSubcatOptions.length === 0}
                                             defaultValue={filteredSubcatOptions.length > 0 ? undefined : filteredSubcatOptions[0]?.value}
@@ -403,7 +411,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                             allowClear={true}
                                             removeIcon={<CloseOutlined/>}
                                             loading={loadingCategory}/>
-                                }
+                                )}
                             </Form.Item>
 
                             {subcatId !== "" && !loading && <>

@@ -163,34 +163,48 @@ const ProductVerificationDetailsPage = () => {
         }
     }
 
-    const mergeSpecifications = (productDataSpecs: any[], formDataSpecs: any[]) => {
-        return Object.values(formDataSpecs).map((formSpec: any) => {
-            const productSpec = productDataSpecs.find((prodSpec: any) => prodSpec.spec_id === formSpec.spec_id);
-            if (productSpec) {
-                const mergedSpec: any = {
-                    spec_id: formSpec.spec_id,
-                    spec_desc: productSpec.spec_desc,
-                    score: formSpec.score,
+    const mergeSubspecifications = (formSubspecs: any[], productSubspecs: any[]) => {
+        return formSubspecs.map((formSubspec: any) => {
+            const productSubspec = productSubspecs.find(
+                (prodSubspec: any) => prodSubspec.subspec_id === formSubspec.subspec_id
+            );
+            if (productSubspec) {
+                return {
+                    subspec_id: formSubspec.subspec_id,
+                    subspec_desc: productSubspec.subspec_desc,
+                    score: formSubspec.score,
                 };
-
-                if (formSpec.subspecification && productSpec.subspecification) {
-                    mergedSpec.subspecification = Object.values(formSpec.subspecification).map((formSubspec: any) => {
-                        const productSubspec = productSpec.subspecification.find((prodSubspec: any) => prodSubspec.subspec_id === formSubspec.subspec_id);
-
-                        if (productSubspec) {
-                            return {
-                                subspec_id: formSubspec.subspec_id,
-                                subspec_desc: productSubspec.subspec_desc,
-                                score: formSubspec.score,
-                            };
-                        }
-                        return null;
-                    }).filter((subspec: any) => subspec !== null);
-                }
-                return mergedSpec;
             }
             return null;
-        }).filter(spec => spec !== null);
+        }).filter((subspec: any) => subspec !== null);
+    };
+
+    const mergeSpecification = (formSpec: any, productSpec: any) => {
+        const mergedSpec: any = {
+            spec_id: formSpec.spec_id,
+            spec_desc: productSpec.spec_desc,
+            score: formSpec.score,
+        };
+
+        if (formSpec.subspecification && productSpec.subspecification) {
+            mergedSpec.subspecification = mergeSubspecifications(
+                Object.values(formSpec.subspecification),
+                productSpec.subspecification
+            );
+        }
+
+        return mergedSpec;
+    };
+
+    const mergeSpecifications = (productDataSpecs: any[], formDataSpecs: any[]) => {
+        return Object.values(formDataSpecs)
+            .map((formSpec: any) => {
+                const productSpec = productDataSpecs.find(
+                    (prodSpec: any) => prodSpec.spec_id === formSpec.spec_id
+                );
+                return productSpec ? mergeSpecification(formSpec, productSpec) : null;
+            })
+            .filter((spec: any) => spec !== null);
     };
 
     const defineTableHeader = (tableHeader: any[]) => tableHeader.map((column: any) => {
@@ -237,10 +251,10 @@ const ProductVerificationDetailsPage = () => {
         const specName = record.subspec_name || record.spec_name;
         let maxScore = 0;
         const ratingScores = record.rating_score || [];
-        const tooltipDesc = ratingScores.map((rating: any, index: number) => {
+        const tooltipDesc = ratingScores.map((rating: any) => {
             if (rating.score > maxScore) maxScore = rating.score;
             return (
-                <div key={index}>
+                <div key={rating._id}>
                     {specName} {StringUtils.formatLowerCase(rating.action, "_")} {record.prefix} {rating.value} {record.suffix} = {rating.score} mark(s);
                 </div>
             )
