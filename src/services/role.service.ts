@@ -68,6 +68,4 @@ export default class RoleService {
             throw error;
         }
     }
-    
-    
 }
