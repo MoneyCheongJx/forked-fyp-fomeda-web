@@ -80,9 +80,6 @@ export default function LoginPage() {
                                 name="username"
                                 rules={[
                                     {required: true, message: 'Please input your username'},
-                                    {min: 6, max: 20, message: 'The username must be between 6 and 20 characters'},
-                                    {whitespace: true, message: 'The username cannot be whitespaces only'},
-                                    {pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/, message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'}
                                 ]}
                                 hasFeedback
                             >
@@ -93,9 +90,6 @@ export default function LoginPage() {
                                 name="password"
                                 rules={[
                                     {required: true, message: 'Please input your password'},
-                                    {min: 12, max: 20, message: 'The username must be between 12 and 20 characters'},
-                                    {whitespace: true, message: 'The password cannot be whitespaces only'},
-                                    {pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/, message: 'The username contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'}
                                 ]}
                             >
                                 <Input.Password placeholder="Password"/>
