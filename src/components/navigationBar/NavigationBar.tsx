@@ -107,7 +107,7 @@ const NavigationBar = () => {
                                     iconPosition={"end"}
                                     className={`${pathname.startsWith(item.link) ? "nav-button-selected" : "nav-button"}`}
                                 >
-                                    {pathname.startsWith(item.link) ? item.children?.filter((header: { link: string; }) => header.link === pathname)[0]?.label : item.label}
+                                    {item.label}
                                 </Button>
                             </Dropdown>
                         );
