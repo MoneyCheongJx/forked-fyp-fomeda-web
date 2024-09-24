@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
 import AuthenticationService from "@/services/authentication.service";
+import NotificationService from "@/services/notification.service";
 import Cookies from 'js-cookie';
 
 const {Title, Link} = Typography;
@@ -24,11 +25,10 @@ export default function LoginPage() {
         setIsLoading(true);
         try {
             await AuthenticationService.login(values).then(res => {
-                notification.success({
-                    message: 'Login Successful',
-                    description: 'You have successfully logged in.',
-                    duration: 3,
-                });
+                NotificationService.success(
+                    `Login Successful`,
+                    `You have successfully logged in`
+                );
                 const sessionId = res?.sessionId
                 const userData = res?.token
 
@@ -39,11 +39,10 @@ export default function LoginPage() {
             });
         } catch (error) {
             console.error(error);
-            notification.error({
-                message: 'Login Failed',
-                description: 'Invalid credentials during login. Please try again.',
-                duration: 3,
-            });
+            NotificationService.error(
+                `Login Failed`,
+                `Invalid credentials during login. Please try again.`
+            );
         }
         finally {
             setIsLoading(false);
