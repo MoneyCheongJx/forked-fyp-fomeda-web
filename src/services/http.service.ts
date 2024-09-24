@@ -42,7 +42,7 @@ export class HttpService {
         }
     }
 
-    static async put(url: string, data: any, queryParams?: Record<string, string>) {
+    static async put(url: string, data: any, queryParams?: Record<string, any>) {
         try {
             if (queryParams) {
                 const queryString = new URLSearchParams(queryParams).toString();
