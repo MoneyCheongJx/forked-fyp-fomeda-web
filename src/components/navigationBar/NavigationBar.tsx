@@ -13,16 +13,16 @@ import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
-import { useAuth } from '../../app/(auth)/context/auth-context';
-import { jwtDecode } from "jwt-decode";
-import { CustomJwtPayload } from "../../models/jwt.model"
+import {useAuth} from '../../app/(auth)/context/auth-context';
+import {jwtDecode} from "jwt-decode";
+import {CustomJwtPayload} from "../../models/jwt.model"
 import Cookies from 'js-cookie';
 
 const NavigationBar = () => {
     const router = useRouter();
     const pathname = usePathname();
     const [userData, setUserData] = useState<CustomJwtPayload>();
-    const { setRedirecting } = useAuth();
+    const {setRedirecting} = useAuth();
 
     useEffect(() => {
         const userData = Cookies.get('token');
@@ -35,20 +35,18 @@ const NavigationBar = () => {
     const handleLogout = async () => {
         try {
             const sessionId = Cookies.get('session');
-            if (sessionId) {
-                await AuthenticationService.logout({session_id: sessionId}).then(res => {
-                    setRedirecting(true);
-                    router.push('/login');
+            await AuthenticationService.logout({session_id: sessionId}).then(res => {
+                setRedirecting(true);
+                router.push('/login');
 
-                    Cookies.remove('session');
-                    Cookies.remove('token');
+                Cookies.remove('session');
+                Cookies.remove('token');
 
-                    NotificationService.success(
-                        "Logout Successful",
-                        "You have successfully logged out."
-                    )
-                });
-            }
+                NotificationService.success(
+                    "Logout Successful",
+                    "You have successfully logged out."
+                )
+            });
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -90,7 +88,9 @@ const NavigationBar = () => {
                                 key={item.key}
                                 trigger={['hover']}
                                 menu={{
-                                    items: item.children.filter((item: { key: string; }) => userData?.modules?.includes(item.key)).map((item: any) => ({
+                                    items: item.children.filter((item: {
+                                        key: string;
+                                    }) => userData?.modules?.includes(item.key)).map((item: any) => ({
                                         key: item.key,
                                         label: (
                                             <Link href={item.link}>
@@ -141,7 +141,7 @@ const NavigationBar = () => {
                             type="text"
                             className={`${pathname === "/login" ? "nav-button-selected" : "nav-button"}`}
                             onClick={() => router.push('/login')
-                        }>
+                            }>
                             Login
                         </Button>
                     </Row>

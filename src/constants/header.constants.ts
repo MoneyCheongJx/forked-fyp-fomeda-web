@@ -3,11 +3,11 @@ export const HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS = [
     {key: "product_category_management", label: "Product Category Management", link: "/management/product-category"},
     {key: "product_verification", label: "Product Verification", link: "/management/product-verification"},
     {key: "report_management", label: "Report Management", link: "/management/report-management"},
-    {key: "supplier_management", label: "Supplier Management", link: "/management/suppliers"},
-    {key: "administrator_management", label: "Administrator Management", link: "/management/admins"},
-    {key: "role_management", label: "Role Management", link: "/management/roles"},
-    {key: "announcement_management", label: "Announcement Management", link: "/management/announcements"},
-    {key: "content_management", label: "Content Management", link: "/management/contents"},
+    {key: "supplier_management", label: "Supplier Management", link: "/management/supplier"},
+    {key: "administrator_management", label: "Administrator Management", link: "/management/admin"},
+    {key: "role_management", label: "Role Management", link: "/management/role"},
+    {key: "announcement_management", label: "Announcement Management", link: "/management/announcement"},
+    {key: "content_management", label: "Content Management", link: "/management/content"},
 ]
 
 export const HEADER_USER_DROPDOWN_CONSTANTS = [
