@@ -11,9 +11,6 @@ import AddAdminModal from "@/components/admins/AddAdminModal";
 import EditAdminModal from "@/components/admins/EditAdminModal";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { jwtDecode } from "jwt-decode";
-import { CustomJwtPayload } from "@/models/jwt.model";
 
 const AdminManagementPage = () => {
     const [loading, setLoading] = useState(false);
@@ -24,7 +21,6 @@ const AdminManagementPage = () => {
     const [isAddModalVisible, setAddModalVisible] = useState(false);
     const [isEditModalVisible, setEditModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const [userData, setUserData] = useState<CustomJwtPayload>();
     const { redirecting } = useAuth();
     const router = useRouter();
 
@@ -61,15 +57,6 @@ const AdminManagementPage = () => {
     }
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) router.push('/content');
-        else {
-            const data = jwtDecode<CustomJwtPayload>(token);
-            setUserData(data);
-            if (!data.modules?.includes('announcement_management'))
-                router.push('/content')
-        }
-
         if (redirecting) return;
         else fetchData();
     }, [router]);
@@ -115,10 +102,6 @@ const AdminManagementPage = () => {
                 };
         }
     });
-
-    if (!userData || !userData.modules?.includes('administrator_management')) {
-        return null;
-    }
 
     return (
         <PageLayout title={"Admins Management"}>

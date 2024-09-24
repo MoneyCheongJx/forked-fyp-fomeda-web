@@ -13,8 +13,6 @@ import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import Cookies from 'js-cookie';
-import { jwtDecode } from "jwt-decode";
-import { CustomJwtPayload } from "@/models/jwt.model";
 import { useRouter } from 'next/navigation';
 import { useAuth } from "@/app/(auth)/context/auth-context";
 
@@ -27,7 +25,6 @@ const AnnouncementManagementPage = () => {
     const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [searchText, setSearchText] = useState('');
-    const [userData, setUserData] = useState<CustomJwtPayload>();
     const { redirecting } = useAuth();
     const {RangePicker} = DatePicker;
     const router = useRouter();
@@ -46,15 +43,6 @@ const AnnouncementManagementPage = () => {
     }
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) router.push('/content');
-        else {
-            const data = jwtDecode<CustomJwtPayload>(token);
-            setUserData(data);
-            if (!data.modules?.includes('announcement_management'))
-                router.push('/content')
-        }
-
         if (redirecting) return;
         else fetchData();
     }, [router]);
@@ -180,10 +168,6 @@ const AnnouncementManagementPage = () => {
                 };
         }
     });
-
-    if (!userData || !userData.modules?.includes('announcement_management')) {
-        return null;
-    }
 
     return (
             <PageLayout title={"Announcement Management"}>
