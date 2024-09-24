@@ -15,8 +15,6 @@ import EditRoleModal from "@/components/roles/EditRoleModal";
 import ConfirmModal from "@/components/roles/ConfirmModal";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { jwtDecode } from "jwt-decode";
 import { CustomJwtPayload } from "@/models/jwt.model"
 
 type ConfirmType = 'activate' | 'deactivate';
@@ -74,15 +72,6 @@ const RoleManagementPage = () => {
     }
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) router.push('/content');
-        else {
-            const data = jwtDecode<CustomJwtPayload>(token);
-            setUserData(data);
-            if (!data.modules?.includes('announcement_management'))
-                router.push('/content')
-        }
-
         if (redirecting) return;
         else fetchData();
     }, [router]);
@@ -173,10 +162,6 @@ const RoleManagementPage = () => {
                 };
         }
     });
-
-    if (!userData || !userData.modules?.includes('role_management')) {
-        return null;
-    }
 
     return (
         <PageLayout title={"Roles Management"}>
