@@ -8,8 +8,6 @@ import PendingTabContent from "@/components/suppliers/PendingTabContent";
 import HistoryTabContent from "@/components/suppliers/HistoryTabContent";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { jwtDecode } from "jwt-decode";
 import { CustomJwtPayload } from "@/models/jwt.model";
 
 const SupplierManagementPage = () => {
@@ -36,21 +34,8 @@ const SupplierManagementPage = () => {
     };
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) router.push('/content');
-        else {
-            const data = jwtDecode<CustomJwtPayload>(token);
-            setUserData(data);
-            if (!data.modules?.includes('announcement_management'))
-                router.push('/content')
-        }
-
         if (redirecting) return;
     }, [router]);
-
-    if (!userData || !userData.modules?.includes('supplier_management')) {
-        return null;
-    }
 
     return (
         <Spin spinning={loading}>
