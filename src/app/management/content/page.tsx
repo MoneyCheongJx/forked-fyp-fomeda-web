@@ -36,15 +36,6 @@ const ContentManagementPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const token = Cookies.get('token');
-        if (!token) router.push('/content');
-        else {
-            const data = jwtDecode<CustomJwtPayload>(token);
-            setUserData(data);
-            if (!data.modules?.includes('announcement_management'))
-                router.push('/content')
-        }
-
         if (redirecting) return;
         else {
             fetchCarouselData();
@@ -214,10 +205,6 @@ const ContentManagementPage = () => {
             }
             return column;
         });
-    }
-
-    if (!userData || !userData.modules?.includes('content_management')) {
-        return null;
     }
 
     return (
