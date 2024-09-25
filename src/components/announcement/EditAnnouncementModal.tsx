@@ -86,7 +86,7 @@ const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
                     valuePropName="fileList"
                     getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
                 >
-                    <Upload name="file" beforeUpload={() => false} listType="picture" maxCount={3}>
+                    <Upload name="file" accept=".jpg,.jpeg,.png" beforeUpload={() => false} listType="picture" maxCount={3} multiple={true}>
                         <Button icon={<UploadOutlined />}>Upload Image (Max: 3)</Button>
                     </Upload>
                 </Form.Item>
