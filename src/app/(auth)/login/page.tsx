@@ -2,8 +2,8 @@
 
 import React from "react";
 import {Image, Card, Row, Col, Button, Form, Input, Typography, notification} from "antd";
-import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import {useRouter} from 'next/navigation';
+import {useState, useEffect} from 'react';
 import type {FormProps} from 'antd';
 import PageLayout from '@/app/page';
 import AuthenticationService from "@/services/authentication.service";
@@ -32,19 +32,41 @@ export default function LoginPage() {
                 const sessionId = res?.sessionId
                 const userData = res?.token
 
-                Cookies.set('session', JSON.stringify(sessionId), { expires: 1 / 24 });
-                Cookies.set('token', JSON.stringify(userData), { expires: 1 / 12  });
+                Cookies.set('session', JSON.stringify(sessionId), {expires: 1 / 24});
+                Cookies.set('token', JSON.stringify(userData), {expires: 1 / 12});
 
                 router.push('/content');
             });
         } catch (error) {
             console.error(error);
-            NotificationService.error(
-                `Login Failed`,
-                `Invalid credentials during login. Please try again.`
-            );
-        }
-        finally {
+
+            if (error instanceof Error) {
+                const errorMessage = error.message
+
+                if (errorMessage === "Invalid status") {
+                    NotificationService.error(
+                        "Login Failed",
+                        "Your supplier account is pending review from admin."
+                    );
+                } else if (errorMessage === "Invalid role") {
+                    NotificationService.error(
+                        "Login Failed",
+                        "Invalid role. Please contact the admin."
+                    );
+                } else {
+                    NotificationService.error(
+                        "Login Failed",
+                        "Invalid credentials during login. Please try again."
+                    );
+                }
+            }
+            else {
+                NotificationService.error(
+                    `Login Failed`,
+                    `Invalid credentials during login. Please try again.`
+                );
+            }
+        } finally {
             setIsLoading(false);
         }
     };
@@ -112,7 +134,7 @@ export default function LoginPage() {
                                 Create account now
                             </Link>
                         </div>
-            
+
                         <div style={{textAlign: 'center'}}>
                             <Typography.Text style={{padding: '5px'}}>
                                 Check account registration status?
