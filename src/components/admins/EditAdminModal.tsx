@@ -122,30 +122,8 @@ const EditAdminModal = ({visible, onClose, data}: any) => {
                 <Form.Item
                     name="username"
                     label="Admin username"
-                    rules={[
-                        {required: true, message: 'Please enter the admin username'},
-                        {min: 6, max: 20, message: 'The username must be between 6 and 20 characters'},
-                        {whitespace: true, message: 'The username cannot be whitespaces only'},
-                        {
-                            pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
-                            message: 'The username must start with an alphabet and contain only alphanumeric characters and underscores'
-                        },
-                        {
-                            validator: async (_, value) => {
-                                if (!value || value === originalData?.username) {
-                                    return Promise.resolve();
-                                }
-                                const isDuplicate = await checkUsernameDuplicate(value);
-                                if (isDuplicate) {
-                                    return Promise.reject(new Error('The username is already in use'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                    ]}
-                    hasFeedback
                 >
-                    <Input placeholder="Admin username"/>
+                    <Input placeholder="Admin username" disabled/>
                 </Form.Item>
                 <Form.Item
                     name="email_address"

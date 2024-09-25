@@ -14,25 +14,41 @@ export const ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS = [
         key: "created_on",
         title: "Created on",
         dataIndex: "created_on",
-        width: "12.5%",
+        width: "10",
     },
     {
         key: "created_by",
         title: "Created by",
         dataIndex: "created_by",
-        width: "12.5%",
+        width: "10%",
     },
     {
         key: "last_updated_on",
         title: "Last updated on",
         dataIndex: "last_updated_on",
-        width: "12.5%",
+        width: "12%",
     },
     {
         key: "last_updated_by",
         title: "Last updated by",
         dataIndex: "last_updated_by",
-        width: "12.5%",
+        width: "12%",
+    },
+    {
+        key: "is_active",
+        title: "Status",
+        dataIndex: "is_active",
+        width: "10%",
+        filters: [
+            {
+                text: 'Inactive',
+                value: false,
+            },
+            {
+                text: 'Active',
+                value: true,
+            },
+        ],
     },
     {
         key: "actions",

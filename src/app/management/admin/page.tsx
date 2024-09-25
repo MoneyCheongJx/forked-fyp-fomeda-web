@@ -11,6 +11,7 @@ import AddAdminModal from "@/components/admins/AddAdminModal";
 import EditAdminModal from "@/components/admins/EditAdminModal";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
+import { Tag } from "antd/lib";
 
 const AdminManagementPage = () => {
     const [loading, setLoading] = useState(false);
@@ -79,6 +80,13 @@ const AdminManagementPage = () => {
         setEditModalVisible(true);
     }
 
+    const renderStatus = (status: boolean) => {
+        if (status)
+            return <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag>
+        else
+            return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Inactive</Tag>
+    }
+
     const TABLE_HEADER = ADMINS_MANAGEMENT_TABLE_HEADER_CONSTANTS.map((column) => {
         switch (column.key) {
             case 'actions':
@@ -94,6 +102,12 @@ const AdminManagementPage = () => {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
                     sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                };
+            case 'is_active':
+                return {
+                    ...column,
+                    render: (is_active: boolean) => renderStatus(is_active),
+                    onFilter: (value: any, record: any) => record.is_active === value,
                 };
             default:
                 return {
