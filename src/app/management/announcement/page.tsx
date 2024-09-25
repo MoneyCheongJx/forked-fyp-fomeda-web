@@ -12,7 +12,6 @@ import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddAnnouncementModal from "@/components/announcement/AddAnnouncementModal";
 import EditAnnouncementModal from "@/components/announcement/EditAnnouncementModal";
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useAuth } from "@/app/(auth)/context/auth-context";
 
