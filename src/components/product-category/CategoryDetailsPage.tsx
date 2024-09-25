@@ -7,6 +7,8 @@ import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import {useRouter} from "next/navigation";
 import CustomInput from "@/components/common/CustomInput";
+import NotificationService from "@/services/notification.service";
+import {StringUtils} from "@/utils/string.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -72,7 +74,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     };
 
     const handleActionsOnClick = async (key: string, record: any) => {
-        const {_id, subcat_subspec_name} = record;
+        const {_id, subcat_subspec_name, subcat_spec_name} = record;
         const isSubspecification = Boolean(subcat_subspec_name);
         const actionType = isSubspecification ? 'subspec' : 'spec';
 
@@ -80,10 +82,17 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             const actionFunction = actionMappings[key]?.[actionType];
             if (actionFunction) {
                 await actionFunction(_id, key === 'activate');
+                NotificationService.success(
+                    `${StringUtils.formatTitleCase(key)} Specification`,
+                    `${subcat_subspec_name || subcat_spec_name} ${key} successfully`
+                );
             } else {
-                console.error('Invalid action key');
+                NotificationService.error(
+                    `${StringUtils.formatTitleCase(key)} Specification`,
+                    `${subcat_subspec_name || subcat_spec_name} failed to ${key}`
+                );
             }
-            handleOnUpdate();
+            await handleOnUpdate();
         } catch (error) {
             console.error(error);
         }

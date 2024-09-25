@@ -9,6 +9,8 @@ import "@/styles/category.component.css"
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import {usePathname, useRouter} from "next/navigation";
+import NotificationService from "@/services/notification.service";
+import {StringUtils} from "@/utils/string.utils";
 
 const renderStatus = (is_active: boolean) => (
     is_active ? <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Active</Tag> :
@@ -57,8 +59,8 @@ const GeneralTab = () => {
 
     const actionMappings: any = {
         deactivate: {
-            specification: CategoryService.deactivateGeneralSpecification,
-            subspecification: CategoryService.deactivateGeneralSubspecification,
+            specification: (id: string) => CategoryService.deactivateGeneralSpecification(id, false),
+            subspecification: (id: string) => CategoryService.deactivateGeneralSubspecification(id, false),
         },
         activate: {
             specification: (id: string) => CategoryService.deactivateGeneralSpecification(id, true),
@@ -73,8 +75,16 @@ const GeneralTab = () => {
     const handleActionsOnClick = (key: string, record: any) => {
         const actionType = record.subcat_subspec_name ? 'subspecification' : 'specification';
         actionMappings[key][actionType](record._id)
+            .then(() =>
+                NotificationService.success(
+                    `${StringUtils.formatTitleCase(key)} Specification`,
+                    `${record.subcat_subspec_name ?? record.subcat_spec_name} ${key} successfully`
+                ))
             .then(handleOnUpdate)
-            .catch((error: any) => console.error(error));
+            .catch((error: any) => NotificationService.error(
+                `${StringUtils.formatTitleCase(key)} Specification`,
+                `${record.subcat_subspec_name || record.subcat_spec_name} failed to ${key}`
+            ));
     };
 
     const renderActions = (action_list: any, record: any) => (
@@ -122,22 +132,21 @@ const GeneralTab = () => {
 
     const getAllSpecificationData = async () => {
         try {
+            setLoading(true);
             const response = await CategoryService.getAllGeneralSpecifications();
             setSpecificationData(response);
         } catch (error) {
             console.error(error);
             throw error;
-        } finally {
-            setLoading(false);
         }
     };
 
     const handleOnUpdate = async () => {
-        await getAllSpecificationData();
+        await getAllSpecificationData().then(() => setLoading(false));
     };
 
     useEffect(() => {
-        getAllSpecificationData().then();
+        getAllSpecificationData().then(() => setLoading(false));
     }, []);
 
 

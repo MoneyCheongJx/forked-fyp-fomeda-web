@@ -167,7 +167,7 @@ export default class CategoryService {
 
     static readonly deactivateCategory = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_CATEGORY,
                 {},
@@ -182,7 +182,7 @@ export default class CategoryService {
 
     static readonly deactivateSubcategory = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_SUBCATEGORY,
                 {},
@@ -225,7 +225,7 @@ export default class CategoryService {
 
     static readonly deactivateGeneralSpecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_GENERAL_SPECIFICATION,
                 {},
@@ -240,7 +240,7 @@ export default class CategoryService {
 
     static readonly deactivateGeneralSubspecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_GENERAL_SUBSPECIFICATION,
                 {},
@@ -283,7 +283,7 @@ export default class CategoryService {
 
     static readonly deactivateCategoryBaseSpecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_BASE_SPECIFICATION,
                 {},
@@ -298,7 +298,7 @@ export default class CategoryService {
 
     static readonly deactivateCategoryBaseSubspecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_BASE_SUBSPECIFICATION,
                 {},
@@ -314,7 +314,7 @@ export default class CategoryService {
 
     static readonly deactivateSubcategorySpecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_SUBCATEGORY_SPECIFICATION,
                 {},
@@ -329,7 +329,7 @@ export default class CategoryService {
 
     static readonly deactivateSubcategorySubspecification = async (id: string, is_active: boolean) => {
         try{
-            const param = {id, is_active: is_active.toString()}
+            const param = {id, is_active}
             const response = await HttpService.put(
                 ApiConstant.DEACTIVATE_SUBCATEGORY_SUBSPECIFICATION,
                 {},

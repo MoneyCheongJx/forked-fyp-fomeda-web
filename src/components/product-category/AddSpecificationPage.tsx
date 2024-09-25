@@ -27,7 +27,7 @@ const initialSpecificationFormData: SpecificationModel = {
     is_required: false,
     prefix: '',
     suffix: '',
-    field_type: 'NUMERIC',
+    field_type: 'ALPHANUMERIC',
     is_score_contributed: false,
     rating_score: [],
 };
@@ -42,7 +42,7 @@ const initialSubspecificationFormData: SubspecificationModel = {
     is_required: false,
     prefix: '',
     suffix: '',
-    field_type: 'NUMERIC',
+    field_type: 'ALPHANUMERIC',
     is_score_contributed: false,
     rating_score: [],
 };
@@ -214,7 +214,7 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
         }
 
         return (
-            <Form.Item label={<h5>{label}</h5>} labelCol={{span: 6}} labelAlign="left" name={name} rules={rules}>
+            <Form.Item label={<h5>{label}</h5>} labelCol={{span: 6}} labelAlign="left" name={name} rules={rules} initialValue={value}>
                 {inputElement}
             </Form.Item>
         );
