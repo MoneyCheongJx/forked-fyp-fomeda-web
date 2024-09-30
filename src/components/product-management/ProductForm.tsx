@@ -1,6 +1,21 @@
 "use client";
 
-import {Button, Card, Col, Form, GetProp, Image, Input, Layout, Row, Select, Spin, Upload, UploadProps} from "antd";
+import {
+    Button,
+    Card,
+    Col,
+    Form,
+    GetProp,
+    Image,
+    Input,
+    Layout, Rate,
+    Row,
+    Select,
+    Spin,
+    Tag,
+    Upload,
+    UploadProps
+} from "antd";
 import React, {useEffect, useState} from "react";
 import "../../styles/product.component.css";
 import {CloseOutlined, DeleteOutlined, EditOutlined, InboxOutlined, PictureOutlined,} from "@ant-design/icons";
@@ -141,8 +156,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                 file.preview = preview;
                 setImageUrl(preview);
             })
-        }
-        else setImageUrl(file.preview);
+        } else setImageUrl(file.preview);
     };
 
     const handleRemoveImage = (e: any) => {
@@ -294,6 +308,22 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         )
     }
 
+    const renderStatus = (status: string) => {
+        switch (status) {
+            case ProductConstant.APPROVED: {
+                return <Tag color={'green'} bordered={false}
+                            className="px-3 py-0.5 rounded-xl self-center">Approved</Tag>
+            }
+            case ProductConstant.PENDING: {
+                return <Tag color={'yellow'} bordered={false}
+                            className="px-3 py-0.5 rounded-xl self-center">Pending</Tag>
+            }
+            case ProductConstant.REJECTED: {
+                return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl self-center">Rejected</Tag>
+            }
+        }
+    };
+
     const renderDisplayInput = (value: string, alt: any) => {
         return isView ? <div>{value}</div> : alt
     }
@@ -345,11 +375,18 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                     <Spin spinning={loading}>
                         <Card bordered={false}>
                             {isView &&
-                                <Button type={"primary"} icon={<EditOutlined/>} className={"ml-auto flex items-center"}
-                                        disabled={isEdit} onClick={() => {
-                                    setIsEdit(true);
-                                    form.resetFields();
-                                }}>Edit Product</Button>
+                                <Row>
+                                    <Row hidden={!verificationId}>
+                                        <h5 className={"self-center mr-4"}>Status:</h5>
+                                        {renderStatus(productData.status)}
+                                    </Row>
+                                    <Button type={"primary"} icon={<EditOutlined/>}
+                                            className={"ml-auto flex items-center"}
+                                            disabled={isEdit} onClick={() => {
+                                        setIsEdit(true);
+                                        form.resetFields();
+                                    }}>Edit Product</Button>
+                                </Row>
                             }
                             <h5 className={"my-3.5"}>General Information</h5>
                             <Form.Item label={<h5>Product Name</h5>}
@@ -373,6 +410,13 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            message: `Model No. is required`,
                                        },]}>
                                 {renderDisplayInput(productData.model_no, <Input/>)}
+                            </Form.Item>
+                            <Form.Item label={<h5>Rating</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       hidden={!isView || productData.status === ProductConstant.PENDING}>
+                                <Rate value={productData.rating} disabled/>
                             </Form.Item>
                             <Form.Item label={<h5>Category</h5>}
                                        labelAlign={"left"}

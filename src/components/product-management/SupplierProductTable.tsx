@@ -11,6 +11,7 @@ import ProductConfirmationContent from "@/components/common/ProductConfirmationC
 import Link from "next/link";
 import NotificationService from "@/services/notification.service";
 import {StringUtils} from "@/utils/string.utils";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 
 const SupplierProductTable = ({filterData}: any) => {
@@ -79,7 +80,8 @@ const SupplierProductTable = ({filterData}: any) => {
         try {
             setLoading(true);
             const response = await ProductService.getProductListByFilter(filterData);
-            setProductList(response);
+            const sortedResponse = response.toSorted((a: any, b: any) => a.product_name.localeCompare(b.product_name));
+            setProductList(sortedResponse);
         } catch (error) {
             console.error(error);
             throw error;
@@ -124,6 +126,12 @@ const SupplierProductTable = ({filterData}: any) => {
                     ...column,
                     render: (is_active: boolean) => renderIsActive(is_active),
                     sorter: (a: any, b: any) => b.is_active - a.is_active,
+                };
+            case 'last_updated_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key], DateTimeUtils.CATEGORY_DATE_FORMAT),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             case 'actions':
                 return {
