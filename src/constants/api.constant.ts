@@ -65,6 +65,7 @@ export class ApiConstant{
 
     /* announcement api */
     static readonly FIND_ALL_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "find-all-announcement";
+    static readonly FIND_VISIBLE_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "find-visible-announcement";
     static readonly CREATE_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "create-announcement";
     static readonly EDIT_ANNOUNCEMENT = this.ANNOUNCEMENT_PREFIX + "edit-announcement";
 

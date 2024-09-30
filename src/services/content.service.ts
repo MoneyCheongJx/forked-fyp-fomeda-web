@@ -111,6 +111,7 @@ export default class ContentService {
             const response = await HttpService.get(
                 ApiConstant.FIND_ALL_HISTORY_TIMELINE
             )
+            response.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
             return response;
         } catch (error) {
             console.error(error);
