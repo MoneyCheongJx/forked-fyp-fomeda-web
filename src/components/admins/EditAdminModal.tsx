@@ -48,16 +48,6 @@ const EditAdminModal = ({visible, onClose, data}: any) => {
         }
     }
 
-    const checkUsernameDuplicate = async (username: string) => {
-        try {
-            const response = await AuthenticationService.checkUsernameDuplicate(username);
-            return response;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
     const handleOnSubmit = async () => {
         try {
             const values = await form.validateFields();
@@ -72,9 +62,8 @@ const EditAdminModal = ({visible, onClose, data}: any) => {
                 }
             }
 
-            const username = userData?.username ?? "UndefinedAdmin";
-
-            const data = {...values, last_updated_by: username};
+            const userId = userData?.user_id ?? "UndefinedAdmin";
+            const data = {...values, last_updated_by: userId};
 
             try {
                 await AuthenticationService.updateAdmin(originalData?.user_id, data);

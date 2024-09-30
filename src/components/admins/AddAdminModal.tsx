@@ -68,9 +68,9 @@ const AddAdminModal: React.FC<AdminModalProps> = ({visible, onClose}) => {
                 }
             }
 
-            const username = userData?.username ?? "UndefinedAdmin";
-
-            const data = {...values, type: "admin", created_by: username, last_updated_by: username};
+            const userId = userData?.user_id ?? "UndefinedAdmin";
+            const data = {...values, type: "admin", created_by: userId, last_updated_by: userId};
+            
             try {
                 await AuthenticationService.register(data);
             } catch (error) {
