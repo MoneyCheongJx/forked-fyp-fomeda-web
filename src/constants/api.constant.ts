@@ -71,16 +71,19 @@ export class ApiConstant{
 
     /* content api &*/
     static readonly FIND_ALL_CAROUSEL = this.CONTENT_PREFIX + "find-all-carousel";
+    static readonly FIND_VISIBLE_CAROUSEL = this.CONTENT_PREFIX + "find-visible-carousel";
     static readonly CREATE_CAROUSEL = this.CONTENT_PREFIX + "create-carousel";
     static readonly EDIT_CAROUSEL = this.CONTENT_PREFIX + "update-carousel";
     static readonly DELETE_CAROUSEL = this.CONTENT_PREFIX + "delete-carousel";
 
     static readonly FIND_ALL_CONTENT = this.CONTENT_PREFIX + "find-all-content";
+    static readonly FIND_VISIBLE_CONTENT = this.CONTENT_PREFIX + "find-visible-content";
     static readonly CREATE_CONTENT = this.CONTENT_PREFIX + "create-content";
     static readonly EDIT_CONTENT = this.CONTENT_PREFIX + "update-content";
     static readonly DELETE_CONTENT = this.CONTENT_PREFIX + "delete-content";
 
     static readonly FIND_ALL_HISTORY_TIMELINE = this.CONTENT_PREFIX + "find-all-history-timeline";
+    static readonly FIND_VISIBLE_HISTORY_TIMELINE = this.CONTENT_PREFIX + "find-visible-history-timeline";
     static readonly CREATE_HISTORY_TIMELINE = this.CONTENT_PREFIX + "create-history-timeline";
     static readonly EDIT_HISTORY_TIMELINE = this.CONTENT_PREFIX + "update-history-timeline";
     static readonly DELETE_HISTORY_TIMELINE = this.CONTENT_PREFIX + "delete-history-timeline";

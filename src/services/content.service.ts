@@ -18,6 +18,19 @@ export default class ContentService {
         }
     }
 
+    static getVisibleCarousels = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.FIND_VISIBLE_CAROUSEL
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
     static async createCarousel(carouselModel: CarouselModel) {
         try {
             const response = await HttpService.post(ApiConstant.CREATE_CAROUSEL, carouselModel);
@@ -68,6 +81,18 @@ export default class ContentService {
         }
     }
 
+    static getVisibleContent = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.FIND_VISIBLE_CONTENT
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     static async createContent(contentModel: ContentModel) {
         try {
             const response = await HttpService.post(ApiConstant.CREATE_CONTENT, contentModel);
@@ -110,6 +135,19 @@ export default class ContentService {
         try {
             const response = await HttpService.get(
                 ApiConstant.FIND_ALL_HISTORY_TIMELINE
+            )
+            response.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getVisibleHistoryTimeline = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.FIND_VISIBLE_HISTORY_TIMELINE
             )
             response.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
             return response;

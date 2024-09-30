@@ -24,7 +24,7 @@ const HomePage = () => {
 
     const fetchCarouselData = async () => {
         try {
-            const response = await ContentService.getAllCarousels();
+            const response = await ContentService.getVisibleCarousels();
             setCarouselData(response);
         } catch (error) {
             console.error(error);
@@ -34,7 +34,7 @@ const HomePage = () => {
 
     const fetchContentData = async () => {
         try {
-            const response = await ContentService.getAllContent();
+            const response = await ContentService.getVisibleContent();
             setContentData(response);
         } catch (error) {
             console.error(error);
@@ -44,7 +44,7 @@ const HomePage = () => {
 
     const fetchHistoryData = async () => {
         try {
-            const response = await ContentService.getAllHistoryTimeline();
+            const response = await ContentService.getVisibleHistoryTimeline();
             setHistoryData(response);
         } catch (error) {
             console.error(error);
