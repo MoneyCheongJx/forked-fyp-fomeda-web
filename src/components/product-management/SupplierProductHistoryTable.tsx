@@ -11,6 +11,7 @@ import ProductConfirmationContent from "@/components/common/ProductConfirmationC
 import Link from "next/link";
 import NotificationService from "@/services/notification.service";
 import {StringUtils} from "@/utils/string.utils";
+import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const SupplierProductHistoryTable = ({filterData}: any) => {
     const router = useRouter();
@@ -79,7 +80,8 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
             setLoading(true)
             filterData.status = null;
             const response = await ProductService.getProductVerificationListByFilter(filterData);
-            setHistoryList(response);
+            const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.reviewed_on).getTime() - new Date(a.reviewed_on).getTime());
+            setHistoryList(sortedResponse);
         } catch (error) {
             console.error(error);
             throw error;
@@ -112,6 +114,12 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
                 return {
                     ...column,
                     render: (text: any, record: any) => <Rate disabled defaultValue={record.rating} allowHalf/>
+                };
+            case 'reviewed_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key], DateTimeUtils.CATEGORY_DATE_FORMAT),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                 };
             case 'actions':
                 return {

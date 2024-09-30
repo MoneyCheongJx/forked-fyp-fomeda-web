@@ -23,12 +23,10 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
             false: CategoryService.updateSubcategory,
         };
 
+        const catName = isParent ? form.getFieldValue("cat_name") : form.getFieldValue("subcat_name");
+
         try {
-            if (typeof updateFunctions[isParent] === 'function') {
-                await updateFunctions[isParent](data._id, formData);
-            } else {
-                await updateFunctions[isParent][type](data._id, formData);
-            }
+            await updateFunctions[isParent](data._id, formData).then(() => onUpdate("update", catName));
         } catch (error) {
             console.error(error);
             throw error;
@@ -39,7 +37,6 @@ const CategoryUpdateModel = ({isOpen, onClose, isParent, isCategory, data, onUpd
         try {
             await form.validateFields();
             await handleFormSubmit();
-            onUpdate();
             onClose();
         } catch (error: any) {
             MessageService.error(error.message)

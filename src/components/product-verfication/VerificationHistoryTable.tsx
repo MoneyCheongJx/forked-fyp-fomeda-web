@@ -20,7 +20,8 @@ const VerificationHistoryTable = ({filterData}: any) => {
             setLoading(true)
             filterData.status = [ProductConstant.REJECTED, ProductConstant.APPROVED];
             const response = await ProductService.getProductVerificationListByFilter(filterData);
-            setHistoryList(response);
+            const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.reviewed_on).getTime() - new Date(a.reviewed_on).getTime());
+            setHistoryList(sortedResponse);
         } catch (error) {
             console.error(error);
             throw error;

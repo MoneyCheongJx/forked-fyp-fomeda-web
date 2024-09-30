@@ -185,7 +185,8 @@ const CategoryTab = () => {
     const getAllCategory = async () => {
         try {
             const response = await CategoryService.getAllCategory();
-            setCategoryData(response);
+            const sortedResponse = response.toSorted((a: any, b: any) => a.cat_name.localeCompare(b.cat_name));
+            setCategoryData(sortedResponse);
             setLoading(false);
         } catch (error) {
             console.error(error);
