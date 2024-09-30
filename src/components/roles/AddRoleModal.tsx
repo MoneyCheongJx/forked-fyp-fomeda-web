@@ -30,9 +30,9 @@ const AddRoleModal: React.FC<RoleModalProps> = ({ visible, onClose }) => {
                 }
             }
 
-            const username = userData?.username ?? "UndefinedAdmin";
-
-            const data = {...values, created_by: username, last_updated_by: username};
+            const userId = userData?.user_id ?? "UndefinedAdmin";
+            const data = {...values, created_by: userId, last_updated_by: userId};
+            
             try {
                 await RoleService.createRole(data);
             } catch (error) {
