@@ -190,9 +190,9 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
             const payload = {
                 ...productData,
                 ...(!isView ? productValues : {}),
-                pro_id: productData._id ?? undefined,
+                pro_id: productId ?? undefined,
                 status: ProductConstant.PENDING,
-                product_img: productValues.product_img,
+                product_img: productValues.product_img ?? productData.product_img,
                 verification_id: verificationId,
                 specification: Object.values(specValues),
             }
