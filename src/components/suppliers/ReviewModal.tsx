@@ -62,12 +62,12 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
                 }
             }
 
-            const username = userData?.username ?? "UndefinedAdmin";
+            const userId = userData?.user_id ?? "UndefinedAdmin";
 
             if (type === "approve") {
-                await AuthenticationService.approveSuppliers(data?.user_id, {approved_by: username});
+                await AuthenticationService.approveSuppliers(data?.user_id, {approved_by: userId});
             } else if (type === "reject") {
-                await AuthenticationService.rejectSuppliers(data?.user_id, {rejected_by: username, reason})
+                await AuthenticationService.rejectSuppliers(data?.user_id, {rejected_by: userId, reason})
             }
             handleConfirmationModelClose();
             handleOnClose();
