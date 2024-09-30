@@ -114,12 +114,12 @@ const ContentManagementPage = () => {
             }
         }
 
-        const username = userData?.username ?? "UndefinedAdmin";
+        const userId = userData?.user_id ?? "UndefinedAdmin";
 
         const payload = {
             ...data,
-            ...(type.startsWith('add_') ? { created_by: username } : {}),
-            last_updated_by: username
+            ...(type.startsWith('add_') ? { created_by: userId } : {}),
+            last_updated_by: userId
         }
 
         const action = servicesMapping[type];
