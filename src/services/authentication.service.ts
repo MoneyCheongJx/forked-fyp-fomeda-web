@@ -71,6 +71,33 @@ export default class AuthenticationService {
         }
     }
 
+    static checkStatus = async (username: string) => {
+        try {
+            const param = {username};
+            const response = await HttpService.get(
+                ApiConstant.CHECK_STATUS,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getRejectionInfo = async (username: string) => {
+        try {
+            const param = {username};
+            const response = await HttpService.get(
+                ApiConstant.GET_REJECTION_INFO,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     static getDetails = async (sessionId: string) => {
         try {

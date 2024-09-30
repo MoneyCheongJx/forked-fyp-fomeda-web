@@ -4,14 +4,26 @@ import React, {useEffect, useState} from "react";
 import PageLayout from "@/app/page";
 import {Col, Row, Card, Image, Typography, Form, Button} from "antd";
 import AuthenticationService from "@/services/authentication.service";
-import { useRouter } from 'next/router';
+import {usePathname,} from "next/navigation";
+import { DateTimeUtils } from "@/utils/date-time.utils";
 
 const {Title, Link, Text} = Typography;
 
+interface Rejection {
+    rejected_by: string;
+    rejected_on: string;
+    reason: string;
+}
+
 const RejectionInfoPage = () => {
-    const router = useRouter();
-    const { username } = router.query;
-    const [data, setData] = useState<any[]>([]);
+    const pathname = usePathname();
+    const username = pathname.substring(pathname.lastIndexOf("/") + 1);
+
+    const [data, setData] = useState<Rejection>({
+        rejected_by: "",
+        rejected_on: "",
+        reason: ""
+    });
 
     useEffect(() => {
         fetchRejectionData()
@@ -48,7 +60,13 @@ const RejectionInfoPage = () => {
                             <Text strong>Reason:</Text>
                             <br/>
                             <Text>
-                                fetch reject data
+                                {data?.reason}
+                            </Text>
+                            <br/><br/>
+                            <Text strong>Rejected on:</Text>
+                            <br/>
+                            <Text>
+                                {DateTimeUtils.formatDate(new Date(data?.rejected_on))}
                             </Text>
                             <Button type="primary" block className="mt-5">
                                 Appeal registration
