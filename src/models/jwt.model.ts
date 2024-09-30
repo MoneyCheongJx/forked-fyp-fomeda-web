@@ -1,5 +1,5 @@
 export class CustomJwtPayload {
-    sub?: string;
+    user_id?: string;
     role?: string;
     modules?: string[];
     fullname?: string;

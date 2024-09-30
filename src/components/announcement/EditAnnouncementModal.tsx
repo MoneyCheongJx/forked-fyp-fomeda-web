@@ -29,8 +29,8 @@ const EditAnnouncementModal = ({ visible, onClose, data} : any) => {
                 }
             }
 
-            const username = userData?.username ?? "UndefinedAdmin";
-            const data = {...values, created_by: username, updated_by: username};
+            const userId = userData?.user_id ?? "UndefinedAdmin";
+            const data = {...values, updated_by: userId};
 
             try {
                 await AnnouncementService.updateAnnouncement(originalData._id, data);
