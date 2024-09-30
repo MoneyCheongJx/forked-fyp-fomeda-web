@@ -1,7 +1,7 @@
 import {AnnouncementModel} from "@/models/announcement.model";
 import {ApiConstant} from "@/constants/api.constant";
 import {HttpService} from "@/services/http.service";
-import moment from 'moment';
+import "@/styles/announcement.component.css"
 
 export default class AnnouncementService {
 
@@ -10,8 +10,21 @@ export default class AnnouncementService {
             const response = await HttpService.get(
                 ApiConstant.FIND_ALL_ANNOUNCEMENT
             )
-            // sort the response by created_on field
-            response.sort((a: any, b: any) => moment(b.created_on).diff(moment(a.created_on)));
+            response.sort((a: any, b: any) => new Date(b.created_on).getTime() - new Date(a.created_on).getTime());
+
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getVisibleAnnouncements = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.FIND_VISIBLE_ANNOUNCEMENT
+            )
+            response.sort((a: any, b: any) => new Date(b.created_on).getTime() - new Date(a.created_on).getTime());
 
             return response;
         } catch (error) {
