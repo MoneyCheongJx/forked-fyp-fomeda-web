@@ -97,8 +97,9 @@ export class ApiConstant{
     static readonly CHECK_STATUS = this.AUTH_PREFIX + "check-status";
     static readonly GET_REJECTION_INFO = this.AUTH_PREFIX + "get-rejection-info";
     static readonly GET_DETAILS = this.AUTH_PREFIX + "get-details";
-    static readonly GET_INACTIVE_SUPPLIERS = this.AUTH_PREFIX + "inactive-suppliers";
-    static readonly GET_ACTIVE_SUPPLIERS = this.AUTH_PREFIX + "active-suppliers";
+    static readonly GET_PENDING_SUPPLIERS = this.AUTH_PREFIX + "pending-suppliers";
+    static readonly GET_REJECTED_SUPPLIERS = this.AUTH_PREFIX + "rejected-suppliers";
+    static readonly GET_APPROVED_SUPPLIERS = this.AUTH_PREFIX + "approved-suppliers";
     static readonly APPROVE_SUPPLIERS = this.AUTH_PREFIX + "approve";
     static readonly REJECT_SUPPLIERS = this.AUTH_PREFIX + "reject";
     static readonly GET_ADMINS = this.AUTH_PREFIX + "admins";

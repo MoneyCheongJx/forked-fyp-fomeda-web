@@ -4,8 +4,12 @@ export const SUPPLIERS_TAB_CONSTANTS = [
         value: 'pending',
     },
     {
-        label: 'History',
-        value: 'history',
+        label: 'Rejected',
+        value: 'rejected',
+    },
+    {
+        label: 'Approved',
+        value: 'approved',
     },
 ]
 
@@ -85,7 +89,61 @@ export const SUPPLIERS_VIEW_MODAL_LABEL_MAPPING: Record<string, string> = {
     "registered_on": "Registered date",
     "approved_by": "Approved by",
     "approved_on": "Approved date",
+    "last_rejected_by": "Last rejected by",
+    "last_rejected_on": "Last rejected date"
 };
+
+export const SUPPLIERS_REJECTED_TAB_TABLE_HEADER_CONSTANTS = [
+    {
+        key: "fullname",
+        title: "Supplier name",
+        dataIndex: "fullname",
+        width: "20%",
+    },
+    {
+        key: "company_name",
+        title: "Trading company",
+        dataIndex: "company_name",
+    },
+    {
+        key: "last_rejected_on",
+        title: "Last rejected on",
+        dataIndex: "last_rejected_on",
+        width: "15%",
+    },
+    {
+        key: "last_rejected_by",
+        title: "Last rejected by",
+        dataIndex: "last_rejected_by",
+        width: "15%",
+    },
+    {
+        key: "actions",
+        title: "Actions",
+        width: "10%",
+    }
+]
+
+export const REJECTION_HISTORY_TABLE_HEADER_CONSTANTS = [
+    {
+        key: "reason",
+        title: "Reason",
+        dataIndex: "reason",
+        width: "60%",
+    },
+    {
+        key: "rejected_on",
+        title: "Rejected on",
+        dataIndex: "rejected_on",
+        width: "20%",
+    },
+    {
+        key: "rejected_by",
+        title: "Rejected by",
+        dataIndex: "rejected_by",
+        width: "20%",
+    },
+]
 
 export const SUPPLIER_PRODUCT_MANAGEMENT_TAB = [
     {key: "product", label: "Product", value: "product"},

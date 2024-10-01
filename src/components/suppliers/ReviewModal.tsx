@@ -1,13 +1,18 @@
 import React, {useState} from 'react';
 import {Modal, Button} from 'antd';
 import AuthenticationService from "@/services/authentication.service";
-import {Descriptions} from 'antd';
-import {SUPPLIERS_REVIEW_MODAL_LABEL_MAPPING} from "@/constants/suppliers.constant";
+import {Descriptions, Table, Typography} from 'antd';
+import {
+    SUPPLIERS_REVIEW_MODAL_LABEL_MAPPING,
+    REJECTION_HISTORY_TABLE_HEADER_CONSTANTS
+} from "@/constants/suppliers.constant";
 import ConfirmModal from "@/components/suppliers/ConfirmModal";
 import Cookies from 'js-cookie';
-import { jwtDecode } from "jwt-decode";
-import { CustomJwtPayload } from "@/models/jwt.model";
-import { DateTimeUtils } from '@/utils/date-time.utils';
+import {jwtDecode} from "jwt-decode";
+import {CustomJwtPayload} from "@/models/jwt.model";
+import {DateTimeUtils} from '@/utils/date-time.utils';
+
+const {Text} = Typography;
 
 interface DescriptionsItemType {
     key: string;
@@ -20,6 +25,7 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
     const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false);
     const [modalType, setModalType] = useState<'approve' | 'reject' | undefined>('approve'); // Default type
 
+    console.log('data?.rejection', data?.rejection)
     const handleOnClose = async () => {
         onClose();
     }
@@ -78,6 +84,24 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
         }
     };
 
+    const TABLE_HEADER_CONSTANTS = REJECTION_HISTORY_TABLE_HEADER_CONSTANTS.map((column) => {
+        switch (column.key) {
+            case 'rejected_on':
+                return {
+                    ...column,
+                    render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
+                    sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
+                    defaultSortOrder: 'ascend' as 'ascend',
+                }
+        ;
+    default:
+        return {
+            ...column,
+            sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+        };
+    }
+    });
+
     return (
         <>
             <Modal
@@ -94,7 +118,17 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
                     </Button>,
                 ]}
             >
-                <Descriptions title="Supplier details" bordered items={generateItems(data)} column={2}/>
+                <Descriptions title={<Text strong>Supplier details</Text>} bordered items={generateItems(data)}
+                              column={2}/>
+                <div style={{margin: '16px 0'}}>
+                    <Text strong>Supplier rejection history</Text>
+                </div>
+                <Table
+                    dataSource={data?.rejection}
+                    columns={TABLE_HEADER_CONSTANTS}
+                    pagination={false}
+                    locale={{emptyText: 'No rejection history'}}
+                />
             </Modal>
             <ConfirmModal
                 isOpen={isConfirmationModalVisible}

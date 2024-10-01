@@ -113,10 +113,10 @@ export default class AuthenticationService {
         }
     }
 
-    static getInactiveSuppliers = async () => {
+    static getPendingSuppliers = async () => {
         try {
             const response = await HttpService.get(
-                ApiConstant.GET_INACTIVE_SUPPLIERS,
+                ApiConstant.GET_PENDING_SUPPLIERS,
             )
             return response;
         } catch (error) {
@@ -125,10 +125,22 @@ export default class AuthenticationService {
         }
     }
 
-    static getActiveSuppliers = async () => {
+    static getRejectedSuppliers = async () => {
         try {
             const response = await HttpService.get(
-                ApiConstant.GET_ACTIVE_SUPPLIERS,
+                ApiConstant.GET_REJECTED_SUPPLIERS,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getApprovedSuppliers = async () => {
+        try {
+            const response = await HttpService.get(
+                ApiConstant.GET_APPROVED_SUPPLIERS,
             )
             return response;
         } catch (error) {

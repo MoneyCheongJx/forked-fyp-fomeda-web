@@ -5,7 +5,8 @@ import PageLayout from '@/app/page';
 import { Spin, Segmented } from "antd";
 import {SUPPLIERS_TAB_CONSTANTS} from "@/constants/suppliers.constant";
 import PendingTabContent from "@/components/suppliers/PendingTabContent";
-import HistoryTabContent from "@/components/suppliers/HistoryTabContent";
+import ApprovedTabContent from "@/components/suppliers/ApprovedTabContent";
+import RejectedTabContent from "@/components/suppliers/RejectedTabContent";
 import { useAuth } from "@/app/(auth)/context/auth-context";
 import { useRouter } from 'next/navigation';
 import { CustomJwtPayload } from "@/models/jwt.model";
@@ -26,9 +27,13 @@ const SupplierManagementPage = () => {
             return (
                 <PendingTabContent setLoading={setLoading}/>
             );
-        } else if (selected === 'history') {
+        } else if (selected === 'rejected') {
             return (
-                <HistoryTabContent setLoading={setLoading}/>
+                <RejectedTabContent setLoading={setLoading}/>
+            );
+        } else if (selected === 'approved') {
+            return (
+                <ApprovedTabContent setLoading={setLoading}/>
             );
         }
     };

@@ -12,7 +12,7 @@ interface HistoryTabContentProps {
     setLoading: (loading: boolean) => void;
 }
 
-const HistoryTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
+const ApprovedTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
     const [data, setData] = useState<any[]>([]);
     const [filteredData, setFilteredData] = useState<any>([]);
     const [searchName, setSearchName] = useState('');
@@ -24,7 +24,7 @@ const HistoryTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
 
     const fetchData = async () => {
         try {
-            const response = await AuthenticationService.getActiveSuppliers();
+            const response = await AuthenticationService.getApprovedSuppliers();
             setData(response)
             setFilteredData(response)
         } catch (error) {
@@ -130,4 +130,4 @@ const HistoryTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => {
     );
 };
 
-export default HistoryTabContent;
+export default ApprovedTabContent;
