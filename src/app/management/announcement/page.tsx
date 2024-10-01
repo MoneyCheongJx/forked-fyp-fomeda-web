@@ -88,11 +88,13 @@ const AnnouncementManagementPage = () => {
     const filterData = (text: any, dates: any) => {
         const regex = new RegExp(text, 'i'); // 'i' for case-insensitive search
         const [start, end] = dates || [null, null];
+        const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+        const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
 
         const filtered = data.filter(item => {
             const matchesText = regex.test(item.title);
-            const createdOnDate = new Date(item.created_on);
-            const matchesDate = start && end ? createdOnDate >= start && createdOnDate <= end : true;
+            const createdOnDate = new Date(item.created_on)?.setHours(0, 0, 0, 0);
+            const matchesDate = startDate && endDate ? createdOnDate >= start && createdOnDate <= end : true;
             return matchesText && matchesDate;
         });
         setFilteredData(filtered);
