@@ -25,7 +25,6 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
     const [isConfirmationModalVisible, setConfirmationModalVisible] = useState(false);
     const [modalType, setModalType] = useState<'approve' | 'reject' | undefined>('approve'); // Default type
 
-    console.log('data?.rejection', data?.rejection)
     const handleOnClose = async () => {
         onClose();
     }
