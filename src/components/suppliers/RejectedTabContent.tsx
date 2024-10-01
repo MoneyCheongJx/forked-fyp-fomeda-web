@@ -48,10 +48,12 @@ const RejectedTabContent : React.FC<RejectedTabContentProps> = ({setLoading}) =>
             const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
             const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
 
-            const lastRejectedDate = new Date(supplier.last_rejected_on);
+            const lastRejectedDate = new Date(supplier.last_rejected_on)?.setHours(0, 0, 0, 0);
             const [start, end] = dateRange || [null, null];
+            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
 
-            const matchesDate = start && end ? lastRejectedDate >= start && lastRejectedDate <= end : true;
+            const matchesDate = startDate && endDate ? lastRejectedDate >= startDate && lastRejectedDate <= endDate : true;
 
             return matchesName && matchesCompany && matchesDate;
         })

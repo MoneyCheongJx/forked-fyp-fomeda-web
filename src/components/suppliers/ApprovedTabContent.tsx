@@ -48,9 +48,12 @@ const ApprovedTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => 
             const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
             const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
 
-            const approvedDate = new Date(supplier.approved_on);
+            const approvedDate = new Date(supplier.approved_on)?.setHours(0, 0, 0, 0);;
             const [start, end] = dateRange || [null, null];
-            const matchesDate = start && end ? approvedDate >= start && approvedDate <= end : true;
+            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
+
+            const matchesDate = startDate && endDate ? approvedDate >= startDate && approvedDate <= endDate : true;
 
             return matchesName && matchesCompany && matchesDate;
         })

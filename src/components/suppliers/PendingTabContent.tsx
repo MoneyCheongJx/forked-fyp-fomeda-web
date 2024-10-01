@@ -48,10 +48,13 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
             const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
             const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
 
-            const registerDate = new Date(supplier.registered_on);
+            const registerDate = new Date(supplier.registered_on)?.setHours(0, 0, 0, 0);
             const [start, end] = dateRange || [null, null];
-            const matchesDate = start && end ? registerDate >= start && registerDate <= end : true;
-            
+            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
+
+            const matchesDate = startDate && endDate ? registerDate >= startDate && registerDate <= endDate : true;
+
             return matchesName && matchesCompany && matchesDate;
         })
         setFilteredData(filtered);
