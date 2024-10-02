@@ -274,7 +274,6 @@ const ProductVerificationDetailsPage = () => {
                     <Form.Item
                         name={record.subspec_id ? ['specification', record.spec_id, 'subspecification', record.subspec_id, 'score'] : ['specification', record.spec_id, 'score']}
                         initialValue={record.score}
-                        type={"number"}
                         className={"mb-0"}
                         rules={[{
                             validator: (_: any, value: number) => {
