@@ -90,3 +90,26 @@ export const VERIFICATION_DETAILS_TABLE_CONSTANTS = [
         tableHeader: VERIFICATION_DETAILS_SPECIFICATION_TABLE_HEADER
     },
 ]
+
+export const CONSUMER_COMPARE_TABLE_CONSTANT = [
+    {
+        key: 'general_information',
+        title: "General Information",
+        type: "INFORMATION",
+    },
+    {
+        key: 'certification',
+        title: "Certification",
+        type: "CERTIFICATION",
+    },
+    {
+        key: 'warranty',
+        title: "Warranty",
+        type: "WARRANTY",
+    },
+    {
+        key: 'product_specification',
+        title: "Product Specification",
+        type: "SPECIFICATION",
+    },
+]

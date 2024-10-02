@@ -18,4 +18,8 @@ export class StringUtils {
             .split(separator)
             .join(" ");
     }
+
+    static join(...strings: string[]): string {
+        return strings.filter(str => str && str.trim() !== "").join(" ");
+    }
 }

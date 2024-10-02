@@ -110,7 +110,6 @@ export class ApiConstant{
     static readonly UPDATE_ROLE = this.ROLE_PREFIX + "update-role"
 
     /* product api */
-    static readonly CREATE_PRODUCT = this.PRODUCT_PREFIX + "create-product";
     static readonly CREATE_PRODUCT_VERIFICATION = this.PRODUCT_PREFIX + "create-product-verification";
     static readonly GET_PRODUCT_DETAILS_BY_ID = this.PRODUCT_PREFIX + "get-product-details-by-id";
     static readonly GET_PRODUCT_LIST_BY_FILTER = this.PRODUCT_PREFIX + "get-product-list-by-filter";
@@ -122,4 +121,10 @@ export class ApiConstant{
     static readonly UPDATE_PRODUCT_VERIFICATION_REVIEW_BY_ID = this.PRODUCT_PREFIX + "update-product-verification-review-by-id";
     static readonly DELETE_PRODUCT_BY_ID = this.PRODUCT_PREFIX + "delete-product-by-id";
     static readonly DELETE_PRODUCT_VERIFICATION_DETAILS_BY_ID = this.PRODUCT_PREFIX + "delete-product-verification-details-by-id";
+
+    /* consumer product */
+    static readonly GET_CONSUMER_PRODUCT_BY_FILTER = this.PRODUCT_PREFIX + "get-consumer-product-by-filter";
+    static readonly GET_CONSUMER_SPECIFICATION_FILTER_BY_SUBCAT_ID = this.PRODUCT_PREFIX + "get-consumer-specification-filter-by-subcat_id";
+    static readonly GET_CONSUMER_COMPARED_PRODUCT = this.PRODUCT_PREFIX + "get-consumer-compared-product";
+    static readonly GET_PRODUCT_DETAILS = this.PRODUCT_PREFIX + "get-product-details";
 }

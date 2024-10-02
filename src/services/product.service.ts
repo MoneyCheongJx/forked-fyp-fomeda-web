@@ -2,6 +2,7 @@ import {ProductModel} from "@/models/product.model";
 import {HttpService} from "@/services/http.service";
 import {ApiConstant} from "@/constants/api.constant";
 import {ProductFilterModel} from "@/models/product-filter.model";
+import {ConsumerFilterModel} from "@/models/consumer-filter.model";
 
 export default class ProductService {
 
@@ -13,7 +14,7 @@ export default class ProductService {
                 param,
             );
             return response;
-        } catch (error){
+        } catch (error) {
             console.error(error);
             throw error;
         }
@@ -65,7 +66,7 @@ export default class ProductService {
 
 
     static readonly deleteProductById = async (id: string): Promise<boolean> => {
-        try{
+        try {
             const param = {id}
             const response = await HttpService.delete(
                 ApiConstant.DELETE_PRODUCT_BY_ID,
@@ -85,7 +86,7 @@ export default class ProductService {
                 productModel
             );
             return response;
-        } catch (error){
+        } catch (error) {
             console.error(error);
             throw error;
         }
@@ -99,7 +100,7 @@ export default class ProductService {
                 param,
             );
             return response;
-        } catch (error){
+        } catch (error) {
             console.error(error);
             throw error;
         }
@@ -149,7 +150,7 @@ export default class ProductService {
     }
 
     static readonly deleteProductVerificationDetailsById = async (id: string): Promise<boolean> => {
-        try{
+        try {
             const param = {id}
             const response = await HttpService.delete(
                 ApiConstant.DELETE_PRODUCT_VERIFICATION_DETAILS_BY_ID,
@@ -161,4 +162,65 @@ export default class ProductService {
             throw error;
         }
     }
+
+    static readonly getConsumerProductByFilter = async (filterModel: ConsumerFilterModel, skip: number, limit: number): Promise<{
+        products: ProductModel[],
+        total: number,
+    }> => {
+        try {
+            const param = {skip, limit};
+            const response = await HttpService.post(
+                ApiConstant.GET_CONSUMER_PRODUCT_BY_FILTER,
+                filterModel,
+                param,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly getConsumerSpecificationFilterBySubcatId = async (id: string): Promise<ConsumerFilterModel> => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.GET_CONSUMER_SPECIFICATION_FILTER_BY_SUBCAT_ID,
+                param,
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly getConsumerComparedProduct = async (subcat_id: string, ids: string[]): Promise<ProductModel[]> => {
+        try {
+            const param = {subcat_id, ids}
+            const response = await HttpService.get(
+                ApiConstant.GET_CONSUMER_COMPARED_PRODUCT,
+                param,
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static readonly getProductDetails = async (id: string): Promise<ProductModel> => {
+        try {
+            const param = {id}
+            const response = await HttpService.get(
+                ApiConstant.GET_PRODUCT_DETAILS,
+                param,
+            );
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
 }
