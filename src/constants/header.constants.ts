@@ -11,7 +11,7 @@ export const HEADER_MANAGEMENT_DROPDOWN_LIST_CONSTANTS = [
 ]
 
 export const HEADER_USER_DROPDOWN_CONSTANTS = [
-    {key: "manage_profile", label: "Manage Profile", link: ""},
+    {key: "manage_profile", label: "Manage Profile", link: "/management/profile"},
     {key: "logout", label: "Logout", link: ""},
 ]
 

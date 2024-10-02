@@ -99,6 +99,36 @@ export default class AuthenticationService {
         }
     }
 
+    static getProfileInfo = async (user_id: string) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.get(
+                ApiConstant.GET_PROFILE_INFO,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static updateProfile = async (user_id: string, authenticationModel: AuthenticationModel) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.patch(
+                ApiConstant.UPDATE_PROFILE,
+                authenticationModel,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+
     static getDetails = async (sessionId: string) => {
         try {
             const param = {sessionId};
