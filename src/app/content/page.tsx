@@ -64,6 +64,7 @@ const HomePage = () => {
                 {carouselData.map((image, index) => (
                     // <div className="container">
                         <img
+                            key={index}
                             src={image?.image?.base64}
                             alt={`Slide ${index + 1}`}
                         />
