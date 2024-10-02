@@ -1,6 +1,6 @@
 export class ApiConstant{
    /* base url */
-    static readonly BASE_URL = process.env.API_URL;
+    static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
     static readonly SUFFIX = "/";
     static readonly HOST_PREFIX = this.BASE_URL + this.SUFFIX;
 
