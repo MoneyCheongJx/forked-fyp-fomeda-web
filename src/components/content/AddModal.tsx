@@ -85,8 +85,8 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
             width={1000}
         >
             <Form form={form} layout="vertical">
-                {fields?.map(({name, label, type}: any) => (
-                    <div>
+                {fields?.map(({name, label, type}: any, index: any) => (
+                    <div key={index}>
                         {type === 'text' &&
                             (<Form.Item
                                 key={name}
