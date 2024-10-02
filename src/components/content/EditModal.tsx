@@ -99,8 +99,8 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
             width={1000}
         >
             <Form form={form} layout="vertical">
-                {fields?.map(({name, label, type}: any) => (
-                    <div>
+                {fields?.map(({name, label, type}: any, index: number) => (
+                    <div key={index}>
                         {type === 'text' &&
                             (<Form.Item
                                 key={name}

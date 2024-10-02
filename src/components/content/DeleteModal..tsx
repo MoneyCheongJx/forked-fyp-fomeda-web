@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, {useEffect} from "react";
 import {Modal, Image, Typography} from "antd";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 
@@ -15,8 +15,8 @@ interface DeleteModalProps {
     onCancel: () => void;
 }
 
-const deleteModal: React.FC<DeleteModalProps> = ({data, type, isOpen, title, onSubmit, onCancel}) => {
-        React.useEffect(() => {
+const DeleteModal: React.FC<DeleteModalProps> = ({data, type, isOpen, title, onSubmit, onCancel}) => {
+        useEffect(() => {
             if (isOpen) {
                 Modal.confirm({
                     title: <h3>Confirmation</h3>,
@@ -67,4 +67,4 @@ const deleteModal: React.FC<DeleteModalProps> = ({data, type, isOpen, title, onS
         return null;
 };
 
-export default deleteModal;
+export default DeleteModal;
