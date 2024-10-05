@@ -85,11 +85,40 @@ export default class AuthenticationService {
         }
     }
 
-    static getRejectionInfo = async (username: string) => {
+    static getRejectionInfo = async (user_id: string) => {
         try {
-            const param = {username};
+            const param = {user_id};
             const response = await HttpService.get(
                 ApiConstant.GET_REJECTION_INFO,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getAppealInfo = async (user_id: string) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.get(
+                ApiConstant.GET_APPEAL_INFO,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static appealRegistration = async (user_id: string, authenticationModel: AuthenticationModel) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.patch(
+                ApiConstant.APPEAL_REGISTRATION,
+                authenticationModel,
                 param
             )
             return response;

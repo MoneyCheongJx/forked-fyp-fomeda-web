@@ -38,9 +38,9 @@ const StatusCheckPage = () => {
                         case "rejected":
                             NotificationService.error(
                                 `Status Rejected`,
-                                `Unfortunately, your status was rejected.`
+                                `Unfortunately, your account registration was rejected.`
                             );
-                            router.push(`/rejection-info/${values.username}`);
+                            router.push(`/rejection-info/${res?.user_id}`);
                             break;
                         default:
                             NotificationService.error(
