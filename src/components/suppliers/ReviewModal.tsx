@@ -33,7 +33,7 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
         if (!data) {
             return [];
         }
-        const excludedProperties = ["_id", "key", "user_id"];
+        const excludedProperties = ["_id", "key", "user_id", "rejection"];
         const spanProperties = ["email_address", "company_address", "registered_on"];
 
         return Object.entries(data).filter(([key]) => !excludedProperties.includes(key)).map(([key, value]) => ({
@@ -91,14 +91,13 @@ const ReviewModal = ({visible, onClose, data, fetchData}: any) => {
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
                     sorter: (a: any, b: any) => new Date(a[column.key]).getTime() - new Date(b[column.key]).getTime(),
                     defaultSortOrder: 'ascend' as 'ascend',
-                }
-        ;
-    default:
-        return {
-            ...column,
-            sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
-        };
-    }
+                };
+            default:
+                return {
+                    ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
+                };
+        }
     });
 
     return (
