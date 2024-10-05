@@ -223,11 +223,11 @@ export default function RegisterPage() {
                                 name="password"
                                 rules={[
                                     {required: true, message: 'Please input your password'},
-                                    {min: 12, max: 20, message: 'The username must be between 12 and 20 characters'},
+                                    {min: 12, max: 20, message: 'The password must be between 12 and 20 characters'},
                                     {whitespace: true, message: 'The password cannot be whitespaces only'},
                                     {
                                         pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
-                                        message: 'The username contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
+                                        message: 'The password contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
                                     }
                                 ]}
                             >
@@ -238,12 +238,12 @@ export default function RegisterPage() {
                                 dependencies={['password']}
                                 name="confirm_password"
                                 rules={[
-                                    {required: true, message: 'Please input your password'},
-                                    {min: 12, max: 20, message: 'The username must be between 12 and 20 characters'},
-                                    {whitespace: true, message: 'The password cannot be whitespaces only'},
+                                    {required: true, message: 'Please input to confirm your new password'},
+                                    {min: 12, max: 20, message: 'The confirm password must be between 12 and 20 characters'},
+                                    {whitespace: true, message: 'The confirm password cannot be whitespaces only'},
                                     {
                                         pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
-                                        message: 'The username contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
+                                        message: 'The confirm password contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
                                     },
                                     ({getFieldValue}) => ({
                                         validator(_, value) {
