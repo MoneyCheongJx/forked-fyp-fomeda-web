@@ -128,6 +128,20 @@ export default class AuthenticationService {
         }
     }
 
+    static updatePassword = async (user_id: string, authenticationModel: AuthenticationModel) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.patch(
+                ApiConstant.UPDATE_PASSWORD,
+                authenticationModel,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 
     static getDetails = async (sessionId: string) => {
         try {

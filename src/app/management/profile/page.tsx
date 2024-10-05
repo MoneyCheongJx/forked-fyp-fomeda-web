@@ -97,7 +97,7 @@ const ProfileManagementPage = () => {
     }
 
     return (
-        <PageLayout title={"Profile Management"}>
+        <PageLayout title={"Profile Management"} >
             <Row align="middle" justify="space-evenly" style={{height: '100vh'}}>
                 <Col>
                     <Card style={{width: "500px", flexGrow: 1}}>
