@@ -57,9 +57,8 @@ export default function RegisterPage() {
             }
 
             await AuthenticationService.register(payload).then(res => {
-                router.push('/login');
+                router.push('/appeal/success');
             });
-
 
         } catch (error) {
             console.error(error);
