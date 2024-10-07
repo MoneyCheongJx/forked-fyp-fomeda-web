@@ -331,7 +331,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
     return (
         <Form form={form} className={"w-full"}>
             <Row>
-                <Col span={12} align={"middle"}>
+                <Col span={12}>
                     <Form.Item name="product_img" key={"product_img"} className={"mt-8"}>
                         {(!isEdit && isView) ?
                             <Layout className={"max-w-96 bg-gray-300"}>
