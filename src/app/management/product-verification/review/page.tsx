@@ -141,9 +141,9 @@ const ProductVerificationDetailsPage = () => {
 
     const onSubmit = async (status: string) => {
         const formData = form.getFieldsValue();
-        const filteredSpecifications = formData.specification.filter(
+        const filteredProductData = productData?.specification?.filter(
             (spec: any) => !spec.is_default
-        );
+        ) || [];
 
         const filteredData = {
             ...productData,
@@ -151,7 +151,7 @@ const ProductVerificationDetailsPage = () => {
             rating: starRating,
             total_score: totalScore,
             status: status,
-            specification: mergeSpecifications(productData?.specification || [], filteredSpecifications || []),
+            specification: mergeSpecifications(filteredProductData || [], formData.specification || []),
         };
 
         const displayStatus = StringUtils.formatTitleCase(status)
