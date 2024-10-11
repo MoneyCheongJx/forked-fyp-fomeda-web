@@ -91,6 +91,7 @@ export const SUPPLIER_PRODUCT_MANAGEMENT_TAB = [
     {key: "product", label: "Product", value: "product"},
     {key: "pending", label: "Pending", value: "pending"},
     {key: "history", label: "History", value: "history"},
+    {key: "report", label: "Report", value: "report"},
 ]
 
 export const SUPPLIER_PRODUCT_LIST_TABLE_HEADER = [
@@ -121,6 +122,16 @@ export const PRODUCT_HISTORY_LIST_TABLE_HEADER = [
     {key: "rating", title: "Rating", dataIndex: "rating", width: "10%"},
     {key: "reviewed_on", title: "Reviewed on", dataIndex: "reviewed_on", width: "10%"},
     {key: "status", title: "Status", dataIndex: "status", width: "10%"},
+    {key: "actions", title: "Actions", dataIndex: "action", width: "10%"},
+]
+
+export const SUPPLIER_REPORT_TABLE_HEADER = [
+    {key: "product_name", title: "Product Name", dataIndex: "product_name", width: "40%"},
+    {key: "model_no", title: "Model No", dataIndex: "model_no", width: "10%"},
+    {key: "cat_name", title: "Category", dataIndex: "cat_name", width: "10%"},
+    {key: "subcat_name", title: "Subcategory", dataIndex: "subcat_name", width: "10%"},
+    {key: "created_on", title: "Reported On", dataIndex: "created_on", width: "10%"},
+    {key: "sup_status", title: "Supplier Action", dataIndex: "sup_status", width: "10%"},
     {key: "actions", title: "Actions", dataIndex: "action", width: "10%"},
 ]
 
