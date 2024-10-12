@@ -45,7 +45,7 @@ const ProductDetailsPage = () => {
                 {() => productData.specification
                     ?.filter((spec: any) => spec.spec_type === catType)
                     .map((spec: any) => (
-                        <div key={spec._id}>
+                        <div key={spec.spec_id}>
                             <Form.Item label={<h5>{spec.spec_name}</h5>}
                                        labelAlign={"left"}
                                        labelCol={{span: 12}}
@@ -55,7 +55,7 @@ const ProductDetailsPage = () => {
                                         [spec.prefix, spec.spec_desc, spec.suffix].join(" ").trim() : "-"}</div>
                                 )}
                             </Form.Item>
-                            {spec.subspecification && renderSubspecificationsForm(spec.subspecification, spec._id)}
+                            {spec.subspecification && renderSubspecificationsForm(spec.subspecification, spec.spec_id)}
                         </div>
                     ))}
             </Form.List>
@@ -87,7 +87,7 @@ const ProductDetailsPage = () => {
                     <Col span={12}>
                         <Row justify={"center"}>
                             <Layout className={"max-w-96 bg-gray-300"}>
-                                <Image src={productData.product_img?.file?.preview || "images/fault-image.png"}
+                                <Image src={productData.product_img?.file?.preview ?? "/images/fault-image.png"}
                                        alt="product_img"
                                        className={"max-h-96 object-cover"}/>
 

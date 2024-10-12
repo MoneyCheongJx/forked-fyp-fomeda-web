@@ -2,8 +2,8 @@
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import PageLayout from '@/app/page';
-import {Affix, Button, Card, Col, Form, Input, Row, Select, Spin} from "antd";
-import {DeleteOutlined, SearchOutlined} from "@ant-design/icons";
+import {Affix, Button, Card, Col, Empty, Form, Input, Row, Select, Spin} from "antd";
+import {DeleteOutlined, InfoCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import CategoryService from "@/services/category.service";
 import ProductFilterCard from "@/components/product/ProductFilterCard";
 import ProductTile from "@/components/product/ProductTile";
@@ -51,6 +51,8 @@ const ProductPage = () => {
         setSelectedSubcategory(null);
         setProductList([]);
         setCompareList([]);
+        filterModel.specification= [];
+        filterModel.subspecification= [];
         setSkip(0);
         form.setFieldsValue({subcat_id: null});
     };
@@ -59,6 +61,8 @@ const ProductPage = () => {
         setSelectedSubcategory(null);
         setProductList([]);
         setCompareList([]);
+        filterModel.specification= [];
+        filterModel.subspecification= [];
         setSkip(0);
     };
 
@@ -238,7 +242,7 @@ const ProductPage = () => {
                             <Spin spinning={loading}>
                                 <Row className={"mb-6 w-full"}>
                                     {productList.map((productData: any) => (
-                                        <div key={productData.id} className={"mb-4 ml-8"}>
+                                        <div key={productData._id} className={"mb-4 ml-8"}>
                                             <ProductTile productData={productData}
                                                          onCompareChange={handleCompareChange}
                                                          isChecked={compareList.some((item: any) => item._id === productData._id)}/>
@@ -251,6 +255,9 @@ const ProductPage = () => {
                                         loading={loading}>
                                     Load More...
                                 </Button>
+                            )}
+                            {productList.length === 0 && (
+                                <Empty />
                             )}
                             {compareList.length > 0 && (
                                 <Affix offsetBottom={0}>
@@ -286,7 +293,7 @@ const ProductPage = () => {
                             )}
                         </Col>
                     </Row> :
-                    <div>Please Select Category and Subcategory</div>
+                    <div className={"italic text-yellow-500"}><InfoCircleOutlined /> Please Select Category and Subcategory</div>
                 }
             </Form>
             {isCompareModelOpen && (
