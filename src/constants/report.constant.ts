@@ -35,3 +35,8 @@ export const DISPLAY_STATUS: { [key: string]: string } = {
     NOTIFIED: "notified owner",
     CLOSED: "closed",
 }
+
+export const DISPLAY_STATUS_MESSAGE: { [key: string]: string } = {
+    NOTIFIED: "inform owner",
+    CLOSED: "resolve",
+}

@@ -1,10 +1,11 @@
 import {Button, Form, GetProp, Image, Input, Modal, Upload, UploadProps} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {UploadOutlined} from "@ant-design/icons";
-import {useState} from "react";
+import React, {useState} from "react";
 import MessageService from "@/services/message.service";
 import ReportService from "@/services/report.service";
 import NotificationService from "@/services/notification.service";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -35,6 +36,19 @@ const ReportModal = ({onOpen, onClose, productId, productName}: any) => {
             throw error;
         }
 
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <ProductConfirmationContent action={"report"} record={{product_name: productName}}
+                                                 details={"product"}/>,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => onSubmit(),
+        })
+    }
+
+    const onSubmit = async () => {
         const formData = form.getFieldsValue();
         formData.pro_id = productId;
 

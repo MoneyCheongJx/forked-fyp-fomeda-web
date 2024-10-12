@@ -1,8 +1,9 @@
 import {Button, Form, Image, Modal, Spin, Typography, Upload} from "antd";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import ReportService from "@/services/report.service";
 import NotificationService from "@/services/notification.service";
-import {DISPLAY_STATUS, ReportConstant} from "@/constants/report.constant";
+import {DISPLAY_STATUS, DISPLAY_STATUS_MESSAGE, ReportConstant} from "@/constants/report.constant";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 
 
 const ReportDetailsModal = ({onOpen, onClose, reportId, productName, onUpdate, user = 'admin'}: any) => {
@@ -47,6 +48,20 @@ const ReportDetailsModal = ({onOpen, onClose, reportId, productName, onUpdate, u
     }, [reportId]);
 
     const handleUpdate = async (status: string) => {
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <ProductConfirmationContent action={DISPLAY_STATUS_MESSAGE[status]}
+                                                 record={{product_name: productName}}
+                                                 details={"report"}/>,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => onSubmit(status),
+        })
+    }
+
+    const onSubmit = async (status: string) => {
         try {
             setUpdateLoading(true)
             const reportDto: any = {}
@@ -75,7 +90,6 @@ const ReportDetailsModal = ({onOpen, onClose, reportId, productName, onUpdate, u
         setIsPreviewOpen(true);
     }
 
-
     const modalFooter = [
         <Button key={"cancel"} type={"default"} onClick={onClose}>Cancel</Button>,
         <Button key={"notify"} type={"primary"} loading={updateLoading}
@@ -96,7 +110,7 @@ const ReportDetailsModal = ({onOpen, onClose, reportId, productName, onUpdate, u
                onCancel={handleOnCancel}
                title={<h3 className={"text-center"}>Reported Details</h3>}
                width={"50%"}
-               footer={reportData.adm_status === ReportConstant.CLOSED ? null : modalFooter}
+               footer={reportData.adm_status === ReportConstant.CLOSED || (reportData.sup_status === ReportConstant.CLOSED && user === "supplier") ? null : modalFooter}
         >
             <Spin spinning={loading}>
                 <Form form={form}>
