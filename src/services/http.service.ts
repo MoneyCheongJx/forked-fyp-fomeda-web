@@ -1,5 +1,5 @@
 export class HttpService {
-    static async post(url: string, data: any, queryParams?: Record<string, string>) {
+    static async post(url: string, data: any, queryParams?: Record<string, any>) {
         try {
             if (queryParams) {
                 const queryString = new URLSearchParams(queryParams).toString();
@@ -24,10 +24,17 @@ export class HttpService {
         }
     }
 
-    static async get(url: string, queryParams?: Record<string, string>) {
+    static async get(url: string, queryParams?: Record<string, any>) {
         try {
             if (queryParams) {
-                const queryString = new URLSearchParams(queryParams).toString();
+                const queryString = Object.entries(queryParams)
+                    .map(([key, value]) => {
+                        if (Array.isArray(value)) {
+                            return value.map((item) => `${encodeURIComponent(key)}=${encodeURIComponent(item)}`).join('&');
+                        }
+                        return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+                    })
+                    .join('&');
                 url += `?${queryString}`;
             }
 
