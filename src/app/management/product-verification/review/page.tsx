@@ -38,25 +38,29 @@ const ProductVerificationDetailsPage = () => {
                             spec_name: "Product Name",
                             spec_desc: response.product_name,
                             spec_type: CategoryConstant.INFORMATION,
-                            spec_id: "product_name"
+                            spec_id: "product_name",
+                            is_default: true,
                         },
                         {
                             spec_name: "Model No.",
                             spec_desc: response.model_no,
                             spec_type: CategoryConstant.INFORMATION,
-                            spec_id: "model_no"
+                            spec_id: "model_no",
+                            is_default: true,
                         },
                         {
                             spec_name: "Category",
                             spec_desc: response.cat_name,
                             spec_type: CategoryConstant.INFORMATION,
-                            spec_id: "category"
+                            spec_id: "category",
+                            is_default: true,
                         },
                         {
                             spec_name: "Subcategory",
                             spec_desc: response.subcat_name,
                             spec_type: CategoryConstant.INFORMATION,
-                            spec_id: "subcategory"
+                            spec_id: "subcategory",
+                            is_default: true,
                         },
                     ]
 
@@ -137,13 +141,17 @@ const ProductVerificationDetailsPage = () => {
 
     const onSubmit = async (status: string) => {
         const formData = form.getFieldsValue();
+        const filteredProductData = productData?.specification?.filter(
+            (spec: any) => !spec.is_default
+        ) || [];
+
         const filteredData = {
             ...productData,
             ...formData,
             rating: starRating,
             total_score: totalScore,
             status: status,
-            specification: mergeSpecifications(productData?.specification || [], formData.specification || []),
+            specification: mergeSpecifications(filteredProductData || [], formData.specification || []),
         };
 
         const displayStatus = StringUtils.formatTitleCase(status)

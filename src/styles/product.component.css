@@ -1,10 +1,23 @@
 
-.product-drag .ant-upload-drag{
+.product-drag .ant-upload-drag {
     width: 100% !important;
     max-width: 400px !important;
     height: auto !important;
 }
 
-.product-drag .ant-upload-drag:hover{
+.product-drag .ant-upload-drag:hover {
     border-color: var(--ant-primary-color-active) !important;
 }
+
+.product-collapse-panel .ant-collapse-header {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    border-block-start: none;
+}
+
+
+.product-collapse .ant-collapse {
+    border-block-start: none !important;
+}
+
+
