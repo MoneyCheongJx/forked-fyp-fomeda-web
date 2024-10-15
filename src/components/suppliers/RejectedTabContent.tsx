@@ -2,29 +2,29 @@
 
 import React, {useEffect, useState} from "react";
 import {Button, Col, Input, Row, Table, DatePicker} from "antd";
-import {SUPPLIERS_PENDING_TAB_TABLE_HEADER_CONSTANTS} from "@/constants/suppliers.constant";
+import {SUPPLIERS_REJECTED_TAB_TABLE_HEADER_CONSTANTS} from "@/constants/suppliers.constant";
 import AuthenticationService from "@/services/authentication.service";
 import {SearchOutlined} from "@ant-design/icons";
-import ReviewModal from "@/components/suppliers/ReviewModal";
+import ViewModal from "@/components/suppliers/ViewModal";
 import { DateTimeUtils } from "@/utils/date-time.utils";
 
-interface PendingTabContentProps {
+interface RejectedTabContentProps {
     setLoading: (loading: boolean) => void;
 }
 
-const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
+const RejectedTabContent : React.FC<RejectedTabContentProps> = ({setLoading}) => {
     const [data, setData] = useState<any[]>([]);
     const [filteredData, setFilteredData] = useState<any>([]);
     const [searchName, setSearchName] = useState('');
     const [searchCompany, setSearchCompany] = useState('');
     const [dateRange, setDateRange] = useState<[Date | null, Date | null] | null>([null, null]);
-    const [isReviewModalVisible, setReviewModalVisible] = useState(false);
+    const [isViewModalVisible, setViewModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const {RangePicker} = DatePicker;
 
     const fetchData = async () => {
         try {
-            const response = await AuthenticationService.getPendingSuppliers();
+            const response = await AuthenticationService.getRejectedSuppliers();
             setData(response)
             setFilteredData(response)
         } catch (error) {
@@ -48,12 +48,12 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
             const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
             const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
 
-            const registerDate = new Date(supplier.registered_on)?.setHours(0, 0, 0, 0);
+            const lastRejectedDate = new Date(supplier.last_rejected_on)?.setHours(0, 0, 0, 0);
             const [start, end] = dateRange || [null, null];
             const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
             const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
 
-            const matchesDate = startDate && endDate ? registerDate >= startDate && registerDate <= endDate : true;
+            const matchesDate = startDate && endDate ? lastRejectedDate >= startDate && lastRejectedDate <= endDate : true;
 
             return matchesName && matchesCompany && matchesDate;
         })
@@ -62,19 +62,19 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
 
     const handleOnClick = (text: any, record: any) => {
         setSelectedRecord(record)
-        setReviewModalVisible(true)
+        setViewModalVisible(true)
     }
 
-    const TABLE_HEADER = SUPPLIERS_PENDING_TAB_TABLE_HEADER_CONSTANTS.map((column) => {
+    const TABLE_HEADER = SUPPLIERS_REJECTED_TAB_TABLE_HEADER_CONSTANTS.map((column) => {
         switch(column.key) {
             case 'actions':
                 return {
                     ...column,
                     render: (text: any, record: any) => (
-                        <Button onClick={() => handleOnClick(text, record)}>Review</Button>
+                        <Button onClick={() => handleOnClick(text, record)}>View</Button>
                     )
                 };
-            case 'registered_on':
+            case 'last_rejected_on':
                 return {
                     ...column,
                     render: (text: any, record: any) => DateTimeUtils.formatDate(record[column.key]),
@@ -90,11 +90,10 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
 
     return (
         <div>
-            <ReviewModal
-                visible={isReviewModalVisible}
-                onClose={() => setReviewModalVisible(false)}
+            <ViewModal
+                visible={isViewModalVisible}
+                onClose={() => setViewModalVisible(false)}
                 data={selectedRecord}
-                fetchData={fetchData}
             />
             <div style={{width: '100%'}}>
                 <Row style={{marginBottom: 16}}>
@@ -111,7 +110,7 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
                             onChange={(e) => setSearchCompany(e.target.value)}
                             prefix={<SearchOutlined/>}
                             size="large"
-                            style={{width: '49%'}}
+                            style={{width: '39%'}}
                         />
                         <RangePicker onChange={(dates: any) => setDateRange(dates)}/>
                     </Col>
@@ -134,4 +133,4 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
     );
 };
 
-export default PendingTabContent;
+export default RejectedTabContent;

@@ -42,7 +42,6 @@ export default function LoginPage() {
 
             if (error instanceof Error) {
                 const errorMessage = error.message
-
                 if (errorMessage === "Invalid status") {
                     NotificationService.error(
                         "Login Failed",
@@ -134,12 +133,11 @@ export default function LoginPage() {
                                 Create account now
                             </Link>
                         </div>
-
                         <div style={{textAlign: 'center'}}>
                             <Typography.Text style={{padding: '5px'}}>
                                 Check account registration status?
                             </Typography.Text>
-                            <Link href="">
+                            <Link href="/status-check">
                                 Click here
                             </Link>
                         </div>

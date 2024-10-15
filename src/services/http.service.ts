@@ -40,6 +40,10 @@ export class HttpService {
 
             const response = await fetch(url);
             if (!response.ok) {
+                const errorMessage = await response.json()
+                if (errorMessage)
+                    throw new Error(`${errorMessage.message}`);
+
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.json();

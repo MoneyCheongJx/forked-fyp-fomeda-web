@@ -1,7 +1,7 @@
 "use client"
 
 import React, {useEffect, useState} from "react";
-import PageLayout from "../page";
+import PageLayout from "@/app/page";
 import {Col, Input, Row, DatePicker, Card, List, Typography} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import AnnouncementService from "@/services/announcement.service";
