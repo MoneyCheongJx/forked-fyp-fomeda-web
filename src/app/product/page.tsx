@@ -109,17 +109,20 @@ const ProductPage = () => {
     };
 
     const handleFormValuesChange = (changedValues: any, allValues: any) => {
-        const {search} = allValues; // Get search value from form
+        const {search} = allValues;
         setFilterModel({
             ...filterModel,
             search,
         });
     };
 
-    const fetchProductList = async () => {
+    const fetchProductList = async (currSkip: number) => {
         try {
-            setLoading(true);
-            const response = await ProductService.getConsumerProductByFilter(filterModel, skip, limit);
+            if(!isLoadMore) {
+                setLoading(true);
+            }
+
+            const response = await ProductService.getConsumerProductByFilter(filterModel, currSkip, limit);
             if (response) {
                 const {products, total} = response;
                 if (isLoadMore) {
@@ -140,7 +143,7 @@ const ProductPage = () => {
 
     useEffect(() => {
         if (isLoadMore) {
-            fetchProductList().then();
+            fetchProductList(skip).then();
         }
     }, [isLoadMore]);
 
@@ -151,7 +154,7 @@ const ProductPage = () => {
 
         debounceTimeout.current = setTimeout(() => {
             setSkip(0);
-            fetchProductList().then();
+            fetchProductList(0).then();
         }, 500);
     }, [filterModel]);
 
