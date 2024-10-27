@@ -14,7 +14,7 @@ const AddPage = () => {
     const SPECIFICATION_TYPE = SPECIFICATION_TYPE_CONSTANT[type!];
 
     return (
-        <PageLayout title={`Add ${SPECIFICATION_TYPE}`}>
+        <PageLayout title={`Add ${SPECIFICATION_TYPE}`} isRoot={false}>
             <AddSpecificationPage specificationType={type} catId={id}/>
         </PageLayout>
     )

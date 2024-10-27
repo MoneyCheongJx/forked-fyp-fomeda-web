@@ -6,9 +6,9 @@ import {Breadcrumb, Button, Layout, Row} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
 import Link from 'next/link';
 import {StringUtils} from "@/utils/string.utils";
-import {LeftOutlined} from "@ant-design/icons"; // Ensure you import Link for breadcrumb navigation
+import {LeftOutlined} from "@ant-design/icons";
 
-const PageLayout = ({title, showTitle = true, children}: any) => {
+const PageLayout = ({title, showTitle = true, children, isRoot = true}: any) => {
     const router = useRouter();
     const pathname = usePathname();
 
@@ -31,15 +31,13 @@ const PageLayout = ({title, showTitle = true, children}: any) => {
             <main>
                 {showTitle &&
                     <>
-                        <Breadcrumb>
-                            {breadcrumbItems.map((item) => (
-                                <Breadcrumb.Item key={item.key}>
-                                    <Link href={item.key}>{item.title}</Link>
-                                </Breadcrumb.Item>
-                            ))}
-                        </Breadcrumb>
+                        <Breadcrumb items={
+                            breadcrumbItems.map((item) => ({
+                                title: <Link href={item.key}>{item.title}</Link>,
+                            }))
+                        }/>
                         <Row className="mb-4 items-center">
-                            {breadcrumbItems.length > 1 && (
+                            {!isRoot && (
                                 <Button type="text" icon={<LeftOutlined/>} onClick={() => router.back()}/>
                             )}
                             <h1>{title}</h1>

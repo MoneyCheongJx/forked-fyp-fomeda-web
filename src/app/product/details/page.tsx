@@ -81,7 +81,7 @@ const ProductDetailsPage = () => {
     }
 
     return (
-        <PageLayout title={"Product Details"}>
+        <PageLayout title={"Product Details"} isRoot={false}>
             <Form form={form} className={"w-full"}>
                 <Row>
                     <Col span={12}>

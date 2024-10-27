@@ -14,7 +14,7 @@ const EditPage = () => {
     const CATEGORY_TYPE = SPECIFICATION_TYPE_CONSTANT[type!];
 
     return (
-        <PageLayout title={`${CATEGORY_TYPE} Details`}>
+        <PageLayout title={`${CATEGORY_TYPE} Details`} isRoot={false}>
             <ViewSpecificationPage specId={id} />
         </PageLayout>
     )

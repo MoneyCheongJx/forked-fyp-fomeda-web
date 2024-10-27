@@ -72,7 +72,7 @@ const CategoryTab = () => {
         if (key === 'edit_category') {
             handleActionsOnClick(key, record);
         } else if (key === 'view_details') {
-            router.push(`product-category/details/${record._id}`)
+            router.push(`product-category/details?id=${record._id}`)
         } else {
             return Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -150,7 +150,7 @@ const CategoryTab = () => {
                 return {
                     ...column,
                     render: (text: any, record: any) => (
-                        <Link href={`product-category/details/${record._id}`}>
+                        <Link href={`product-category/details?id=${record._id}`}>
                             {record.cat_name || record.subcat_name}
                         </Link>
                     ),
