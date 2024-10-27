@@ -19,8 +19,32 @@ const ReportPage = () => {
     const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedSegmentedKey = urlParams.get("report_segmented_tab");
+        if (savedSegmentedKey) {
+            setSegmentedTab(savedSegmentedKey);
+        }
+    }, []);
+
+    useEffect(() => {
+        const handlePopState = (event: any) => {
+            if (event.state?.segmentedTab) {
+                setSegmentedTab(event.state.segmentedTab);
+            }
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
+
     const handleSegmentedChange = (value: any) => {
         setSegmentedTab(value);
+        window.history.pushState({ segmentedTab: value }, "", `?report_segmented_tab=${value}`);
         setFilterData({})
         filterForm.resetFields();
     };

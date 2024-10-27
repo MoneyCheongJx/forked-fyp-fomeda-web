@@ -10,7 +10,7 @@ const AddProductPage = () => {
     const v_id = query.get("v_id");
 
     return (
-        <PageLayout title="Product Details">
+        <PageLayout title="Product Details" isRoot={false}>
             <ProductForm type={"view"} productId={id!} verificationId={v_id!}/>
         </PageLayout>
     )
