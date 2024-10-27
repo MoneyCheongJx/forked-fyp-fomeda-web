@@ -19,8 +19,31 @@ const ProductVerificationPage = () => {
     const [filterData, setFilterData] = useState({});
     const [loading, setLoading] = useState(false);
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedSegmentedKey = urlParams.get("verification_segmented_tab");
+        if (savedSegmentedKey) {
+            setSegmentedTab(savedSegmentedKey);
+        }
+    }, []);
+
+    useEffect(() => {
+        const handlePopState = (event: any) => {
+            if (event.state?.segmentedTab) {
+                setSegmentedTab(event.state.segmentedTab);
+            }
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, []);
+
     const handleSegmentedChange = (value: any) => {
         setSegmentedTab(value);
+        window.history.pushState({ segmentedTab: value }, "", `?verification_segmented_tab=${value}`);
         setFilterData({})
         filterForm.resetFields();
     };
