@@ -1,6 +1,6 @@
 "use client";
 
-import {Button, Card, Col, Form, Image, Layout, Rate, Row, Spin,} from "antd";
+import {Button, Card, Col, Form, Image, Layout, QRCode, Rate, Row, Spin,} from "antd";
 import React, {useEffect, useState} from "react";
 import {FormOutlined} from "@ant-design/icons";
 import {CategoryConstant} from "@/constants/category.constant";
@@ -50,7 +50,7 @@ const ProductDetailsPage = () => {
                                        labelAlign={"left"}
                                        labelCol={{span: 12}}
                                        className={"ml-8 mb-4"}>
-                                {spec.subspecification && spec.subspecification.length > 0 ? "": (
+                                {spec.subspecification && spec.subspecification.length > 0 ? "" : (
                                     <div>{(spec?.spec_desc !== undefined && spec.spec_desc !== "") ?
                                         [spec.prefix, spec.spec_desc, spec.suffix].join(" ").trim() : "-"}</div>
                                 )}
@@ -101,8 +101,8 @@ const ProductDetailsPage = () => {
                                     <Button type={"primary"} icon={<FormOutlined/>}
                                             className={"ml-auto flex items-center"}
                                             onClick={() => {
-                                        setIsReportModelOpen(true);
-                                    }}>Report Product</Button>
+                                                setIsReportModelOpen(true);
+                                            }}>Report Product</Button>
                                 </Row>
                                 <h5 className={"my-3.5"}>General Information</h5>
                                 <Form.Item label={<h5>Product Name</h5>}
@@ -116,6 +116,12 @@ const ProductDetailsPage = () => {
                                            labelCol={{span: 12}}
                                            className={"ml-8 mb-4"}>
                                     <div>{productData.model_no}</div>
+                                </Form.Item>
+                                <Form.Item label={<h5>QR Code</h5>}
+                                           labelAlign={"left"}
+                                           labelCol={{span: 12}}
+                                           className={"ml-8 mb-4"}>
+                                    <QRCode value={productData._id}/>
                                 </Form.Item>
                                 <Form.Item label={<h5>Rating</h5>}
                                            labelAlign={"left"}
