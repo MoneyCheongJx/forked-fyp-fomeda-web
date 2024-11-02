@@ -79,7 +79,8 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = null;
-            const response = await ProductService.getProductVerificationListByFilter(filterData);
+            filterData.is_supplier = true;
+            const response = await ProductService.getProductVerificationListByFilter(await filterData);
             const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.reviewed_on).getTime() - new Date(a.reviewed_on).getTime());
             setHistoryList(sortedResponse);
         } catch (error) {
