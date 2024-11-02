@@ -3,4 +3,5 @@ export class ProductFilterModel {
     status?: string[];
     cat_ids?: string[];
     search?: string;
+    is_supplier?: boolean;
 }

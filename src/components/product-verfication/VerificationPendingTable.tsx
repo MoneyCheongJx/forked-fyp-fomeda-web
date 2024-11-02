@@ -17,7 +17,8 @@ const VerificationPendingTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.PENDING];
-            const response = await ProductService.getProductVerificationListByFilter(filterData);
+            filterData.is_supplier = false;
+            const response = await ProductService.getProductVerificationListByFilter(await filterData);
             const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.last_updated_on).getTime() - new Date(a.last_updated_on).getTime());
             setPendingList(sortedResponse);
         } catch (error) {

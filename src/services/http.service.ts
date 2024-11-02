@@ -8,6 +8,7 @@ export class HttpService {
 
             const response = await fetch(url, {
                 method: "POST",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -62,6 +63,7 @@ export class HttpService {
 
             const response = await fetch(url, {
                 method: "PUT",
+                credentials: "include",
                 headers: {
                     "Content-Type": "application/json",
                 },

@@ -11,8 +11,6 @@ import MessageService from "@/services/message.service";
 
 const initialCategoryForm: CategoryModel = {
     cat_name: "",
-    created_by: "Admin",
-    last_updated_by: "Admin",
     is_active: false,
 }
 
@@ -20,8 +18,6 @@ const initialSubcategoryForm: SubcategoryModel = {
     cat_id: "",
     cat_name: "",
     subcat_name: "",
-    created_by: "Admin",
-    last_updated_by: "Admin",
     is_active: false,
 }
 

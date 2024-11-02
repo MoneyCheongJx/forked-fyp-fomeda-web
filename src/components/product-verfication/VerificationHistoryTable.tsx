@@ -19,7 +19,8 @@ const VerificationHistoryTable = ({filterData}: any) => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.REJECTED, ProductConstant.APPROVED];
-            const response = await ProductService.getProductVerificationListByFilter(filterData);
+            filterData.is_supplier = false;
+            const response = await ProductService.getProductVerificationListByFilter(await filterData);
             const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.reviewed_on).getTime() - new Date(a.reviewed_on).getTime());
             setHistoryList(sortedResponse);
         } catch (error) {
