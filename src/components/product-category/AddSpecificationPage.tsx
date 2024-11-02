@@ -15,19 +15,18 @@ import {SubspecificationModel} from "@/models/subspecification.model";
 import NotificationService from "@/services/notification.service";
 import ConfirmationContent from "@/components/product-category/ConfirmationContent";
 import MessageService from "@/services/message.service";
+import {ProductConstant} from "@/constants/product.constant";
 
 const initialSpecificationFormData: SpecificationModel = {
     cat_id: '',
     subcat_id: '',
     subcat_spec_name: '',
     cat_type: '',
-    created_by: 'Admin',
-    last_updated_by: 'Admin',
     allow_input: true,
     is_required: false,
     prefix: '',
     suffix: '',
-    field_type: 'ALPHANUMERIC',
+    field_type: ProductConstant.ALPHANUMERIC,
     is_score_contributed: false,
     rating_score: [],
 };
@@ -36,13 +35,11 @@ const initialSubspecificationFormData: SubspecificationModel = {
     subcat_spec_id: '',
     subcat_spec_name: '',
     subcat_subspec_name: '',
-    created_by: 'Admin',
-    last_updated_by: 'Admin',
     allow_input: true,
     is_required: false,
     prefix: '',
     suffix: '',
-    field_type: 'ALPHANUMERIC',
+    field_type: ProductConstant.ALPHANUMERIC,
     is_score_contributed: false,
     rating_score: [],
 };

@@ -29,9 +29,9 @@ export const CATEGORY_TAB_CONSTANTS = [
 
 export const CATEGORY_TABLE_HEADER_CONSTANTS = [
     {key: "cat_name", title: "Category", dataIndex: "cat_name", width: "40%"},
-    {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
+    {key: "created_name", title: "Created by", dataIndex: "created_name", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
-    {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
+    {key: "last_updated_name", title: "Updated by", dataIndex: "last_updated_name", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
     {key: "actions", title: "Actions"}
@@ -81,9 +81,9 @@ export const SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS = [
 
 export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
     {key: "subcat_spec_name", title: "General Information", dataIndex: "subcat_spec_name", width: "40%"},
-    {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
+    {key: "created_name", title: "Created by", dataIndex: "created_name", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
-    {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
+    {key: "last_updated_name", title: "Updated by", dataIndex: "last_updated_name", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
     {key: "actions", title: "Actions", actionList: GENERAL_INFORMATION_ACTIONS_CONSTANTS}
@@ -91,9 +91,9 @@ export const GENERAL_SPECIFICATIONS_TABLE_HEADER_CONSTANTS = [
 
 export const CERTIFICATION_TABLE_HEADER_CONSTANTS = [
     {key: "subcat_spec_name", title: "Certification", dataIndex: "subcat_spec_name", width: "40%"},
-    {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
+    {key: "created_name", title: "Created by", dataIndex: "created_name", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
-    {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
+    {key: "last_updated_name", title: "Updated by", dataIndex: "last_updated_name", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
     {key: "actions", title: "Actions", actionList: CERTIFICATION_ACTIONS_CONSTANTS}
@@ -101,9 +101,9 @@ export const CERTIFICATION_TABLE_HEADER_CONSTANTS = [
 
 export const WARRANTY_HEADER_CONSTANTS = [
     {key: "subcat_spec_name", title: "Warranty", dataIndex: "subcat_spec_name", width: "40%"},
-    {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
+    {key: "created_name", title: "Created by", dataIndex: "created_name", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
-    {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
+    {key: "last_updated_name", title: "Updated by", dataIndex: "last_updated_name", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
     {key: "actions", title: "Actions", actionList: WARRANTY_ACTIONS_CONSTANTS}
@@ -111,9 +111,9 @@ export const WARRANTY_HEADER_CONSTANTS = [
 
 export const PRODUCT_SPECIFICATION_HEADER_CONSTANTS = [
     {key: "subcat_spec_name", title: "Specification", dataIndex: "subcat_spec_name", width: "40%"},
-    {key: "created_by", title: "Created by", dataIndex: "created_by", width: "10%"},
+    {key: "created_name", title: "Created by", dataIndex: "created_name", width: "10%"},
     {key: "created_on", title: "Created on", dataIndex: "created_on", width: "10%"},
-    {key: "last_updated_by", title: "Updated by", dataIndex: "last_updated_by", width: "10%"},
+    {key: "last_updated_name", title: "Updated by", dataIndex: "last_updated_name", width: "10%"},
     {key: "last_updated_on", title: "Updated on", dataIndex: "last_updated_on", width: "10%"},
     {key: "is_active", title: "Status", dataIndex: "is_active", width: "10%"},
     {key: "actions", title: "Actions", actionList: PRODUCT_SPECIFICATION_ACTIONS_CONSTANTS}
