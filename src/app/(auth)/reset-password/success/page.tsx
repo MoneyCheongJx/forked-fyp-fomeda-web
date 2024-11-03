@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 
 const {Title, Paragraph} = Typography;
 
-const AppealSuccessPage = () => {
+const ResetPasswordSuccessPage = () => {
     const router = useRouter();
 
     const handleBackToLogin = () => {
@@ -26,11 +26,9 @@ const AppealSuccessPage = () => {
                 </Col>
                 <Col>
                     <Card style={{width: "600px", flexGrow: 1}}>
-                        <Title level={3}>Appeal successfully</Title>
+                        <Title level={3}>Reset password successfully</Title>
                         <Paragraph>
-                            Congratulations! Your appeal for registration was successful. Please note that your
-                            account is pending review from the administrator. Once approved, you will be able to
-                            login to the system. Thank you for your patience.
+                            Congratulations! Your password was reset successfully. You can now log in with new credentials.
                         </Paragraph>
                         <Button type="primary" block onClick={handleBackToLogin}>
                             Back to Sign In
@@ -42,4 +40,4 @@ const AppealSuccessPage = () => {
     );
 };
 
-export default AppealSuccessPage;
+export default ResetPasswordSuccessPage;

@@ -1,86 +1,57 @@
-"use client"
+"use client";
 
-import React, {useEffect, useState} from "react";
-import PageLayout from "@/app/page";
-import {Col, Input, Row, DatePicker, Card, Image, Typography, Form, FormProps, Button} from "antd";
+import React from "react";
+import {Image, Card, Row, Col, Button, Form, Input, Typography, notification} from "antd";
+import {usePathname, useRouter} from "next/navigation";
+import {useState, useEffect} from 'react';
+import type {FormProps} from 'antd';
+import PageLayout from '@/app/page';
 import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
-import {usePathname, useRouter} from "next/navigation";
 
-const {Title, Link, Text} = Typography;
+const {Title, Link} = Typography;
 
-interface FormValues {
-    fullname: string;
-    email_address: string;
-    confirm_email_address: string;
-    company_name: string;
-    company_no: string;
-    company_address: string;
-}
-
-const AppealPage = () => {
-    const [data, setData] = useState<any>([]);
-    const [form] = Form.useForm();
-    const pathname = usePathname();
-    const userId = pathname.substring(pathname.lastIndexOf("/") + 1);
+export default function ResetPasswordPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const pathname = usePathname();
+    const userId = pathname.substring(pathname.lastIndexOf("/") + 1);
 
-    const fetchData = async () => {
+    const onFinish: FormProps['onFinish'] = async (values) => {
+        setIsLoading(true);
+
+        const {confirm_password, ...rest} = values
+        const payload = {
+            ...rest,
+        }
+
         try {
-            const response = await AuthenticationService.getAppealInfo(userId);
-            form.setFieldsValue({...response});
-            setData(response);
+            await AuthenticationService.resetPassword(userId, payload).then(res => {
+                NotificationService.success('Reset password', 'Your password has been reset sucessfully.');
+                router.push('/reset-password/success')
+            });
         } catch (error) {
             console.error(error);
             NotificationService.error(
-                'Error Fetching Registration Info',
-                'An error occurred while trying to retrieve registration information. Please try again later.'
+                "Internal Error",
+                "Reset password failed. Please contact the admin."
             );
-            throw error;
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    useEffect(() => {
-        fetchData();
-    }, [router, form]);
-
-    const onFinish = async (values: FormValues) => {
-        const { confirm_email_address, ...payload} = values
-
-        setIsLoading(true);
-
-        try {
-            await AuthenticationService.appealRegistration(userId, payload).then(res => {
-                router.push('/appeal/success');
-            });
-
-        } catch (error) {
-            console.error(error);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed: FormProps['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
 
-    const checkEmailDuplicate = async (email: string) => {
-        try {
-            const response = await AuthenticationService.checkEmailDuplicate(email);
-            return response;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
+    const handleBack = () => {
+        router.push('/forget-password');
+    };
 
     return (
         <PageLayout showTitle={false}>
-            <Row align="middle" justify="space-evenly" style={{height: '100vh', width: '100vw'}}>
+            <Row align="middle" justify="space-evenly" style={{height: '100vh'}}>
                 <Col>
                     <Image
                         preview={false}
@@ -91,122 +62,68 @@ const AppealPage = () => {
                 <Col>
                     <Card>
                         <Form
-                            form={form}
-                            name="basic"
+                            name="forget_password"
                             layout="vertical"
                             autoComplete="off"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
-                            style={{width: "600px"}}
+                            style={{width: "400px"}}
                         >
-                            <Title level={2}>Appeal registration</Title>
-                            <Title level={3}>Personal information</Title>
+                            <Title level={2}>Reset password</Title>
                             <Form.Item
-                                label="Fullname"
-                                name="fullname"
+                                label="New password"
+                                name="password"
                                 rules={[
-                                    {required: true, message: 'Please input your fullname'},
+                                    {required: true, message: 'Please input your password'},
+                                    {min: 12, max: 20, message: 'The password must be between 12 and 20 characters'},
+                                    {whitespace: true, message: 'The password cannot be whitespaces only'},
+                                    {
+                                        pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
+                                        message: 'The password contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
+                                    }
                                 ]}
-                                hasFeedback
                             >
-                                <Input placeholder="Fullname"/>
+                                <Input.Password placeholder="Password"/>
                             </Form.Item>
                             <Form.Item
-                                label="Email addresss"
-                                name="email_address"
+                                label="Confirm new password"
+                                dependencies={['password']}
+                                name="confirm_password"
                                 rules={[
-                                    {required: true, message: 'Please input your email address'},
-                                    {type: "email", message: 'Please enter a valid email address'},
+                                    {required: true, message: 'Please input to confirm your new password'},
                                     {
-                                        validator: async (_, value) => {
-                                            if (!value || value === data?.email_address) {
-                                                return Promise.resolve();
-                                            }
-                                            const isDuplicate = await checkEmailDuplicate(value);
-                                            if (isDuplicate) {
-                                                return Promise.reject(new Error('The email is already in use'));
-                                            }
-                                            return Promise.resolve();
-                                        },
+                                        min: 12,
+                                        max: 20,
+                                        message: 'The confirm password must be between 12 and 20 characters'
                                     },
-                                ]}
-                                hasFeedback
-                            >
-                                <Input placeholder="Email address"/>
-                            </Form.Item>
-                            <Form.Item
-                                label="Confirm email addresss"
-                                name="confirm_email_address"
-                                dependencies={["email_address"]}
-                                rules={[
-                                    {required: true, message: 'Please input to confirm email address'},
-                                    {type: "email", message: 'Please enter a valid email address'},
+                                    {whitespace: true, message: 'The confirm password cannot be whitespaces only'},
                                     {
-                                        validator: async (_, value) => {
-                                            if (!value || value === data?.email_address) {
-                                                return Promise.resolve();
-                                            }
-                                            const isDuplicate = await checkEmailDuplicate(value);
-                                            if (isDuplicate) {
-                                                return Promise.reject(new Error('The email is already in use'));
-                                            }
-                                            return Promise.resolve();
-                                        },
+                                        pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/,
+                                        message: 'The confirm password contains at least one uppercase letter, one lowercase letter, at least one number and at least one special character'
                                     },
                                     ({getFieldValue}) => ({
                                         validator(_, value) {
-                                            if (!value || getFieldValue('email_address') === value) {
+                                            if (!value || getFieldValue('password') === value) {
                                                 return Promise.resolve();
                                             }
-                                            return Promise.reject(new Error('The confirm email that you entered does not match with email above'));
+                                            return Promise.reject(new Error('The confirm password that you entered does not match with password above'));
                                         },
                                     }),
                                 ]}
-                                hasFeedback
                             >
-                                <Input placeholder="Email address"/>
-                            </Form.Item>
-                            <Title level={3}>Company information</Title>
-                            <Form.Item
-                                label="Trading company name"
-                                name="company_name"
-                                rules={[
-                                    {required: true, message: 'Please input your trading company name'},
-                                ]}
-                                hasFeedback
-                            >
-                                <Input placeholder="Trading company name"/>
-                            </Form.Item>
-                            <Form.Item
-                                label="Trading company no"
-                                name="company_no"
-                                rules={[
-                                    {required: true, message: 'Please input your trading company no'},
-                                ]}
-                                hasFeedback
-                            >
-                                <Input placeholder="Trading company no"/>
-                            </Form.Item>
-                            <Form.Item
-                                label="Trading company address"
-                                name="company_address"
-                                rules={[
-                                    {required: true, message: 'Please input your trading company address'},
-                                ]}
-                                hasFeedback
-                            >
-                                <Input placeholder="Trading company address"/>
-                            </Form.Item>
-                            <Title level={3}>Account information</Title>
-                            <Form.Item
-                                label="Username"
-                            >
-                                <Input value={data?.username} disabled/>
+                                <Input.Password placeholder="Confirm password"/>
                             </Form.Item>
                             <Form.Item style={{paddingTop: '5px'}}>
-                                <Button block type="primary" htmlType="submit" loading={isLoading}>
-                                    Appeal
-                                </Button>
+                                <div>
+                                    <Button block type="primary" htmlType="submit" loading={isLoading}>
+                                        Continue
+                                    </Button>
+                                </div>
+                                <div style={{marginTop: '10px'}}>
+                                    <Button block type="default" onClick={handleBack}>
+                                        Back
+                                    </Button>
+                                </div>
                             </Form.Item>
                         </Form>
                     </Card>
@@ -215,5 +132,3 @@ const AppealPage = () => {
         </PageLayout>
     );
 }
-
-export default AppealPage;
