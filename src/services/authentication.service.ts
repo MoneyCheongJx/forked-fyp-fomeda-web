@@ -278,4 +278,73 @@ export default class AuthenticationService {
             throw error;
         }
     }
+
+    static checkForgetPasswordEmail = async (email: string) => {
+        try {
+            const param = {email};
+            const response = await HttpService.get(
+                ApiConstant.CHECK_FORGET_PASSWORD_EMAIL,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static resetPassword = async (user_id: string, authenticationModel: AuthenticationModel) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.patch(
+                ApiConstant.RESET_PASSWORD,
+                authenticationModel,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static sendOtp = async (authenticationModel: AuthenticationModel) => {
+        try {
+            const response = await HttpService.post(
+                ApiConstant.SEND_OTP,
+                authenticationModel
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static verifyOtp = async (authenticationModel: AuthenticationModel) => {
+        try {
+            const response = await HttpService.post(
+                ApiConstant.VERIFY_OTP,
+                authenticationModel
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static getEmail = async (user_id: string) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.get(
+                ApiConstant.GET_EMAIL,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
