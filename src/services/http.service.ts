@@ -11,7 +11,8 @@ export class HttpService {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
+                credentials: 'include'
             });
             if (!response.ok) {
                 const errorMessage = await response.json();
