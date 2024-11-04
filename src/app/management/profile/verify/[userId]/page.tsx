@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import {Image, Card, Row, Col, Button, Form, Input, Typography, notification} from "antd";
+import {Image, Card, Row, Col, Button, Form, Input, Typography, Alert} from "antd";
 import {usePathname, useRouter} from "next/navigation";
 import {useState, useEffect} from 'react';
 import type {FormProps} from 'antd';
@@ -10,7 +10,7 @@ import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
 import Cookies from 'js-cookie';
 
-const {Title, Link} = Typography;
+const {Title, Paragraph} = Typography;
 
 export default function VerificationPage() {
     const router = useRouter();
@@ -48,13 +48,13 @@ export default function VerificationPage() {
                 email: email
             }
 
-            await AuthenticationService.verifyOtp(payload).then(res => {
+            await AuthenticationService.verifyDeleteOtp(payload).then(res => {
                 if (res?.verified) {
                     NotificationService.success(
                         `Verification Code Successful`,
                         `Valid verification code was entered.`
                     );
-                    router.push(`/reset-password/${userId}`);
+                    router.push(`/management/profile/delete-account/${userId}`);
                 } else {
                     NotificationService.error(
                         `Verification Code Failed`,
@@ -82,7 +82,7 @@ export default function VerificationPage() {
         try {
             const response = await AuthenticationService.getEmail(userId);
             const email = response?.email_address;
-            await AuthenticationService.sendOtp({email: email});
+            await AuthenticationService.sendDeleteOtp({email: email});
             NotificationService.info(
                 "Verification Code Sent",
                 "A verification code has been sent to your email."
@@ -100,19 +100,12 @@ export default function VerificationPage() {
     };
 
     const handleBack = () => {
-        router.push('/forget-password');
+        router.push('/management/profile');
     };
 
     return (
         <PageLayout showTitle={false}>
             <Row align="middle" justify="space-evenly" style={{height: '100vh'}}>
-                <Col>
-                    <Image
-                        preview={false}
-                        src="/logoFomeda.svg"
-                        alt="fomeda-logo"
-                    />
-                </Col>
                 <Col>
                     <Card>
                         <Form
@@ -121,7 +114,7 @@ export default function VerificationPage() {
                             autoComplete="off"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
-                            style={{width: "425px"}}
+                            style={{width: "440px"}}
                         >
                             <Title level={2}>Verification code</Title>
                             <Typography style={{paddingTop: '5px'}}>Please click the send code link to send verification code to the email.</Typography>
