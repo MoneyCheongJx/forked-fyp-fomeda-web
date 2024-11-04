@@ -117,7 +117,7 @@ export class ApiConstant{
     static readonly GET_EMAIL = this.AUTH_PREFIX + "get-email";
     static readonly SEND_DELETE_OTP = this.AUTH_PREFIX + "send-delete-otp";
     static readonly VERIFY_DELETE_OTP = this.AUTH_PREFIX + "verify-delete-otp";
-    static readonly DELETE_ACCOUNT = this.AUTH_PREFIX + "delete-account";
+    static readonly DEACTIVATE_ACCOUNT = this.AUTH_PREFIX + "delete-account";
 
     /* role api */
     static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"

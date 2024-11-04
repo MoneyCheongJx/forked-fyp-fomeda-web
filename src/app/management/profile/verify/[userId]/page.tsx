@@ -54,7 +54,7 @@ export default function VerificationPage() {
                         `Verification Code Successful`,
                         `Valid verification code was entered.`
                     );
-                    router.push(`/management/profile/delete-account/${userId}`);
+                    router.push(`/management/profile/deactivate-account/${userId}`);
                 } else {
                     NotificationService.error(
                         `Verification Code Failed`,

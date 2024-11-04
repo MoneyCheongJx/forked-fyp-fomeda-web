@@ -11,7 +11,7 @@ import Cookies from 'js-cookie';
 
 const {Title, Link} = Typography;
 
-export default function DeleteAccountConfirmationPage() {
+export default function DeactivateAccountConfirmationPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const pathname = usePathname();
@@ -25,22 +25,22 @@ export default function DeleteAccountConfirmationPage() {
         setIsChecked(e.target.checked);
     };
 
-    const handleDeleteAccount = async () => {
+    const handleDeactivateAccount = async () => {
         try {
-            await AuthenticationService.deleteAccount(userId, {}).then(res => {
+            await AuthenticationService.deactivateAccount(userId, {}).then(res => {
                 NotificationService.success(
-                    `Account deleted`,
-                    `The account was successfully deleted.`
+                    `Account deactivated`,
+                    `The account was successfully deactivated.`
                 );
                 Cookies.remove('session');
                 Cookies.remove('token');
-                router.push(`/delete-info/success`);
+                router.push(`/deactivate-info/success`);
             });
         } catch (error) {
             console.error(error);
             NotificationService.error(
-                "Delete Account Failed",
-                "Delete account failed. Please contact the admin."
+                "Deactivate Account Failed",
+                "Deactivate account failed. Please contact the admin."
             );
         } finally {
             setLoading(false);
@@ -57,11 +57,11 @@ export default function DeleteAccountConfirmationPage() {
                 <Col>
                     <Card style={{width: '700px'}}>
                         <Alert
-                            message="Are you sure you want to delete your account?"
+                            message="Are you sure you want to deactivate your account?"
                             description={
                                 <div>
                                     <Paragraph>
-                                        Deleting your account will permanently remove all your data associated with it.
+                                        Deactivating your account will permanently remove all your data associated with it.
                                         This action cannot be undone.
                                     </Paragraph>
                                 </div>
@@ -72,7 +72,7 @@ export default function DeleteAccountConfirmationPage() {
                         />
                         <div style={{marginTop: 20}}>
                             <Checkbox onChange={handleCheckboxChange}>
-                                I understand the consequences of deleting my account.
+                                I understand the consequences of deactivating my account.
                             </Checkbox>
                         </div>
                         <div style={{marginTop: 20}}>
@@ -81,10 +81,10 @@ export default function DeleteAccountConfirmationPage() {
                                 danger
                                 block
                                 disabled={!isChecked}
-                                onClick={handleDeleteAccount}
+                                onClick={handleDeactivateAccount}
                                 loading={loading}
                             >
-                                Delete Account
+                                Deactivate Account
                             </Button>
                         </div>
                         <div style={{marginTop: '10px'}}>

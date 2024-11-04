@@ -13,12 +13,12 @@ import {DateTimeUtils} from "@/utils/date-time.utils";
 
 const {Title, Paragraph} = Typography;
 
-const DeleteAccountPage = () => {
+const DeactivateAccountPage = () => {
     const [data, setData] = useState<any>([]);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
-    const handleDeleteClick = () => {
+    const handleDeactivateClick = () => {
         setIsLoading(true);
         router.push(`/management/profile/verify/${data?.user_id}`);
     };
@@ -49,13 +49,13 @@ const DeleteAccountPage = () => {
                 }}
             >
                 <Card style={{width: '700px'}}>
-                    <Title level={2}>Delete account</Title>
+                    <Title level={2}>Deactivate account</Title>
                     <Alert
-                        message="Are you sure you want to delete your account?"
+                        message="Are you sure you want to deactivate your account?"
                         description={
                             <div>
                                 <Paragraph>
-                                    Deleting your account will permanently remove all your data associated with it. This
+                                    Deactivating your account will permanently remove all your data associated with it. This
                                     action cannot be undone.
                                 </Paragraph>
                                 <Paragraph>
@@ -70,8 +70,8 @@ const DeleteAccountPage = () => {
                                     />
                                 </Paragraph>
                                 <Paragraph>
-                                    If you are certain about deleting your account, please click the
-                                    "Continue Delete Account" button below.
+                                    If you are certain about deactivating your account, please click the
+                                    &quot;Continue Deactivate Account&quot; button below.
                                 </Paragraph>
                             </div>
                         }
@@ -80,8 +80,8 @@ const DeleteAccountPage = () => {
                         style={{margin: '20px 0'}}
                     />
                     <div>
-                        <Button block type="primary" loading={isLoading} onClick={handleDeleteClick}>
-                            Continue Delete Account
+                        <Button block type="primary" loading={isLoading} onClick={handleDeactivateClick}>
+                            Continue Deactivate Account
                         </Button>
                     </div>
                     <div style={{marginTop: '10px'}}>
@@ -95,4 +95,4 @@ const DeleteAccountPage = () => {
     );
 };
 
-export default DeleteAccountPage;
+export default DeactivateAccountPage;

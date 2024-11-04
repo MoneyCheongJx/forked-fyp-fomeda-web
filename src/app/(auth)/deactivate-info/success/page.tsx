@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 
 const {Title, Paragraph} = Typography;
 
-const DeleteSuccessPage = () => {
+const DeactivateSuccessPage = () => {
     const router = useRouter();
 
     const handleBackToLogin = () => {
@@ -26,9 +26,9 @@ const DeleteSuccessPage = () => {
                 </Col>
                 <Col>
                     <Card style={{width: "600px", flexGrow: 1}}>
-                        <Title level={3}>Delete account successfully</Title>
+                        <Title level={3}>Deactivate account successfully</Title>
                         <Paragraph>
-                            We're sorry to see you go. Your account and all associated data have been permanently removed.
+                            We&aposre sorry to see you go. Your account and all associated data have been permanently removed.
                             Thank you for being part of our community.
                         </Paragraph>
                         <Button type="primary" block onClick={handleBackToLogin}>
@@ -41,4 +41,4 @@ const DeleteSuccessPage = () => {
     );
 };
 
-export default DeleteSuccessPage;
+export default DeactivateSuccessPage;
