@@ -374,4 +374,18 @@ export default class AuthenticationService {
         }
     }
 
+    static deleteAccount = async (user_id: string, authenticationModel: AuthenticationModel) => {
+        try {
+            const param = {user_id};
+            const response = await HttpService.patch(
+                ApiConstant.DELETE_ACCOUNT,
+                authenticationModel,
+                param
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
