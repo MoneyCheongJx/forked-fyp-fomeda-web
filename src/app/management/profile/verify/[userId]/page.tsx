@@ -121,7 +121,7 @@ export default function VerificationPage() {
                             autoComplete="off"
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
-                            style={{width: "440px"}}
+                            style={{width: "425px"}}
                         >
                             <Title level={2}>Verification code</Title>
                             <Typography style={{paddingTop: '5px'}}>Please click the send code link to send verification code to the email.</Typography>
