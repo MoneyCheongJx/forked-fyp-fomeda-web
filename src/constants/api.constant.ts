@@ -110,6 +110,14 @@ export class ApiConstant{
     static readonly REJECT_SUPPLIERS = this.AUTH_PREFIX + "reject";
     static readonly GET_ADMINS = this.AUTH_PREFIX + "admins";
     static readonly UPDATE_ADMIN = this.AUTH_PREFIX + "update-admin"
+    static readonly CHECK_FORGET_PASSWORD_EMAIL = this.AUTH_PREFIX + "check-forget-password-email";
+    static readonly RESET_PASSWORD = this.AUTH_PREFIX + "reset-password";
+    static readonly SEND_OTP = this.AUTH_PREFIX + "send-otp";
+    static readonly VERIFY_OTP = this.AUTH_PREFIX + "verify-otp";
+    static readonly GET_EMAIL = this.AUTH_PREFIX + "get-email";
+    static readonly SEND_DELETE_OTP = this.AUTH_PREFIX + "send-delete-otp";
+    static readonly VERIFY_DELETE_OTP = this.AUTH_PREFIX + "verify-delete-otp";
+    static readonly DELETE_ACCOUNT = this.AUTH_PREFIX + "delete-account";
 
     /* role api */
     static readonly GET_ALL_ROLES = this.ROLE_PREFIX + "get-roles"

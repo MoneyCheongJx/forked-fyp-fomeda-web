@@ -10,5 +10,6 @@ export class AuthenticationModel {
     rejected_by?: string;
     reason?: string;
     session_id?: string;
+    email?: string;
 }
 
