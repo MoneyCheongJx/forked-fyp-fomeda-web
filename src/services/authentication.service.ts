@@ -347,4 +347,31 @@ export default class AuthenticationService {
             throw error;
         }
     }
+
+    static sendDeleteOtp = async (authenticationModel: AuthenticationModel) => {
+        try {
+            const response = await HttpService.post(
+                ApiConstant.SEND_DELETE_OTP,
+                authenticationModel
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static verifyDeleteOtp = async (authenticationModel: AuthenticationModel) => {
+        try {
+            const response = await HttpService.post(
+                ApiConstant.VERIFY_DELETE_OTP,
+                authenticationModel
+            )
+            return response;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
 }
