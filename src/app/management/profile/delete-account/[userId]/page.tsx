@@ -16,6 +16,7 @@ export default function DeleteAccountConfirmationPage() {
     const [isLoading, setIsLoading] = useState(false);
     const pathname = usePathname();
     const userId = pathname.substring(pathname.lastIndexOf("/") + 1);
+    const [loading, setLoading] = useState(false);
     const {Title, Paragraph} = Typography;
 
     const [isChecked, setIsChecked] = useState(false);
@@ -24,14 +25,26 @@ export default function DeleteAccountConfirmationPage() {
         setIsChecked(e.target.checked);
     };
 
-    const handleDeleteAccount = () => {
-        NotificationService.success(
-            `Account deleted`,
-            `Valid verification code was entered.`
-        );
-        Cookies.remove('session');
-        Cookies.remove('token');
-        router.push(`/delete-info/success`);
+    const handleDeleteAccount = async () => {
+        try {
+            await AuthenticationService.deleteAccount(userId, {}).then(res => {
+                NotificationService.success(
+                    `Account deleted`,
+                    `The account was successfully deleted.`
+                );
+                Cookies.remove('session');
+                Cookies.remove('token');
+                router.push(`/delete-info/success`);
+            });
+        } catch (error) {
+            console.error(error);
+            NotificationService.error(
+                "Delete Account Failed",
+                "Delete account failed. Please contact the admin."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleBack = () => {
@@ -69,6 +82,7 @@ export default function DeleteAccountConfirmationPage() {
                                 block
                                 disabled={!isChecked}
                                 onClick={handleDeleteAccount}
+                                loading={loading}
                             >
                                 Delete Account
                             </Button>
