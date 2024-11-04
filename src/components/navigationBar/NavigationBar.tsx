@@ -1,6 +1,6 @@
 "use client"
 
-import {Image, Button, Dropdown, Divider, Avatar, Row, notification} from "antd";
+import {Image, Button, Dropdown, Divider, Avatar, Row} from "antd";
 import {DownOutlined, UserOutlined} from "@ant-design/icons";
 import "../../styles/header.component.css"
 import {MenuProps} from "antd/lib";
@@ -13,9 +13,9 @@ import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import AuthenticationService from "@/services/authentication.service";
 import NotificationService from "@/services/notification.service";
-import {useAuth} from '../../app/(auth)/context/auth-context';
+import {useAuth} from '@/app/(auth)/context/auth-context';
 import {jwtDecode} from "jwt-decode";
-import {CustomJwtPayload} from "../../models/jwt.model"
+import {CustomJwtPayload} from "@/models/jwt.model"
 import Cookies from 'js-cookie';
 
 const NavigationBar = () => {
@@ -119,7 +119,7 @@ const NavigationBar = () => {
                             onClick={() => router.push(item.link)}
                             disabled={item.disabled}
                             type="text"
-                            className={`${pathname === item.link ? "nav-button-selected" : "nav-button"}`}
+                            className={`${pathname.startsWith(item.link) ? "nav-button-selected" : "nav-button"}`}
                         >
                             {item.label}
                         </Button>

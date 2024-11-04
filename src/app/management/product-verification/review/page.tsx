@@ -308,7 +308,7 @@ const ProductVerificationDetailsPage = () => {
     };
 
     return (
-        <PageLayout title="Product Details">
+        <PageLayout title="Product Details" isRoot={false}>
             <Layout className={"max-w-96 bg-gray-300 mb-8"}>
                 {productData?.product_img?.file.preview ?
                     <Image src={productData.product_img?.file?.preview} alt="product_img"

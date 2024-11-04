@@ -8,7 +8,7 @@ import {
     GetProp,
     Image,
     Input,
-    Layout, Rate,
+    Layout, QRCode, Rate,
     Row,
     Select,
     Spin,
@@ -410,6 +410,13 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                            message: `Model No. is required`,
                                        },]}>
                                 {renderDisplayInput(productData.model_no, <Input/>)}
+                            </Form.Item>
+                            <Form.Item label={<h5>QR Code</h5>}
+                                       labelAlign={"left"}
+                                       labelCol={{span: 12}}
+                                       className={"ml-8 mb-4"}
+                                       hidden={!isView || productData.status === ProductConstant.PENDING || productData.status === ProductConstant.REJECTED}>
+                                <QRCode value={productId ?? productData.pro_id}/>
                             </Form.Item>
                             <Form.Item label={<h5>Rating</h5>}
                                        labelAlign={"left"}

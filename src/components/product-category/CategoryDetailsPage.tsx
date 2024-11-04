@@ -44,7 +44,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'view_specification') {
-            router.push(`../view-specification?type=${record.cat_type}&id=${record._id}`);
+            router.push(`view-specification?type=${record.cat_type}&id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -283,7 +283,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
                         <h3>{item.title}</h3>
                         <Button type="primary" icon={<PlusOutlined/>}
                                 onClick={() => {
-                                    router.push(`../add-specification?type=${item.type}&id=${id}`);
+                                    router.push(`add-specification?type=${item.type}&id=${id}`);
                                 }}>
                             {item.button}
                         </Button>
