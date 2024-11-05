@@ -77,15 +77,6 @@ const ProfileManagementPage = () => {
 
     };
 
-    const handleDeleteAccount = () => {
-        setLoading(true);
-        setTimeout(() => {
-            NotificationService.success('Account deleted successfully', "dadsada");
-            setIsDeleteModalVisible(false);
-            setLoading(false);
-        }, 1000);
-    };
-
     const checkEmailDuplicate = async (email: string) => {
         try {
             const response = await AuthenticationService.checkEmailDuplicate(email);
@@ -116,7 +107,7 @@ const ProfileManagementPage = () => {
                             Deleting the entire account is irreversible in this system. Please ensure you
                             have carefully considered your decision before proceeding with account deletion.
                         </Paragraph>
-                        <Button type="primary" onClick={() => router.push('/management/profile/delete-account')} block>
+                        <Button type="primary" onClick={() => router.push('/management/profile/deactivate-account')} block>
                             Delete Account
                         </Button>
                     </Card>
