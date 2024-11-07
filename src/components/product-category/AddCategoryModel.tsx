@@ -1,6 +1,6 @@
 "use client"
 
-import {Button, Form, Input, Modal, Radio, Select} from "antd";
+import {Form, Input, Modal, Radio, Select} from "antd";
 import {CategoryModel} from "@/models/category.model";
 import React, {useCallback, useEffect, useState} from "react";
 import CategoryService from "@/services/category.service";

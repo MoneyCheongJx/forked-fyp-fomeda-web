@@ -69,34 +69,34 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
         else subspecificationFormData.subcat_subspec_name = specificationFormData.subcat_spec_name;
     }
 
-    const fetchDetailsData = async () => {
-        try {
-            let response;
-            if (catId === null || catId === '' || catId === undefined) {
-                response = await CategoryService.getAllGeneralSpecifications();
-            } else {
-                response = !catId.includes(CategoryConstant.SUBCATEGORY_PREFIX)
-                    ? await CategoryService.findCategoryBaseSpecificationByCatId(catId)
-                    : await CategoryService.findSubcategorySpecificationByCatId(catId);
-            }
-            setDetailsData(response);
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const filterSpecificationData = useCallback(() => detailsData
             .filter((spec: any) => spec.cat_type === CategoryConstant.SPECIFICATION && spec.is_origin === undefined)
             .map((spec: any) => ({value: spec._id, label: spec.subcat_spec_name})),
         [detailsData]);
 
     useEffect(() => {
+        const fetchDetailsData = async () => {
+            try {
+                let response;
+                if (catId === null || catId === '' || catId === undefined) {
+                    response = await CategoryService.getAllGeneralSpecifications();
+                } else {
+                    response = !catId.includes(CategoryConstant.SUBCATEGORY_PREFIX)
+                        ? await CategoryService.findCategoryBaseSpecificationByCatId(catId)
+                        : await CategoryService.findSubcategorySpecificationByCatId(catId);
+                }
+                setDetailsData(response);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
         if (specificationType === CategoryConstant.SPECIFICATION) {
             fetchDetailsData().then();
         }
-    }, []);
+    }, [catId, specificationType]);
 
     useEffect(() => {
         const options: any = filterSpecificationData();

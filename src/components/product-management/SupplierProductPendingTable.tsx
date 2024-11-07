@@ -2,7 +2,7 @@ import {Button, Dropdown, Modal, Table, Typography} from "antd";
 import {
     PRODUCT_PENDING_LIST_TABLE_HEADER, SUPPLIER_PENDING_LIST_ACTION_CONSTANT,
 } from "@/constants/suppliers.constant";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ProductConstant} from "@/constants/product.constant";
 import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
@@ -66,7 +66,7 @@ const SupplierProductPendingTable = ({filterData}: any) => {
         }).filter(item => item !== null);
     };
 
-    const getTableData = async () => {
+    const getTableData = useCallback(async () => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.PENDING];
@@ -77,22 +77,21 @@ const SupplierProductPendingTable = ({filterData}: any) => {
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setLoading(false);
         }
-    }
+    }, [filterData])
 
     useEffect(() => {
-        getTableData().then(() => setLoading(false));
-    }, []);
-
-    useEffect(() => {
-        getTableData().then(() => setLoading(false));
-    }, [filterData]);
+        getTableData().then();
+    }, [getTableData]);
 
     const PRODUCT_PENDING_TABLE_HEADER = PRODUCT_PENDING_LIST_TABLE_HEADER.map((column) => {
         switch (column.key) {
             case 'product_name':
                 return {
                     ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
                     render: (text: any, record: any) => (
                         <Link href={`product/view-product?v_id=${record._id}`}>{record.product_name}</Link>
                     )

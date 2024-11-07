@@ -3,7 +3,7 @@ import {
     SUPPLIER_PRODUCT_LIST_ACTION_CONSTANT,
     SUPPLIER_PRODUCT_LIST_TABLE_HEADER
 } from "@/constants/suppliers.constant";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
@@ -76,7 +76,7 @@ const SupplierProductTable = ({filterData}: any) => {
         }).filter(item => item !== null);
     };
 
-    const getTableData = async () => {
+    const getTableData = useCallback(async () => {
         try {
             setLoading(true);
             const response = await ProductService.getProductListByFilter(filterData);
@@ -85,16 +85,14 @@ const SupplierProductTable = ({filterData}: any) => {
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setLoading(false);
         }
-    }
+    }, [filterData])
 
     useEffect(() => {
-        getTableData().then(() => setLoading(false));
-    }, []);
-
-    useEffect(() => {
-        getTableData().then(() => setLoading(false));
-    }, [filterData]);
+        getTableData().then();
+    }, [getTableData]);
 
     const renderActions = (record: any) => (
         <Dropdown menu={{items: defineMenuItem(record)}}>
@@ -112,6 +110,7 @@ const SupplierProductTable = ({filterData}: any) => {
             case 'product_name':
                 return {
                     ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
                     render: (text: any, record: any) => (
                         <Link href={`product/view-product?id=${record._id}`}>{record.product_name}</Link>
                     )

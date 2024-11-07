@@ -2,7 +2,7 @@ import {Button, Dropdown, Modal, Rate, Table, Tag, Typography} from "antd";
 import {
     PRODUCT_HISTORY_LIST_TABLE_HEADER, SUPPLIER_HISTORY_LIST_ACTION_CONSTANT,
 } from "@/constants/suppliers.constant";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import ProductService from "@/services/product.service";
 import {ProductModel} from "@/models/product.model";
 import {ProductConstant} from "@/constants/product.constant";
@@ -75,7 +75,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
         }).filter(item => item !== null);
     };
 
-    const getTableData = async () => {
+    const getTableData = useCallback(async () => {
         try {
             setLoading(true)
             filterData.status = null;
@@ -86,22 +86,21 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setLoading(false);
         }
-    }
+    }, [filterData])
 
     useEffect(() => {
-        getTableData().then(() => setLoading(false))
-    }, []);
-
-    useEffect(() => {
-        getTableData().then(() => setLoading(false))
-    }, [filterData]);
+        getTableData().then()
+    }, [getTableData]);
 
     const PRODUCT_HISTORY_TABLE_HEADER = PRODUCT_HISTORY_LIST_TABLE_HEADER.map((column) => {
         switch (column.key) {
             case 'product_name':
                 return {
                     ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
                     render: (text: any, record: any) => (
                         <Link href={`product/view-product?v_id=${record._id}`}>{record.product_name}</Link>
                     )
