@@ -30,7 +30,7 @@ const RatingTable = ({form, type, isEdit = true, originalData = null}: any) => {
         } else {
             form.setFieldsValue({rating_score: originalData.rating_score});
         }
-    }, [type, form, ACTIONS_OPTION]);
+    }, [type, form, ACTIONS_OPTION, originalData]);
 
     return (
         <Form.List name="rating_score">

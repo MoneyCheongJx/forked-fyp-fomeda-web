@@ -1,5 +1,5 @@
 import CategoryService from "@/services/category.service";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {SPECIFICATIONS_TABLE_CONSTANTS, SUBCATEGORY_RATING_SCORE_HEADER_CONSTANTS} from "@/constants/category.constant";
 import {Button, Col, Dropdown, Form, Modal, Row, Table, Tag, Typography} from "antd";
 import {EditOutlined, PlusOutlined} from "@ant-design/icons";
@@ -166,7 +166,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const ratingTableFooter = () => (
         <Row className={"justify-end space-x-3"}>
             <Button onClick={() => setIsEditRating(false)}>Cancel</Button>
-            <Button onClick={handleSaveRatingScoreOnClick} type={"primary"}>Saved</Button>
+            <Button onClick={handleSaveRatingScoreOnClick} type={"primary"}>Save</Button>
         </Row>
     )
 
@@ -213,7 +213,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         }
     });
 
-    const getDetailsData = async () => {
+    const getDetailsData = useCallback(async () => {
         try {
             const nameResponse = await CategoryService.findNameById(id);
             setName(nameResponse);
@@ -234,7 +234,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id, isCategory]);
 
     const handleOnUpdate = async () => {
         await getDetailsData();
@@ -242,7 +242,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     useEffect(() => {
         getDetailsData().then();
-    }, []);
+    }, [getDetailsData]);
 
     return (
         <div>

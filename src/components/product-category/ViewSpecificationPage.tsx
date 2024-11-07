@@ -39,22 +39,6 @@ const ViewSpecificationPage = ({specId}: any) => {
         [CategoryConstant.SPECIFICATION_PREFIX]: CategoryService.findSubcategorySpecificationById,
     };
 
-    const getSpecificationData = async () => {
-        const prefix = Object.keys(getSpecificationDataMapping)
-            .find((prefix) => specId.includes(prefix));
-        if (prefix) {
-            setLoading(true)
-            const response = await getSpecificationDataMapping[prefix](specId);
-            setSpecificationData(response);
-            setOriginalSpecificationData(response);
-            setSpecificationType(response.cat_type ?? CategoryConstant.SPECIFICATION);
-            form.setFieldsValue(response);
-            if (!isSpecification) {
-                await getSpecificationFilter(response.subcat_spec_id)
-            }
-        }
-    };
-
     const getSpecificationFilter = async (specId: string) => {
         const prefix = Object.keys(getSpecificationDataMapping).find((prefix) =>
             specId.includes(prefix)
@@ -71,6 +55,22 @@ const ViewSpecificationPage = ({specId}: any) => {
     }
 
     useEffect(() => {
+        const getSpecificationData = async () => {
+            const prefix = Object.keys(getSpecificationDataMapping)
+                .find((prefix) => specId.includes(prefix));
+            if (prefix) {
+                setLoading(true)
+                const response = await getSpecificationDataMapping[prefix](specId);
+                setSpecificationData(response);
+                setOriginalSpecificationData(response);
+                setSpecificationType(response.cat_type ?? CategoryConstant.SPECIFICATION);
+                form.setFieldsValue(response);
+                if (!isSpecification) {
+                    await getSpecificationFilter(response.subcat_spec_id)
+                }
+            }
+        };
+
         getSpecificationData().then(() => setLoading(false));
     }, []);
 
