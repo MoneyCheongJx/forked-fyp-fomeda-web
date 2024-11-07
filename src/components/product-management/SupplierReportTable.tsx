@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ReportConstant} from "@/constants/report.constant";
 import ReportService from "@/services/report.service";
 import Link from "next/link";
@@ -14,7 +14,7 @@ const SupplierReportTable = ({filterData}: any) => {
     const [recordId, setRecordId] = useState<string>();
     const [recordProductName, setRecordProductName] = useState<string>();
 
-    const fetchReportList = async () => {
+    const fetchReportList = useCallback(async () => {
         try {
             setLoading(true)
             filterData.adm_status_list = [ReportConstant.NOTIFIED, ReportConstant.CLOSED];
@@ -28,12 +28,12 @@ const SupplierReportTable = ({filterData}: any) => {
         } finally {
             setLoading(false);
         }
-    }
+    }, [filterData])
 
     useEffect(() => {
         filterData.subcat_ids = filterData.cat_ids;
         fetchReportList().then();
-    }, [filterData]);
+    }, [fetchReportList, filterData]);
 
     const handleUpdate = () => {
         fetchReportList().then();
@@ -50,6 +50,7 @@ const SupplierReportTable = ({filterData}: any) => {
             case 'product_name':
                 return {
                     ...column,
+                    sorter: (a: any, b: any) => (a[column.key] || "").toString().localeCompare((b[column.key] || "").toString()),
                     render: (text: any, record: any) => (
                         <Link href={`/product/details?id=${record.pro_id}`}>{record.product_name}</Link>
                     )

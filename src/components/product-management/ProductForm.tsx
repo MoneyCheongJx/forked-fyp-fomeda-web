@@ -16,7 +16,7 @@ import {
     Upload,
     UploadProps
 } from "antd";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import "../../styles/product.component.css";
 import {CloseOutlined, DeleteOutlined, EditOutlined, InboxOutlined, PictureOutlined,} from "@ant-design/icons";
 import CategoryService from "@/services/category.service";
@@ -66,19 +66,20 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
     const [loading, setLoading] = useState(false);
     const [loadingCategory, setLoadingCategory] = useState(false);
 
-    const fetchSpecificationField = async () => {
-        try {
-            setLoading(true);
-            const response = await CategoryService.findActiveSubcategorySpecificationByCatId(subcatId)
-            if (response) {
-                setSpecificationFields(response);
-            }
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
     useEffect(() => {
+        const fetchSpecificationField = async () => {
+            try {
+                setLoading(true);
+                const response = await CategoryService.findActiveSubcategorySpecificationByCatId(subcatId)
+                if (response) {
+                    setSpecificationFields(response);
+                }
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        }
+
         if (subcatId !== "") {
             fetchSpecificationField().then(() => setLoading(false));
         }
@@ -114,9 +115,9 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         if (!isView) {
             fetchAllCategoryAndSubcategory().then(() => setLoadingCategory(false));
         }
-    }, [type]);
+    }, [isView, type]);
 
-    const fetchProductByProductId = async () => {
+    const fetchProductByProductId = useCallback(async () => {
         try {
             setLoading(true)
             let response;
@@ -135,12 +136,12 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
             console.error(error);
             throw error;
         }
-    }
+    }, [productId, verificationId]);
     useEffect(() => {
         if (productId || verificationId) {
             fetchProductByProductId().then(() => setLoading(false))
         }
-    }, [productId, verificationId]);
+    }, [fetchProductByProductId]);
 
     const onCategoryChange = (value: any) => {
         form.setFieldValue("cat_id", undefined);
@@ -332,44 +333,47 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         <Form form={form} className={"w-full"}>
             <Row>
                 <Col span={12}>
-                    <Form.Item name="product_img" key={"product_img"} className={"mt-8"}>
-                        {(!isEdit && isView) ?
-                            <Layout className={"max-w-96 bg-gray-300"}>
-                                {productData.product_img?.file.preview ?
-                                    <Image src={productData.product_img?.file?.preview} alt="product_img"
-                                           className={"max-h-96 object-cover"}/> :
-                                    <PictureOutlined className={"text-5xl py-44 justify-center text-gray-500"}/>
-                                }
-                            </Layout> :
-                            <Upload.Dragger
-                                accept="image/*"
-                                showUploadList={false}
-                                beforeUpload={() => false}
-                                onChange={handleUpload}
-                                className={"product-drag"}
-                                maxCount={1}
-                                multiple={false}
-                            >
-                                {imageUrl ? (
-                                    <Layout className={"w-full"}>
-                                        <Image src={imageUrl} alt="product_img" className={"max-h-96 object-cover"}
-                                               preview={false}/>
-                                        <Button
-                                            shape="circle"
-                                            icon={<DeleteOutlined/>}
-                                            onClick={handleRemoveImage}
-                                            className={"float-end absolute top-2 right-2"}
-                                        />
-                                    </Layout>
-                                ) : (
-                                    <div className={"py-32"}>
-                                        <InboxOutlined className={"text-5xl"}/>
-                                        <div className={"mt-4"}>Click or drag image file to this area to upload</div>
-                                    </div>
-                                )}
-                            </Upload.Dragger>
-                        }
-                    </Form.Item>
+                    <Row justify={"center"}>
+                        <Form.Item name="product_img" key={"product_img"} className={"mt-8"}>
+                            {(!isEdit && isView) ?
+                                <Layout className={"max-w-96 bg-gray-300"}>
+                                    {productData.product_img?.file.preview ?
+                                        <Image src={productData.product_img?.file?.preview} alt="product_img"
+                                               className={"max-h-96 object-cover"}/> :
+                                        <PictureOutlined className={"text-5xl py-44 justify-center text-gray-500"}/>
+                                    }
+                                </Layout> :
+                                <Upload.Dragger
+                                    accept="image/*"
+                                    showUploadList={false}
+                                    beforeUpload={() => false}
+                                    onChange={handleUpload}
+                                    className={"product-drag"}
+                                    maxCount={1}
+                                    multiple={false}
+                                >
+                                    {imageUrl ? (
+                                        <Layout className={"w-full"}>
+                                            <Image src={imageUrl} alt="product_img" className={"max-h-96 object-cover"}
+                                                   preview={false}/>
+                                            <Button
+                                                shape="circle"
+                                                icon={<DeleteOutlined/>}
+                                                onClick={handleRemoveImage}
+                                                className={"float-end absolute top-2 right-2"}
+                                            />
+                                        </Layout>
+                                    ) : (
+                                        <div className={"py-32"}>
+                                            <InboxOutlined className={"text-5xl"}/>
+                                            <div className={"mt-4"}>Click or drag image file to this area to upload
+                                            </div>
+                                        </div>
+                                    )}
+                                </Upload.Dragger>
+                            }
+                        </Form.Item>
+                    </Row>
                 </Col>
                 <Col span={12} className={"mb-12"}>
                     <Spin spinning={loading}>
