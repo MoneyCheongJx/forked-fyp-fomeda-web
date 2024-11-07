@@ -18,7 +18,6 @@ const ProfileManagementPage = () => {
     const [userType, setUserType] = useState<string | null>(null);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
-    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
     const router = useRouter();
 
     const fetchData = async () => {
@@ -77,15 +76,6 @@ const ProfileManagementPage = () => {
 
     };
 
-    const handleDeleteAccount = () => {
-        setLoading(true);
-        setTimeout(() => {
-            NotificationService.success('Account deleted successfully', "dadsada");
-            setIsDeleteModalVisible(false);
-            setLoading(false);
-        }, 1000);
-    };
-
     const checkEmailDuplicate = async (email: string) => {
         try {
             const response = await AuthenticationService.checkEmailDuplicate(email);
@@ -111,13 +101,13 @@ const ProfileManagementPage = () => {
                         </Button>
                     </Card>
                     <Card style={{width: "500px", flexGrow: 1, marginTop: "20px"}}>
-                        <Title level={3}>Delete account</Title>
+                        <Title level={3}>Deactivate account</Title>
                         <Paragraph>
-                            Deleting the entire account is irreversible in this system. Please ensure you
-                            have carefully considered your decision before proceeding with account deletion.
+                            Deactivate the entire account is irreversible in this system. Please ensure you
+                            have carefully considered your decision before proceeding with account deactivating.
                         </Paragraph>
-                        <Button type="primary" onClick={() => router.push('/management/profile/delete-account')} block>
-                            Delete Account
+                        <Button type="primary" onClick={() => router.push('/management/profile/deactivate-account')} block>
+                            Deactivating Account
                         </Button>
                     </Card>
                 </Col>
