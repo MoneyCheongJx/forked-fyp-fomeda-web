@@ -2,7 +2,7 @@ import {Button, Table, Tag} from "antd";
 import Link from "next/link";
 import {DateTimeUtils} from "@/utils/date-time.utils";
 import {REPORT_PENDING_TABLE_HEADER, ReportConstant} from "@/constants/report.constant";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import ReportService from "@/services/report.service";
 import ReportDetailsModal from "@/components/report/ReportDetailsModal";
 
@@ -14,7 +14,7 @@ const ReportPendingTable = ({filterData}: any) => {
     const [recordId, setRecordId] = useState<string>();
     const [recordProductName, setRecordProductName] = useState<string>();
     
-    const fetchReportList = async () => {
+    const fetchReportList = useCallback(async () => {
         try {
             setLoading(true)
             filterData.adm_status_list = [ReportConstant.PENDING, ReportConstant.NOTIFIED];
@@ -28,11 +28,11 @@ const ReportPendingTable = ({filterData}: any) => {
         } finally {
             setLoading(false);
         }
-    }
+    }, [filterData]);
     
     useEffect(() => {
         fetchReportList().then();
-    }, [filterData]);
+    }, [fetchReportList]);
 
     const handleViewDetails = (record: any) => {
         setRecordId(record._id);
