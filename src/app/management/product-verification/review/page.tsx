@@ -75,9 +75,15 @@ const ProductVerificationDetailsPage = () => {
         }
 
         getVerificationProductDetails().then(() => setLoading(false));
-    }, [id]);
+    }, [form, id]);
 
     useEffect(() => {
+        const calculateStarRating = () => {
+            const scores = productData?.rating_score;
+            const matchRating = scores?.find((score) => totalScore <= score.max_score && totalScore >= score.min_score)
+            setStarRating(matchRating?.rating ?? 0);
+        }
+
         if (productData && totalScore !== undefined) {
             calculateStarRating();
         }
@@ -99,11 +105,7 @@ const ProductVerificationDetailsPage = () => {
         setTotalScore(total);
     };
 
-    const calculateStarRating = () => {
-        const scores = productData?.rating_score;
-        const matchRating = scores?.find((score) => totalScore <= score.max_score && totalScore >= score.min_score)
-        setStarRating(matchRating?.rating ?? 0);
-    }
+
 
     const handleValuesChange = (changedValues: any, allValues: any) => {
         calculateTotalScore(allValues.specification);
@@ -118,6 +120,11 @@ const ProductVerificationDetailsPage = () => {
         }
 
         if (status === ProductConstant.APPROVED) {
+            if(starRating === 0) {
+                MessageService.error("Minimum of 1 star is required to approve a product");
+                return;
+            }
+
             try {
                 await form.validateFields();
             } catch (error) {

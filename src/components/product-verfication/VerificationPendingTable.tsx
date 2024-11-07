@@ -1,6 +1,6 @@
 import {usePathname, useRouter} from "next/navigation";
 import {Button, Table} from "antd";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ProductModel} from "@/models/product.model";
 import ProductService from "@/services/product.service";
 import {ProductConstant, VERIFICATION_PENDING_LIST_TABLE_HEADER} from "@/constants/product.constant";
@@ -13,7 +13,7 @@ const VerificationPendingTable = ({filterData}: any) => {
     const [pendingList, setPendingList] = useState<ProductModel[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const getTableData = async () => {
+    const getTableData = useCallback(async () => {
         try {
             setLoading(true)
             filterData.status = [ProductConstant.PENDING];
@@ -24,16 +24,14 @@ const VerificationPendingTable = ({filterData}: any) => {
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setLoading(false);
         }
-    }
-
-    useEffect(() => {
-        getTableData().then(() => setLoading(false))
-    }, []);
-
-    useEffect(() => {
-        getTableData().then(() => setLoading(false))
     }, [filterData]);
+
+    useEffect(() => {
+        getTableData().then()
+    }, [getTableData]);
 
     const PRODUCT_PENDING_TABLE_HEADER = VERIFICATION_PENDING_LIST_TABLE_HEADER.map((column) => {
         switch (column.key) {
