@@ -53,22 +53,14 @@ const HomePage = () => {
     };
 
     return (
-        // <Carousel className="carousal">
-        //     <div className="container">
-        //         <img src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-        //              alt="xx" />
-        //     </div>
-        // </Carousel>
         <PageLayout title={"About us"}>
-            <Carousel autoplay dots arrows className="mb-8 carousal">
+            <Carousel autoplay={true} dots>
                 {carouselData.map((image, index) => (
-                    // <div className="container">
                         <img
                             key={index}
                             src={image?.image?.base64}
                             alt={`Slide ${index + 1}`}
                         />
-                    // </div>
                 ))}
             </Carousel>
             {contentData.map((content, index) => (
