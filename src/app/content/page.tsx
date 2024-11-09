@@ -54,7 +54,7 @@ const HomePage = () => {
 
     return (
         <PageLayout title={"About us"}>
-            <Carousel autoplay={true} dots>
+            <Carousel autoplay={true} dots className="mb-8 carousal">
                 {carouselData.map((image, index) => (
                         <img
                             key={index}
