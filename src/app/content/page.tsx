@@ -57,6 +57,7 @@ const HomePage = () => {
         <PageLayout title={"About us"}>
             <Carousel autoplay={true} dots className="mb-8 carousal">
                 {carouselData.map((image, index) => (
+                    <div key={index}>
                         <Image
                             src={image?.image?.base64}
                             alt={`Slide ${index + 1}`}
@@ -66,6 +67,7 @@ const HomePage = () => {
                             objectFit="cover"
                             priority
                         />
+                    </div>
                 ))}
             </Carousel>
             {contentData.map((content, index) => (
