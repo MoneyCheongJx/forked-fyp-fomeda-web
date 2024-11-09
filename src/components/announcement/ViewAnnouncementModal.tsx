@@ -1,17 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {Modal, Form, Typography, List, Card, Image, Empty} from 'antd';
+import {Modal, Typography, List, Card, Image, Empty} from 'antd';
 import { DateTimeUtils } from "@/utils/date-time.utils";
 
 const {Text, Paragraph} = Typography;
 
 const ViewAnnouncementModal = ({visible, onClose, data}: any) => {
-    const [form] = Form.useForm();
     const [originalData, setOriginalData] = useState({...data});
 
     useEffect(() => {
         setOriginalData({...data});
-        form.setFieldsValue({...data});
-    }, [data, form]);
+    }, [data]);
 
     const handleOnClose = async () => {
         onClose();
