@@ -31,7 +31,7 @@ const ViewAnnouncementModal = ({visible, onClose, data}: any) => {
                     dataSource={data?.file_uploaded}
                     renderItem={(file: any) => (
                         <List.Item>
-                            <Card style={{width: '100%', padding: 0}} bodyStyle={{ padding: '2px 16px' }}>
+                            <Card style={{width: '100%', padding: 0}} styles={{body: {padding: '2px 16px' }}}>
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                     <Image
                                         src={file?.thumbUrl}

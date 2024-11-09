@@ -22,7 +22,6 @@ const AdminManagementPage = () => {
     const [isAddModalVisible, setAddModalVisible] = useState(false);
     const [isEditModalVisible, setEditModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const { redirecting } = useAuth();
     const router = useRouter();
 
     const showEditModal = () => {
@@ -43,7 +42,7 @@ const AdminManagementPage = () => {
     const showAddModal = () => {
         setAddModalVisible(true);
     };
-
+    
     const fetchData = async () => {
         try {
             const response = await AuthenticationService.getAdmins();
@@ -55,25 +54,25 @@ const AdminManagementPage = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
-        if (redirecting) return;
-        else fetchData();
+        fetchData();
     }, [router]);
 
     useEffect(() => {
+        const filterData = () => {
+            const filtered = data.filter((admin) => {
+                const matchesName = searchName === '' || new RegExp(searchName, 'i').test(admin.fullname)
+                const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(admin.company_name)
+                return matchesName && matchesCompany;
+            })
+            setFilteredData(filtered);
+        };
+
         filterData();
     }, [searchName, searchCompany, data]);
 
-    const filterData = () => {
-        const filtered = data.filter((admin) => {
-            const matchesName = searchName === '' || new RegExp(searchName, 'i').test(admin.fullname)
-            const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(admin.company_name)
-            return matchesName && matchesCompany;
-        })
-        setFilteredData(filtered);
-    };
 
     const handleOnClick = (text: any, record: any) => {
         setSelectedRecord(record)

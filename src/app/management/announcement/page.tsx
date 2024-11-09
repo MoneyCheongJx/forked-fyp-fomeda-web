@@ -24,7 +24,6 @@ const AnnouncementManagementPage = () => {
     const [selectedDateRange, setSelectedDateRange] = useState([null, null]);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [searchText, setSearchText] = useState('');
-    const { redirecting } = useAuth();
     const {RangePicker} = DatePicker;
     const router = useRouter();
 
@@ -42,8 +41,7 @@ const AnnouncementManagementPage = () => {
     }
 
     useEffect(() => {
-        if (redirecting) return;
-        else fetchData();
+        fetchData();
     }, [router]);
 
     const showAddModal = () => {

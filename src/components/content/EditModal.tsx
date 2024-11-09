@@ -154,6 +154,7 @@ const EditModal = ({data, type, isOpen, title, fields, onSubmit, onCancel}: any)
                                             afterOpenChange: (visible) => !visible && setPreviewImage(''),
                                         }}
                                         src={previewImage}
+                                        alt={""}
                                     />
                                 )}
                             </Form.Item>)}

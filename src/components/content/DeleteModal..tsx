@@ -25,7 +25,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({data, type, isOpen, title, onS
                             <Paragraph>Are you sure you want to delete the following record?</Paragraph>
                             <Paragraph>
                                 {type === 'delete_carousel' &&
-                                    (<Image src={data?.image?.base64} preview={false}/>)}
+                                    (<Image src={data?.image?.base64} alt={data?.image?.name} preview={false}/>)}
                                 {type === 'delete_content' &&
                                     (<div>
                                         <Text strong>Content title: </Text>

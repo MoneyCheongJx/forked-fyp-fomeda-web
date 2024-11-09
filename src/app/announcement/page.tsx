@@ -2,7 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import PageLayout from "@/app/page";
-import {Col, Input, Row, DatePicker, Card, List, Typography} from "antd";
+import {Col, Input, Row, DatePicker, Card, List, Typography, Image} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import AnnouncementService from "@/services/announcement.service";
 import {DateTimeUtils} from "@/utils/date-time.utils";
@@ -100,7 +100,7 @@ const AnnouncementPage = () => {
                                     onClick={() => handleOnClick(item)}
                                     title={item?.title}
                                     cover={item?.file_uploaded?.length ? (
-                                        <img alt={item?.title} src={item?.file_uploaded?.[0]?.thumbUrl}/>
+                                        <Image alt={item?.title} src={item?.file_uploaded?.[0]?.thumbUrl} preview={false}/>
                                     ) : null}
                                     hoverable
                                 >
