@@ -19,7 +19,7 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
             setFileList([]);
             form.resetFields();
         }
-    }, [isOpen]);
+    }, [isOpen, form]);
 
     const getBase64 = (file: any) =>
         new Promise((resolve, reject) => {
@@ -141,6 +141,7 @@ const AddModal = ({isOpen, type, title, fields, onSubmit, onCancel}: any) => {
                                             afterOpenChange: (visible) => !visible && setPreviewImage(''),
                                         }}
                                         src={previewImage}
+                                        alt={""}
                                     />
                                 )}
                             </Form.Item>)}

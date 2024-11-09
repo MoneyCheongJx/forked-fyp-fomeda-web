@@ -16,13 +16,12 @@ const ProductPage = () => {
     const [categoryOptions, setCategoryOptions] = useState<any[]>([]);
     const [subcategoryMap, setSubcategoryMap] = useState<{ [key: string]: any[] }>({});
     const [subcategoryOptions, setSubcategoryOptions] = useState<any[]>([]);
-    const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+    const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
     const [filterModel, setFilterModel] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [productList, setProductList] = useState<any>([]);
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [skip, setSkip] = useState(0);
-    const [isLoadMore, setIsLoadMore] = useState(false);
     const [compareList, setCompareList] = useState<any[]>([]);
     const [compareData, setCompareData] = useState<any[]>([]);
     const [isCompareModelOpen, setIsCompareModelOpen] = useState(false);
@@ -31,9 +30,60 @@ const ProductPage = () => {
 
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const savedCatId = urlParams.get("cat_id");
+        const savedSubcatId = urlParams.get("subcat_id");
+
+        if (savedCatId) {
+            if (subcategoryMap[savedCatId]) {
+                setSubcategoryOptions(subcategoryMap[savedCatId]);
+            } else {
+                setSubcategoryOptions([]);
+            }
+
+            form.setFieldsValue({ cat_id: savedCatId });
+            setFilterModel((prev: any) => ({ ...prev, cat_id: savedCatId }));
+        }
+        if(savedSubcatId) {
+            form.setFieldsValue({ subcat_id: savedSubcatId });
+            setFilterModel((prev: any) => ({ ...prev, subcat_id: savedSubcatId }));
+            setSelectedSubcategory(savedSubcatId);
+        }
+
+    }, [form, subcategoryMap]);
+
+    useEffect(() => {
+        const handlePopState = (event: any) => {
+            const savedState = event.state?.filterModel;
+            if(savedState){
+                setFilterModel(savedState);
+                form.setFieldsValue(savedState);
+                if (savedState.cat_id) setSubcategoryOptions(subcategoryMap[savedState.cat_id] || []);
+                if (savedState.subcat_id) setSelectedSubcategory(savedState.subcat_id);
+            }
+        };
+
+        window.addEventListener("popstate", handlePopState);
+
+        return () => {
+            window.removeEventListener("popstate", handlePopState);
+        };
+    }, [form, subcategoryMap]);
+
     const handleSelectedCategory = (value: any) => {
         form.setFieldsValue({subcat_id: null});
         setSelectedSubcategory(null);
+
+        const updatedFilterModel = { ...filterModel, cat_id: value, subcat_id: null };
+        setFilterModel(updatedFilterModel);
+        form.setFieldsValue(updatedFilterModel);
+
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set("cat_id", value);
+        newUrl.searchParams.delete("subcat_id");
+        window.history.pushState({ filterModel: updatedFilterModel }, "", newUrl.toString());
+
         if (subcategoryMap[value]) {
             setSubcategoryOptions(subcategoryMap[value]);
         } else {
@@ -43,7 +93,14 @@ const ProductPage = () => {
 
     const handleSelectedSubcategory = (value: any) => {
         setSelectedSubcategory(value);
-        setFilterModel({...filterModel, subcat_id: value});
+
+        const updatedFilterModel = { ...filterModel, subcat_id: value };
+        setFilterModel(updatedFilterModel);
+        form.setFieldsValue(updatedFilterModel);
+
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.set("subcat_id", value);
+        window.history.pushState({ filterModel: updatedFilterModel }, "", newUrl.toString());
     }
 
     const handleClearCategory = () => {
@@ -116,18 +173,17 @@ const ProductPage = () => {
         });
     };
 
-    const fetchProductList = async (currSkip: number) => {
+    const fetchProductList = useCallback(async (currSkip: number, append: boolean = false) => {
         try {
-            if(!isLoadMore) {
+            if(!append) {
                 setLoading(true);
             }
 
             const response = await ProductService.getConsumerProductByFilter(filterModel, currSkip, limit);
             if (response) {
                 const {products, total} = response;
-                if (isLoadMore) {
+                if (append) {
                     setProductList((prevList: any) => [...prevList, ...products]);
-                    setIsLoadMore(false);
                 } else {
                     setProductList(products);
                 }
@@ -139,13 +195,7 @@ const ProductPage = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        if (isLoadMore) {
-            fetchProductList(skip).then();
-        }
-    }, [isLoadMore]);
+    }, [filterModel]);
 
     const debouncedFetchProductList = useCallback(() => {
         if (debounceTimeout.current) {
@@ -156,7 +206,7 @@ const ProductPage = () => {
             setSkip(0);
             fetchProductList(0).then();
         }, 500);
-    }, [filterModel]);
+    }, [fetchProductList]);
 
     useEffect(() => {
         if (filterModel && selectedSubcategory) {
@@ -164,9 +214,9 @@ const ProductPage = () => {
         }
     }, [filterModel, debouncedFetchProductList, selectedSubcategory]);
 
-    const handleLoadMore = () => {
-        setIsLoadMore(true);
+    const handleLoadMore = async () => {
         setSkip((prevSkip) => prevSkip + limit);
+        await fetchProductList(skip + limit, true);
     };
 
     const handleCompareChange = (product: any, isChecked: boolean) => {

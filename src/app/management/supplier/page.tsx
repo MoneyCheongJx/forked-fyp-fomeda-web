@@ -15,7 +15,6 @@ const SupplierManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<string>('pending');
     const [userData, setUserData] = useState<CustomJwtPayload>();
-    const { redirecting } = useAuth();
     const router = useRouter();
 
     const handleChange = (value: string) => {
@@ -39,7 +38,6 @@ const SupplierManagementPage = () => {
     };
 
     useEffect(() => {
-        if (redirecting) return;
     }, [router]);
 
     return (

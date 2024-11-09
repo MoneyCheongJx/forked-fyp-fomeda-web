@@ -27,18 +27,18 @@ const RejectionInfoPage = () => {
     });
 
     useEffect(() => {
-        fetchRejectionData()
-    }, []);
+        const fetchRejectionData = async () => {
+            try {
+                const response = await AuthenticationService.getRejectionInfo(userId);
+                setData(response)
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        };
 
-    const fetchRejectionData = async () => {
-        try {
-            const response = await AuthenticationService.getRejectionInfo(userId);
-            setData(response)
-        } catch (error) {
-            console.error(error);
-            throw error;
-        } 
-    }
+        fetchRejectionData()
+    }, [userId]);
 
     const handleAppealClick = () => {
         router.push(`/appeal/${userId}`);

@@ -28,7 +28,6 @@ const RoleManagementPage = () => {
     const [confirmType, setConfirmType] = useState<ConfirmType | undefined>(undefined);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [userData, setUserData] = useState<CustomJwtPayload>();
-    const { redirecting } = useAuth();
     const router = useRouter();
 
     const showEditModal = () => {
@@ -72,8 +71,7 @@ const RoleManagementPage = () => {
     }
 
     useEffect(() => {
-        if (redirecting) return;
-        else fetchData();
+        fetchData();
     }, [router]);
 
     const handleActionsOnClick = (key: string, record: any) => {

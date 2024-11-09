@@ -22,43 +22,43 @@ const RejectedTabContent : React.FC<RejectedTabContentProps> = ({setLoading}) =>
     const [selectedRecord, setSelectedRecord] = useState(null);
     const {RangePicker} = DatePicker;
 
-    const fetchData = async () => {
-        try {
-            const response = await AuthenticationService.getRejectedSuppliers();
-            setData(response)
-            setFilteredData(response)
-        } catch (error) {
-            console.error(error);
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    }
-
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await AuthenticationService.getRejectedSuppliers();
+                setData(response)
+                setFilteredData(response)
+            } catch (error) {
+                console.error(error);
+                throw error;
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchData();
-    }, []);
+    }, [setLoading]);
 
     useEffect(() => {
+        const filterData = () => {
+            const filtered = data.filter((supplier) => {
+                const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
+                const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
+
+                const lastRejectedDate = new Date(supplier.last_rejected_on)?.setHours(0, 0, 0, 0);
+                const [start, end] = dateRange || [null, null];
+                const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+                const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
+
+                const matchesDate = startDate && endDate ? lastRejectedDate >= startDate && lastRejectedDate <= endDate : true;
+
+                return matchesName && matchesCompany && matchesDate;
+            })
+            setFilteredData(filtered);
+        };
+
         filterData();
     }, [searchName, searchCompany, dateRange, data]);
-
-    const filterData = () => {
-        const filtered = data.filter((supplier) => {
-            const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
-            const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
-
-            const lastRejectedDate = new Date(supplier.last_rejected_on)?.setHours(0, 0, 0, 0);
-            const [start, end] = dateRange || [null, null];
-            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
-            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
-
-            const matchesDate = startDate && endDate ? lastRejectedDate >= startDate && lastRejectedDate <= endDate : true;
-
-            return matchesName && matchesCompany && matchesDate;
-        })
-        setFilteredData(filtered);
-    };
 
     const handleOnClick = (text: any, record: any) => {
         setSelectedRecord(record)

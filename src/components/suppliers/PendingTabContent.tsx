@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import {Button, Col, Input, Row, Table, DatePicker} from "antd";
 import {SUPPLIERS_PENDING_TAB_TABLE_HEADER_CONSTANTS} from "@/constants/suppliers.constant";
 import AuthenticationService from "@/services/authentication.service";
@@ -22,43 +22,43 @@ const PendingTabContent : React.FC<PendingTabContentProps> = ({setLoading}) => {
     const [selectedRecord, setSelectedRecord] = useState(null);
     const {RangePicker} = DatePicker;
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
+            setLoading(true);
             const response = await AuthenticationService.getPendingSuppliers();
-            setData(response)
-            setFilteredData(response)
+            setData(response);
+            setFilteredData(response);
         } catch (error) {
             console.error(error);
-            throw error;
         } finally {
             setLoading(false);
         }
-    }
+    }, [setLoading]);
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [setLoading, fetchData]);
 
     useEffect(() => {
+        const filterData = () => {
+            const filtered = data.filter((supplier) => {
+                const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
+                const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
+
+                const registerDate = new Date(supplier.registered_on)?.setHours(0, 0, 0, 0);
+                const [start, end] = dateRange || [null, null];
+                const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+                const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
+
+                const matchesDate = startDate && endDate ? registerDate >= startDate && registerDate <= endDate : true;
+
+                return matchesName && matchesCompany && matchesDate;
+            })
+            setFilteredData(filtered);
+        };
+
         filterData();
     }, [searchName, searchCompany, dateRange, data]);
-
-    const filterData = () => {
-        const filtered = data.filter((supplier) => {
-            const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
-            const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
-
-            const registerDate = new Date(supplier.registered_on)?.setHours(0, 0, 0, 0);
-            const [start, end] = dateRange || [null, null];
-            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
-            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
-
-            const matchesDate = startDate && endDate ? registerDate >= startDate && registerDate <= endDate : true;
-
-            return matchesName && matchesCompany && matchesDate;
-        })
-        setFilteredData(filtered);
-    };
 
     const handleOnClick = (text: any, record: any) => {
         setSelectedRecord(record)

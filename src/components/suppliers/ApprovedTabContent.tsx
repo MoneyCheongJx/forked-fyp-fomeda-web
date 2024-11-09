@@ -22,43 +22,44 @@ const ApprovedTabContent : React.FC<HistoryTabContentProps> = ({setLoading}) => 
     const [selectedRecord, setSelectedRecord] = useState(null);
     const {RangePicker} = DatePicker;
 
-    const fetchData = async () => {
-        try {
-            const response = await AuthenticationService.getApprovedSuppliers();
-            setData(response)
-            setFilteredData(response)
-        } catch (error) {
-            console.error(error);
-            throw error;
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await AuthenticationService.getApprovedSuppliers();
+                setData(response)
+                setFilteredData(response)
+            } catch (error) {
+                console.error(error);
+                throw error;
+            } finally {
+                setLoading(false);
+            }
         }
-    }
 
-    useEffect(() => {
         fetchData();
-    }, []);
+    }, [setLoading]);
 
     useEffect(() => {
+        const filterData = () => {
+            const filtered = data.filter((supplier) => {
+                const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
+                const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
+
+                const approvedDate = new Date(supplier.approved_on)?.setHours(0, 0, 0, 0);;
+                const [start, end] = dateRange || [null, null];
+                const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
+                const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
+
+                const matchesDate = startDate && endDate ? approvedDate >= startDate && approvedDate <= endDate : true;
+
+                return matchesName && matchesCompany && matchesDate;
+            })
+            setFilteredData(filtered);
+        };
+
         filterData();
     }, [searchName, searchCompany, dateRange, data]);
 
-    const filterData = () => {
-        const filtered = data.filter((supplier) => {
-            const matchesName = searchName === '' || new RegExp(searchName, 'i').test(supplier.fullname)
-            const matchesCompany = searchCompany === '' || new RegExp(searchCompany, 'i').test(supplier.company_name)
-
-            const approvedDate = new Date(supplier.approved_on)?.setHours(0, 0, 0, 0);;
-            const [start, end] = dateRange || [null, null];
-            const startDate = start ? new Date(start).setHours(0, 0, 0, 0) : null;
-            const endDate = end ? new Date(end).setHours(0, 0, 0, 0) : null;
-
-            const matchesDate = startDate && endDate ? approvedDate >= startDate && approvedDate <= endDate : true;
-
-            return matchesName && matchesCompany && matchesDate;
-        })
-        setFilteredData(filtered);
-    };
 
     const handleOnClick = (text: any, record: any) => {
         setSelectedRecord(record)

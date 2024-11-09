@@ -141,7 +141,7 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         if (productId || verificationId) {
             fetchProductByProductId().then(() => setLoading(false))
         }
-    }, [fetchProductByProductId]);
+    }, [fetchProductByProductId, productId, verificationId]);
 
     const onCategoryChange = (value: any) => {
         form.setFieldValue("cat_id", undefined);

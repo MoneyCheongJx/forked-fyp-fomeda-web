@@ -20,43 +20,43 @@ const ProfileManagementPage = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const fetchData = async () => {
-        let userData;
-        const token = Cookies.get('token');
-        if (token) {
+    useEffect(() => {
+        const fetchData = async () => {
+            let userData;
+            const token = Cookies.get('token');
+            if (token) {
+                try {
+                    userData = jwtDecode<CustomJwtPayload>(token);
+                    setUserType(userData?.role ?? null);
+                } catch (error) {
+                    console.error(error);
+                    ;
+                }
+            }
+            const userId = userData?.user_id ?? "UndefinedAdmin";
+
             try {
-                userData = jwtDecode<CustomJwtPayload>(token);
-                setUserType(userData?.role ?? null);
+                const response = await AuthenticationService.getProfileInfo(userId);
+                const formattedResponse = {
+                    ...response,
+                    ...(response?.created_on && { created_on: DateTimeUtils.formatDate(response.created_on) }),
+                    ...(response?.registered_on && { registered_on: DateTimeUtils.formatDate(response.registered_on) }),
+                    ...(response?.approved_on && { approved_on: DateTimeUtils.formatDate(response.approved_on) }),
+                }
+                form.setFieldsValue({ ...formattedResponse });
+                setData(formattedResponse);
             } catch (error) {
                 console.error(error);
-                ;
+                NotificationService.error(
+                    'Error Fetching Profile Info',
+                    'An error occurred while trying to retrieve profile information. Please try again later.'
+                );
+                throw error;
+            } finally {
+                setLoading(false);
             }
         }
-        const userId = userData?.user_id ?? "UndefinedAdmin";
-
-        try {
-            const response = await AuthenticationService.getProfileInfo(userId);
-            const formattedResponse = {
-                ...response,
-                ...(response?.created_on && { created_on: DateTimeUtils.formatDate(response.created_on) }),
-                ...(response?.registered_on && { registered_on: DateTimeUtils.formatDate(response.registered_on) }),
-                ...(response?.approved_on && { approved_on: DateTimeUtils.formatDate(response.approved_on) }),
-            }
-            form.setFieldsValue({ ...formattedResponse });
-            setData(formattedResponse);
-        } catch (error) {
-            console.error(error);
-            NotificationService.error(
-                'Error Fetching Profile Info',
-                'An error occurred while trying to retrieve profile information. Please try again later.'
-            );
-            throw error;
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    useEffect(() => {
+        
         fetchData();
     }, [router, form]);
 

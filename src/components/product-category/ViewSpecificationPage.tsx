@@ -30,31 +30,31 @@ const ViewSpecificationPage = ({specId}: any) => {
         label: option.label,
     }));
 
-    const getSpecificationDataMapping: any = {
-        [CategoryConstant.GENERAL_SUBSPECIFICATION_PREFIX]: CategoryService.findGeneralSubspecificationById,
-        [CategoryConstant.BASE_SUBSPECIFICATION_PREFIX]: CategoryService.findBaseSubspecificationById,
-        [CategoryConstant.SUBSPECIFICATION_PREFIX]: CategoryService.findSubcategorySubspecificationById,
-        [CategoryConstant.GENERAL_SPECIFICATION_PREFIX]: CategoryService.findGeneralSpecificationById,
-        [CategoryConstant.BASE_SPECIFICATION_PREFIX]: CategoryService.findBaseSpecificationById,
-        [CategoryConstant.SPECIFICATION_PREFIX]: CategoryService.findSubcategorySpecificationById,
-    };
+    useEffect(() => {
+        const getSpecificationDataMapping: any = {
+            [CategoryConstant.GENERAL_SUBSPECIFICATION_PREFIX]: CategoryService.findGeneralSubspecificationById,
+            [CategoryConstant.BASE_SUBSPECIFICATION_PREFIX]: CategoryService.findBaseSubspecificationById,
+            [CategoryConstant.SUBSPECIFICATION_PREFIX]: CategoryService.findSubcategorySubspecificationById,
+            [CategoryConstant.GENERAL_SPECIFICATION_PREFIX]: CategoryService.findGeneralSpecificationById,
+            [CategoryConstant.BASE_SPECIFICATION_PREFIX]: CategoryService.findBaseSpecificationById,
+            [CategoryConstant.SPECIFICATION_PREFIX]: CategoryService.findSubcategorySpecificationById,
+        };
 
-    const getSpecificationFilter = async (specId: string) => {
-        const prefix = Object.keys(getSpecificationDataMapping).find((prefix) =>
-            specId.includes(prefix)
-        );
-        if (prefix) {
-            const response = await getSpecificationDataMapping[prefix](specId);
-            if (response) {
-                setSpecificationOptions([{
-                    value: response._id,
-                    label: response.subcat_spec_name,
-                }]);
+        const getSpecificationFilter = async (specId: string) => {
+            const prefix = Object.keys(getSpecificationDataMapping).find((prefix) =>
+                specId.includes(prefix)
+            );
+            if (prefix) {
+                const response = await getSpecificationDataMapping[prefix](specId);
+                if (response) {
+                    setSpecificationOptions([{
+                        value: response._id,
+                        label: response.subcat_spec_name,
+                    }]);
+                }
             }
         }
-    }
 
-    useEffect(() => {
         const getSpecificationData = async () => {
             const prefix = Object.keys(getSpecificationDataMapping)
                 .find((prefix) => specId.includes(prefix));
@@ -72,7 +72,7 @@ const ViewSpecificationPage = ({specId}: any) => {
         };
 
         getSpecificationData().then(() => setLoading(false));
-    }, []);
+    }, [form, isSpecification, specId]);
 
 
     const handleOnModelOpen = async () => {

@@ -26,26 +26,26 @@ const AppealPage = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
-    const fetchData = async () => {
-        try {
-            const response = await AuthenticationService.getAppealInfo(userId);
-            form.setFieldsValue({...response});
-            setData(response);
-        } catch (error) {
-            console.error(error);
-            NotificationService.error(
-                'Error Fetching Registration Info',
-                'An error occurred while trying to retrieve registration information. Please try again later.'
-            );
-            throw error;
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await AuthenticationService.getAppealInfo(userId);
+                form.setFieldsValue({...response});
+                setData(response);
+            } catch (error) {
+                console.error(error);
+                NotificationService.error(
+                    'Error Fetching Registration Info',
+                    'An error occurred while trying to retrieve registration information. Please try again later.'
+                );
+                throw error;
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        
         fetchData();
-    }, [router, form]);
+    }, [userId, router, form]);
 
     const onFinish = async (values: FormValues) => {
         const { confirm_email_address, ...payload} = values

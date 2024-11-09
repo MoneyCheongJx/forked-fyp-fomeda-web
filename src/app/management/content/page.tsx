@@ -16,10 +16,9 @@ import EditModal from "@/components/content/EditModal";
 import DeleteModal from "@/components/content/DeleteModal.";
 import {PlusOutlined} from "@ant-design/icons";
 import {DateTimeUtils} from "@/utils/date-time.utils";
-import { useAuth } from "@/app/(auth)/context/auth-context";
-import { useRouter } from 'next/navigation';
-import { jwtDecode } from "jwt-decode";
-import { CustomJwtPayload } from "@/models/jwt.model";
+import {useRouter} from 'next/navigation';
+import {jwtDecode} from "jwt-decode";
+import {CustomJwtPayload} from "@/models/jwt.model";
 import Cookies from 'js-cookie';
 
 const ContentManagementPage = () => {
@@ -32,16 +31,12 @@ const ContentManagementPage = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [modalConfig, setModalConfig] = useState<any>({});
     const [userData, setUserData] = useState<CustomJwtPayload>();
-    const { redirecting } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (redirecting) return;
-        else {
-            fetchCarouselData();
-            fetchContentData();
-            fetchHistoryData();
-        }
+        fetchCarouselData();
+        fetchContentData();
+        fetchHistoryData();
     }, [router]);
 
     const fetchCarouselData = async () => {
@@ -118,7 +113,7 @@ const ContentManagementPage = () => {
 
         const payload = {
             ...data,
-            ...(type.startsWith('add_') ? { created_by: userId } : {}),
+            ...(type.startsWith('add_') ? {created_by: userId} : {}),
             last_updated_by: userId
         }
 
@@ -189,7 +184,7 @@ const ContentManagementPage = () => {
                     return {
                         ...column,
                         render: (image: any) => (
-                            <Image src={image?.base64} width="25%"/>
+                            <Image src={image?.base64} alt={image?.name} width="25%"/>
                         ),
                     };
                 case 'no':
