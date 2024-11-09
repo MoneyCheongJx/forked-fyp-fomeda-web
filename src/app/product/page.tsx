@@ -22,7 +22,6 @@ const ProductPage = () => {
     const [productList, setProductList] = useState<any>([]);
     const [totalProducts, setTotalProducts] = useState<number>(0);
     const [skip, setSkip] = useState(0);
-    const [isLoadMore, setIsLoadMore] = useState(false);
     const [compareList, setCompareList] = useState<any[]>([]);
     const [compareData, setCompareData] = useState<any[]>([]);
     const [isCompareModelOpen, setIsCompareModelOpen] = useState(false);
@@ -174,18 +173,17 @@ const ProductPage = () => {
         });
     };
 
-    const fetchProductList = async (currSkip: number) => {
+    const fetchProductList = useCallback(async (currSkip: number, append: boolean = false) => {
         try {
-            if(!isLoadMore) {
+            if(!append) {
                 setLoading(true);
             }
 
             const response = await ProductService.getConsumerProductByFilter(filterModel, currSkip, limit);
             if (response) {
                 const {products, total} = response;
-                if (isLoadMore) {
+                if (append) {
                     setProductList((prevList: any) => [...prevList, ...products]);
-                    setIsLoadMore(false);
                 } else {
                     setProductList(products);
                 }
@@ -197,13 +195,7 @@ const ProductPage = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        if (isLoadMore) {
-            fetchProductList(skip).then();
-        }
-    }, [isLoadMore]);
+    }, [filterModel]);
 
     const debouncedFetchProductList = useCallback(() => {
         if (debounceTimeout.current) {
@@ -214,7 +206,7 @@ const ProductPage = () => {
             setSkip(0);
             fetchProductList(0).then();
         }, 500);
-    }, [filterModel]);
+    }, [fetchProductList]);
 
     useEffect(() => {
         if (filterModel && selectedSubcategory) {
@@ -222,9 +214,9 @@ const ProductPage = () => {
         }
     }, [filterModel, debouncedFetchProductList, selectedSubcategory]);
 
-    const handleLoadMore = () => {
-        setIsLoadMore(true);
+    const handleLoadMore = async () => {
         setSkip((prevSkip) => prevSkip + limit);
+        await fetchProductList(skip + limit, true);
     };
 
     const handleCompareChange = (product: any, isChecked: boolean) => {
