@@ -54,6 +54,13 @@ export default function VerificationPage() {
                         `Verification Code Successful`,
                         `Valid verification code was entered.`
                     );
+                    Cookies.set('isDeleteVerified', 'true',
+                        {
+                            expires: 10 / 1440,
+                            path: '/',
+                            secure: true,
+                            sameSite: 'None',
+                        });
                     router.push(`/management/profile/deactivate-account/${userId}`);
                 } else {
                     NotificationService.error(
