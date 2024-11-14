@@ -15,15 +15,11 @@ export function middleware(req: NextRequest) {
 
     console.log('all cookies', req.cookies)
     if (isResetPasswordNavigation) {
-        console.log('isResetPasswordNavigation', isResetPasswordNavigation)
-        console.log('isResetVerified', isResetVerified)
 
         if (isResetVerified !== 'true') {
             return NextResponse.redirect(new URL('/forget-password', req.url));
         }
     } else if (isManagementNavigation) {
-        console.log('isManagementNavigation', isManagementNavigation)
-        console.log('token', token)
 
         if (!token)
             return NextResponse.redirect(new URL('/content', req.url));
@@ -36,10 +32,6 @@ export function middleware(req: NextRequest) {
         }
 
         // skip module checking for profile navigation but requires checking for token
-        console.log('isProfileNavigation', isProfileNavigation)
-        console.log('isDeleteAccountNavigation', isDeleteAccountNavigation)
-        console.log('token', token)
-
         if (isProfileNavigation) {
             if (isDeleteAccountNavigation) {
                 if (isDeleteVerified !== 'true') {
