@@ -13,6 +13,7 @@ export function middleware(req: NextRequest) {
     const isDeleteVerified = req.cookies.get('isDeleteVerified')?.value;
     const token = req.cookies.get('token')?.value;
 
+    console.log('all cookies', req.cookies)
     if (isResetPasswordNavigation) {
         console.log('isResetPasswordNavigation', isResetPasswordNavigation)
         console.log('isResetVerified', isResetVerified)
