@@ -54,6 +54,13 @@ export default function VerificationPage() {
                         `Verification Code Successful`,
                         `Valid verification code was entered.`
                     );
+                    Cookies.set('isResetVerified', 'true',
+                        {
+                            expires: 10 / 1440,
+                            path: '/',
+                            secure: true,
+                            sameSite: 'None',
+                        });
                     router.push(`/reset-password/${userId}`);
                 } else {
                     NotificationService.error(
@@ -124,7 +131,8 @@ export default function VerificationPage() {
                             style={{width: "440px"}}
                         >
                             <Title level={2}>Verification code</Title>
-                            <Typography style={{paddingTop: '5px'}}>Please click the send code link to send verification code to the email.</Typography>
+                            <Typography style={{paddingTop: '5px'}}>Please click the send code link to send verification
+                                code to the email.</Typography>
                             <Row align="middle">
                                 <Col>
                                     <Form.Item
