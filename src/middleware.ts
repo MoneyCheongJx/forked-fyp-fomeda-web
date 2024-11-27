@@ -13,11 +13,14 @@ export function middleware(req: NextRequest) {
     const isDeleteVerified = req.cookies.get('isDeleteVerified')?.value;
     const token = req.cookies.get('token')?.value;
 
+    console.log('all cookies', req.cookies)
     if (isResetPasswordNavigation) {
+
         if (isResetVerified !== 'true') {
             return NextResponse.redirect(new URL('/forget-password', req.url));
         }
     } else if (isManagementNavigation) {
+
         if (!token)
             return NextResponse.redirect(new URL('/content', req.url));
 
