@@ -1,4 +1,4 @@
-import {Card, Checkbox, Image, Rate, Typography} from "antd";
+import {Card, Checkbox, Col, Image, Rate, Row, Typography} from "antd";
 import {ReadOutlined} from "@ant-design/icons";
 import {useRouter} from "next/navigation";
 
@@ -25,9 +25,11 @@ const ProductTile = ({productData, onCompareChange, isChecked}: any) => {
                   </Typography>,
               ]}
               className={"w-72"}>
-            <h5>{productData.product_name}</h5>
-            <div>{productData.model_no}</div>
-            <Rate value={productData.rating} disabled/>
+            <Col className={"h-20"}>
+                <h5>{productData.product_name}</h5>
+                <div>{productData.model_no}</div>
+                <Rate value={productData.rating} disabled/>
+            </Col>
         </Card>
     )
 }

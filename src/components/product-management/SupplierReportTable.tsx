@@ -17,6 +17,9 @@ const SupplierReportTable = ({filterData}: any) => {
     const fetchReportList = useCallback(async () => {
         try {
             setLoading(true)
+            if(filterData.search){
+                filterData.search = filterData.search.trim();
+            }
             filterData.adm_status_list = [ReportConstant.NOTIFIED, ReportConstant.CLOSED];
             const response = await ReportService.getSupplierReportListByFilter(filterData);
             if (response) {

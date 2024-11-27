@@ -79,6 +79,9 @@ const SupplierProductTable = ({filterData}: any) => {
     const getTableData = useCallback(async () => {
         try {
             setLoading(true);
+            if(filterData.search){
+                filterData.search = filterData.search.trim();
+            }
             const response = await ProductService.getProductListByFilter(filterData);
             const sortedResponse = response.toSorted((a: any, b: any) => a.product_name.localeCompare(b.product_name));
             setProductList(sortedResponse);

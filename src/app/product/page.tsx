@@ -179,6 +179,9 @@ const ProductPage = () => {
                 setLoading(true);
             }
 
+            if(filterModel.search) {
+                filterModel.search = filterModel.search.trim();
+            }
             const response = await ProductService.getConsumerProductByFilter(filterModel, currSkip, limit);
             if (response) {
                 const {products, total} = response;
@@ -322,7 +325,7 @@ const ProductPage = () => {
                                                         <Card key={productData._id} className={"w-60"}>
                                                             <Row className={"items-center justify-between"}>
                                                                 <div
-                                                                    className={"truncate"}>{productData.product_name}</div>
+                                                                    className={"truncate w-4/5"}>{productData.product_name}</div>
                                                                 <Button type={"text"}
                                                                         icon={<DeleteOutlined/>}
                                                                         shape={"circle"}
