@@ -151,7 +151,7 @@ const AddCategoryModel = ({isOpen, onClose, categoryData, onAdd}: any) => {
             centered
             open={isOpen}
             onOk={handleConfirmationModelOpen}
-            okText="Add Category"
+            okText={isCategory ? "Add Category" : "Add Subcategory"}
             onCancel={handleModalClose}
             okButtonProps={{disabled: validateModelButton(), loading: loading}}
         >

@@ -2,7 +2,11 @@
 
 import {Button, Col, Dropdown, Input, Modal, Row, Table, Tag, Typography} from "antd";
 import React, {useEffect, useState} from "react";
-import {CATEGORY_TABLE_ACTIONS_CONSTANTS, CATEGORY_TABLE_HEADER_CONSTANTS} from "@/constants/category.constant";
+import {
+    CATEGORY_TABLE_ACTIONS_CONSTANTS,
+    CATEGORY_TABLE_HEADER_CONSTANTS,
+    SUBCATEGORY_TABLE_ACTIONS_CONSTANTS
+} from "@/constants/category.constant";
 import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import AddCategoryModel from "@/components/product-category/AddCategoryModel";
 import CategoryService from "@/services/category.service";
@@ -129,7 +133,7 @@ const CategoryTab = () => {
     );
 
     const defineMenuItem = (record: any) => {
-        return CATEGORY_TABLE_ACTIONS_CONSTANTS.map((item) => {
+        return (record.cat_name ? CATEGORY_TABLE_ACTIONS_CONSTANTS: SUBCATEGORY_TABLE_ACTIONS_CONSTANTS).map((item) => {
             if ((record.is_active && item.key === 'activate') || (!record.is_active && item.key === 'deactivate')) {
                 return null;
             }

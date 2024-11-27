@@ -26,8 +26,6 @@ export class ApiConstant{
     static readonly FIND_ONE_SUBCATEGORY_BY_ID = this.CATEGORY_PREFIX + "find-one-subcategory-by-id";
     static readonly FIND_ALL_ACTIVE_CATEGORIES = this.CATEGORY_PREFIX + "find-all-active-categories";
     static readonly FIND_ALL_GENERAL_SPECIFICATION = this.CATEGORY_PREFIX + "find-all-general-specification";
-    static readonly FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-base-specification-with-same-subcat-by-id";
-    static readonly FIND_ALL_SUBCATEGORY_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID = this.CATEGORY_PREFIX + "find-all-subcategory-specification-with-same-subcat-by-id";
     static readonly FIND_BASE_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-base-specification-by-cat-id";
     static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-id";
     static readonly FIND_SUBCATEGORY_SPECIFICATION_BY_CAT_ID = this.CATEGORY_PREFIX + "find-subcategory-specification-by-cat-id";

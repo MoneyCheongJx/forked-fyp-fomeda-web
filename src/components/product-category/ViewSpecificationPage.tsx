@@ -206,6 +206,7 @@ const ViewSpecificationPage = ({specId}: any) => {
                     Edit {SPECIFICATION_TYPE}
                 </Button>
             </Row>
+            <h3 className={"ml-8 mb-4"}>{`${SPECIFICATION_TYPE} Details`}</h3>
             <Form form={form}
                   name={`specification_form`}
                   className="mx-8 max-w-3xl"
@@ -296,7 +297,7 @@ const ViewSpecificationPage = ({specId}: any) => {
                                 type: "radio",
                                 name: "is_required",
                                 value: specificationData.is_required,
-                                isDisabled: true,
+                                isDisabled: false,
                             },
                             (e) => setSpecificationData((prevState: any) => ({
                                 ...prevState,

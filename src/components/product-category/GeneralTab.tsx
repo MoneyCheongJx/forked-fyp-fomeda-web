@@ -43,7 +43,7 @@ const GeneralTab = () => {
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'view_specification') {
-            router.push(`${pathname}/view-specification?type=${record.cat_type}&id=${record._id}`);
+            router.push(`${pathname}/view-specification?id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,

@@ -45,6 +45,14 @@ export const CATEGORY_TABLE_ACTIONS_CONSTANTS = [
     {key: "delete", label: "Delete Category", link: ""},
 ]
 
+export const SUBCATEGORY_TABLE_ACTIONS_CONSTANTS = [
+    {key: "view_details", label: "View Details"},
+    {key: "edit_category", label: "Edit Subcategory"},
+    {key: "deactivate", label: "Deactivate Subcategory"},
+    {key: "activate", label: "Activate Subcategory"},
+    {key: "delete", label: "Delete Subcategory", link: ""},
+]
+
 export const GENERAL_INFORMATION_ACTIONS_CONSTANTS = [
     {key: "view_specification", label: "View Information", link: ""},
     {key: "deactivate", label: "Deactivate Information", link: ""},

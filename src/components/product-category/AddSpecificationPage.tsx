@@ -158,7 +158,17 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
                 centered: true,
                 width: "35%",
                 okText: "Confirm",
-                onOk: () => handleFormSubmit(submitData),
+                onOk: async () => {
+                    try {
+                        await handleFormSubmit(submitData);
+                    } catch (error: any) {
+                        NotificationService.error(
+                            `Add ${SPECIFICATION_TYPE}`,
+                            `${error.message}`
+                        );
+                        return Promise.resolve();
+                    }
+                },
             });
         } catch (error) {
             MessageService.error("Please Filled in the required field.")
@@ -168,20 +178,12 @@ const AddSpecificationPage = ({specificationType, catId = ''}: any) => {
 
     const handleFormSubmit = async (submitData: any) => {
         const submitMethod = getSubmitMethod(isSpecification, catId);
-        try {
-            await submitMethod(submitData);
-            NotificationService.success(
-                `Add ${SPECIFICATION_TYPE}`,
-                `${submitData.subcat_subspec_name ?? submitData.subcat_spec_name} is added successfully.`
-            );
-            router.back();
-        } catch (error) {
-            NotificationService.error(
-                `Add ${SPECIFICATION_TYPE}`,
-                `${submitData.subcat_subspec_name ?? submitData.subcat_spec_name} failed to add.`
-            );
-            throw error;
-        }
+        await submitMethod(submitData);
+        NotificationService.success(
+            `Add ${SPECIFICATION_TYPE}`,
+            `${submitData.subcat_subspec_name ?? submitData.subcat_spec_name} is added successfully.`
+        );
+        router.back();
     };
 
     const renderRadioGroup = (onChange: (e: any) => void, defaultValue: any, isDisabled = false) => (

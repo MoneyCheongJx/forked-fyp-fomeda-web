@@ -44,7 +44,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const handleConfirmationModelOpen = (key: string, record: any) => {
         if (key === 'view_specification') {
-            router.push(`view-specification?type=${record.cat_type}&id=${record._id}`);
+            router.push(`view-specification?id=${record._id}`);
         } else {
             Modal.confirm({
                 title: <h3>Confirmation</h3>,
@@ -73,6 +73,19 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
         },
     };
 
+    const handleRatingConfirmationModelOpen = async () => {
+        await ratingForm.validateFields();
+        Modal.confirm({
+            title: <h3>Confirmation</h3>,
+            content: <p>Are you sure you want to <b>update</b> the rating score?</p>,
+            className: "confirmation-modal",
+            centered: true,
+            width: "35%",
+            okText: "Confirm",
+            onOk: () => handleSaveRatingScoreOnClick(),
+        });
+    }
+
     const handleActionsOnClick = async (key: string, record: any) => {
         const {_id, subcat_subspec_name, subcat_spec_name} = record;
         const isSubspecification = Boolean(subcat_subspec_name);
@@ -100,7 +113,6 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
 
     const handleSaveRatingScoreOnClick = async () => {
         try {
-            await ratingForm.validateFields();
             const ratingValues = ratingForm.getFieldsValue();
             const updateScore = ratingScore.map((score: any) => ({
                 ...score,
@@ -111,8 +123,10 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
             setRatingScore(updateScore);
             await CategoryService.updateSubcategory(id, {rating_score: updateScore});
             setIsEditRating(false);
+            NotificationService.success("Edit Rating Score", "Rating score updated successfully.")
         } catch (error) {
             console.error(error);
+            NotificationService.error("Edit Rating Score", "Rating score failed to update.")
             throw error;
         }
     }
@@ -166,7 +180,7 @@ const CategoryDetailsPage = ({id}: { id: string }) => {
     const ratingTableFooter = () => (
         <Row className={"justify-end space-x-3"}>
             <Button onClick={() => setIsEditRating(false)}>Cancel</Button>
-            <Button onClick={handleSaveRatingScoreOnClick} type={"primary"}>Save</Button>
+            <Button onClick={handleRatingConfirmationModelOpen} type={"primary"}>Save</Button>
         </Row>
     )
 

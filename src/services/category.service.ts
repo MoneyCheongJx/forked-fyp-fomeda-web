@@ -524,34 +524,6 @@ export default class CategoryService {
         }
     }
 
-    static readonly findAllBaseSpecificationWithSameSubcatById = async (id: string) => {
-        try {
-            const param = {id}
-            const response = await HttpService.get(
-                ApiConstant.FIND_ALL_BASE_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID,
-                param
-            )
-            return response;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
-    static readonly findAllSubcategorySpecificationWithSameSubcatById = async (id: string) => {
-        try {
-            const param = {id}
-            const response = await HttpService.get(
-                ApiConstant.FIND_ALL_SUBCATEGORY_SPECIFICATION_WITH_SAME_SUBCAT_BY_ID,
-                param
-            )
-            return response;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
-    }
-
     static readonly createCategoryBaseSpecification = async (specificationModel: SpecificationModel) => {
         try {
             console.log(specificationModel)

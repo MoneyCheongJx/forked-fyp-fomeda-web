@@ -4,17 +4,26 @@ import {useSearchParams} from "next/navigation";
 import PageLayout from "@/app/page";
 import React from "react";
 import ViewSpecificationPage from "@/components/product-category/ViewSpecificationPage";
-import {SPECIFICATION_TYPE_CONSTANT} from "@/constants/category.constant";
+import {CategoryConstant} from "@/constants/category.constant";
 
 const EditPage = () => {
     const query = useSearchParams();
-    const type = query.get('type');
     const id = query.get('id');
 
-    const CATEGORY_TYPE = SPECIFICATION_TYPE_CONSTANT[type!];
+    const specificationType = () => {
+        if (id) {
+            if (id.includes(CategoryConstant.GENERAL_SPECIFICATION_PREFIX) || id.includes(CategoryConstant.GENERAL_SUBSPECIFICATION_PREFIX)) {
+                return "General Specification";
+            }
+            if (id.includes(CategoryConstant.BASE_SPECIFICATION_PREFIX) || id.includes(CategoryConstant.BASE_SUBSPECIFICATION_PREFIX)) {
+                return "Category Specification";
+            }
+        }
+        return "Subcategory Specification";
+    };
 
     return (
-        <PageLayout title={`${CATEGORY_TYPE} Details`} isRoot={false}>
+        <PageLayout title={`${specificationType()} Details`} isRoot={false}>
             <ViewSpecificationPage specId={id} />
         </PageLayout>
     )
