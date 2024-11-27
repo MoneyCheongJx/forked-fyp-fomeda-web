@@ -8,7 +8,7 @@ import {
     GetProp,
     Image,
     Input,
-    Layout, QRCode, Rate,
+    Layout, Modal, QRCode, Rate,
     Row,
     Select,
     Spin,
@@ -28,6 +28,7 @@ import {RegexConstant} from "@/constants/regex.constant";
 import {StringUtils} from "@/utils/string.utils";
 import MessageService from "@/services/message.service";
 import NotificationService from "@/services/notification.service";
+import ProductConfirmationContent from "@/components/common/ProductConfirmationContent";
 
 class ProductFormProps {
     type?: "add" | "view";
@@ -176,14 +177,26 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
         }
     }
 
-    const onSubmitProduct = async () => {
+    const handleConfirmationModelOpen = async () => {
         try {
             await form.validateFields();
+            Modal.confirm({
+                title: <h3>Confirmation</h3>,
+                content: <ProductConfirmationContent action={isView? "update" : "submit"} record={{product_name: form.getFieldValue("product_name") || productData.product_name}} details={isView? "product application" : "product"}/>,
+                className: "confirmation-modal",
+                centered: true,
+                width: "35%",
+                okText: "Confirm",
+                onOk: () => onSubmitProduct(),
+            });
         } catch (error) {
             MessageService.error("Please fill in all required fields")
             throw error;
         }
+    };
 
+
+    const onSubmitProduct = async () => {
         try {
             const productValues = form.getFieldsValue();
             const specValues = productValues.specification;
@@ -485,8 +498,8 @@ const ProductForm = ({type, productId, verificationId}: ProductFormProps) => {
                                 <Row className={"justify-end mt-16"}>
                                     <Button type={"default"} size={"large"} className={"m-2"}
                                             onClick={onCancelProduct}>Cancel</Button>
-                                    <Button type={"primary"} size={"large"} className={"m-2"} onClick={onSubmitProduct}
-                                            disabled={subcatId === "" || loading}>{isEdit ? "Save" : "AddProduct"}</Button>
+                                    <Button type={"primary"} size={"large"} className={"m-2"} onClick={handleConfirmationModelOpen}
+                                            disabled={subcatId === "" || loading}>{isEdit ? "Save" : "Add Product"}</Button>
                                 </Row>
                             }
                         </Card>

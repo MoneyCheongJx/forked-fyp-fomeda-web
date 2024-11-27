@@ -201,12 +201,12 @@ export const SUPPLIER_PRODUCT_LIST_ACTION_CONSTANT = [
 ]
 
 export const SUPPLIER_PENDING_LIST_ACTION_CONSTANT = [
-    {key: "view_product", label: "View Product", link: ""},
-    {key: "delete", label: "Delete Product", link: ""},
+    {key: "view_product", label: "View Application", link: ""},
+    {key: "delete", label: "Delete Application", link: ""},
 ]
 
 export const SUPPLIER_HISTORY_LIST_ACTION_CONSTANT = [
-    {key: "view_product", label: "View Product", link: ""},
+    {key: "view_product", label: "View Application", link: ""},
     {key: "resubmit", label: "Resubmit Application", link: ""},
     {key: "delete", label: "Delete Application", link: ""},
 ]

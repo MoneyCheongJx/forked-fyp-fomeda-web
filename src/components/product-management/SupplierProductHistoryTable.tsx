@@ -60,8 +60,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
 
     const defineMenuItem = (record: any) => {
         return SUPPLIER_HISTORY_LIST_ACTION_CONSTANT.map((item) => {
-            if ((record.status === ProductConstant.PENDING && item.key === 'resubmit') ||
-                (record.status === ProductConstant.APPROVED && item.key === 'delete')) {
+            if (record.status === ProductConstant.APPROVED && item.key === 'delete') {
                 return null;
             }
             return {
@@ -78,7 +77,7 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
     const getTableData = useCallback(async () => {
         try {
             setLoading(true)
-            filterData.status = null;
+            filterData.status = [ProductConstant.APPROVED, ProductConstant.REJECTED];
             filterData.is_supplier = true;
             const response = await ProductService.getProductVerificationListByFilter(await filterData);
             const sortedResponse = response.toSorted((a: any, b: any) => new Date(b.reviewed_on).getTime() - new Date(a.reviewed_on).getTime());
@@ -144,9 +143,6 @@ const SupplierProductHistoryTable = ({filterData}: any) => {
         switch (status) {
             case ProductConstant.APPROVED: {
                 return <Tag color={'green'} bordered={false} className="px-3 py-0.5 rounded-xl">Approved</Tag>
-            }
-            case ProductConstant.PENDING: {
-                return <Tag color={'yellow'} bordered={false} className="px-3 py-0.5 rounded-xl">Pending</Tag>
             }
             case ProductConstant.REJECTED: {
                 return <Tag color={'red'} bordered={false} className="px-3 py-0.5 rounded-xl">Rejected</Tag>
