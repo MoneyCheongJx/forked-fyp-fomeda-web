@@ -18,6 +18,9 @@ const VerificationHistoryTable = ({filterData}: any) => {
     const getTableData = useCallback(async () => {
         try {
             setLoading(true)
+            if(filterData.search){
+                filterData.search = filterData.search.trim();
+            }
             filterData.status = [ProductConstant.REJECTED, ProductConstant.APPROVED];
             filterData.is_supplier = false;
             const response = await ProductService.getProductVerificationListByFilter(await filterData);

@@ -16,6 +16,9 @@ const VerificationPendingTable = ({filterData}: any) => {
     const getTableData = useCallback(async () => {
         try {
             setLoading(true)
+            if(filterData.search){
+                filterData.search = filterData.search.trim();
+            }
             filterData.status = [ProductConstant.PENDING];
             filterData.is_supplier = false;
             const response = await ProductService.getProductVerificationListByFilter(await filterData);
