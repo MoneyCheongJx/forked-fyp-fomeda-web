@@ -293,7 +293,7 @@ const ProductVerificationDetailsPage = () => {
                         rules={[{
                             validator: (_: any, value: number) => {
                                 if (value > maxScore)
-                                    return Promise.reject(new Error(`${specName} core cannot exceed ${maxScore}`))
+                                    return Promise.reject(new Error(`${specName} score cannot exceed ${maxScore}`))
                                 return Promise.resolve();
                             }
                         }]}>
@@ -381,7 +381,7 @@ const ProductVerificationDetailsPage = () => {
             <Row className={"justify-end space-x-3 my-4"}>
                 <Button type={"default"} size={"large"} onClick={() => router.back()}>Cancel</Button>
                 <Button type={"primary"} size={"large"} onClick={() => onUpdate(ProductConstant.REJECTED)}
-                        danger>Rejected</Button>
+                        danger>Reject</Button>
                 <Button type={"primary"} size={"large"}
                         onClick={() => onUpdate(ProductConstant.APPROVED)}>Approve</Button>
             </Row>
