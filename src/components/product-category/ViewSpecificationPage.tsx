@@ -90,7 +90,17 @@ const ViewSpecificationPage = ({specId}: any) => {
                 centered: true,
                 width: "35%",
                 okText: "Confirm",
-                onOk: () => handleFormSubmit(data),
+                onOk: async () => {
+                    try {
+                        await handleFormSubmit(data)
+                    }  catch (error: any) {
+                        NotificationService.error(
+                            `Edit ${SPECIFICATION_TYPE}`,
+                            `${error.message}`
+                        );
+                        return Promise.resolve();
+                    }
+                },
             });
         } catch (error) {
             MessageService.error("Please Filled in the required field.")
@@ -113,18 +123,12 @@ const ViewSpecificationPage = ({specId}: any) => {
         );
 
         if (prefix) {
-            try {
-                await updateSpecificationDataMapping[prefix](specId, data);
-                NotificationService.success(
-                    `Update ${SPECIFICATION_TYPE}`,
-                    `${data.subcat_subspec_name ?? data.subcat_spec_name} is updated successfully.`);
-                setIsEdit(false);
-            } catch (e) {
-                NotificationService.error(
-                    `Update ${SPECIFICATION_TYPE}`,
-                    `${data.subcat_subspec_name ?? data.subcat_spec_name} failed to update.`);
-                throw e;
-            }
+            data.cat_type = specificationType;
+            await updateSpecificationDataMapping[prefix](specId, data);
+            NotificationService.success(
+                `Update ${SPECIFICATION_TYPE}`,
+                `${data.subcat_subspec_name ?? data.subcat_spec_name} is updated successfully.`);
+            setIsEdit(false);
         }
     };
 
