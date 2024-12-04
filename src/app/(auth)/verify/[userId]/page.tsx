@@ -65,7 +65,7 @@ export default function VerificationPage() {
                 } else {
                     NotificationService.error(
                         `Verification Code Failed`,
-                        `Invalid verifciation code was entered. Please try again`
+                        `Invalid verification code was entered. Please try again`
                     );
                 }
             });
