@@ -45,12 +45,12 @@ export default function LoginPage() {
                 if (errorMessage === "Invalid status") {
                     NotificationService.error(
                         "Login Failed",
-                        "Your supplier account is pending review from admin."
+                        "Invalid account status. Please check your account registration status if you are a supplier or contact the support if you are an admin."
                     );
                 } else if (errorMessage === "Invalid role") {
                     NotificationService.error(
                         "Login Failed",
-                        "Invalid role. Please contact the admin."
+                        "Invalid role. Please contact the support."
                     );
                 } else {
                     NotificationService.error(

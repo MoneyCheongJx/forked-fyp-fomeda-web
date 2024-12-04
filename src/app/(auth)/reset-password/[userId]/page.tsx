@@ -34,7 +34,7 @@ export default function ResetPasswordPage() {
             console.error(error);
             NotificationService.error(
                 "Internal Error",
-                "Reset password failed. Please contact the admin."
+                "Reset password failed. Please contact the support."
             );
         } finally {
             setIsLoading(false);
