@@ -33,7 +33,7 @@ export default function LoginPage() {
                 const userData = res?.token
 
                 Cookies.set('session', JSON.stringify(sessionId), {expires: 1 / 24});
-                Cookies.set('token', JSON.stringify(userData), {expires: 1 / 12});
+                Cookies.set('token', JSON.stringify(userData), {expires: 1 / 24});
 
                 router.push('/content');
             });
