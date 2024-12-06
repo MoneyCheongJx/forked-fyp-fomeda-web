@@ -245,15 +245,15 @@ a:hover {
 }
 
 /* form style */
-.ant-form-item-label-left:not(.ant-form-item-required) > label::after {
+form:not(.ant-form-vertical) .ant-form-item-label-left:not(.ant-form-item-required) > label::after {
     content: "" ;
 }
 
-.ant-form-item-required::before {
+form:not(.ant-form-vertical) .ant-form-item-required::before {
     content: "" !important;
 }
 
-.ant-form-item-required::after {
+form:not(.ant-form-vertical) .ant-form-item-required::after {
     content: "*" !important;
     color: red !important;
 }
