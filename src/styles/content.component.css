@@ -1,0 +1,26 @@
+.ant-carousel .slick-prev::after {
+    color: black;
+}
+
+.ant-carousel .slick-next::after {
+    color: black;
+}
+
+.ant-carousel .slick-dots li button::after {
+    color: black;
+}
+
+.carousal {
+    /*background-color: brown;*/
+}
+
+.container {
+    display: flex !important;
+    justify-content: center;
+    background-color: hotpink;
+    align-content: center;
+}
+
+.container > img {
+    height: 500px;
+}

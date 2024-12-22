@@ -1,0 +1,24 @@
+.custom-list .ant-list .ant-row > div,
+.custom-list .ant-list .ant-row .ant-col:first-child {
+    display: flex !important;
+}
+
+.custom-list .ant-list .ant-row .ant-list-item {
+    flex: 1 1 auto !important;
+}
+
+.custom-list .ant-list .ant-row .ant-list-item .ant-card {
+    height: 100% !important;
+}
+
+.custom-list .ant-list .ant-row .ant-list-item .ant-card-head-title {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.custom-list .ant-card-head {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
